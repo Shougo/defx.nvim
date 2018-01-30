@@ -1,17 +1,16 @@
 # ============================================================================
-# FILE: defx.py
+# FILE: util.py
 # AUTHOR: Shougo Matsushita <Shougo.Matsu at gmail.com>
 # License: MIT license
 # ============================================================================
 
-from defx.source.file import Source as File
+import os
+from os.path import normpath, join
 
 
-class Defx(object):
+def abspath(vim, path):
+    return normpath(join(vim.call('getcwd'), expand(path)))
 
-    def __init__(self, vim):
-        self._vim = vim
 
-    def gather_candidates(self):
-        f = File(self._vim)
-        return f.gather_candidates({})
+def expand(path):
+    return os.path.expandvars(os.path.expanduser(path))

@@ -1,17 +1,18 @@
 # ============================================================================
-# FILE: defx.py
+# FILE: base.py
 # AUTHOR: Shougo Matsushita <Shougo.Matsu at gmail.com>
 # License: MIT license
 # ============================================================================
 
-from defx.source.file import Source as File
+from abc import abstractmethod
 
 
-class Defx(object):
+class Base(object):
 
     def __init__(self, vim):
-        self._vim = vim
+        self.vim = vim
+        self.name = 'base'
 
-    def gather_candidates(self):
-        f = File(self._vim)
-        return f.gather_candidates({})
+    @abstractmethod
+    def gather_candidate(self, context):
+        pass

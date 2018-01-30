@@ -5,7 +5,7 @@
 # ============================================================================
 
 from importlib import find_loader
-from defx.defx import Defx
+from defx.view import View
 
 
 if find_loader('yarp'):
@@ -25,12 +25,13 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
 
         @neovim.function('_defx_init', sync=False)
         def init_channel(self, args):
-            self._defx = Defx(self._vim)
+            self._defx = View(self._vim)
+            self._defx.redraw()
 
 
 if find_loader('yarp'):
 
-    global_defx = Defx(vim)
+    global_defx = View(vim)
 
     def defx_init():
         pass

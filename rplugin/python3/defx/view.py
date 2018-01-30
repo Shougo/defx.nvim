@@ -1,17 +1,18 @@
 # ============================================================================
-# FILE: defx.py
+# FILE: view.py
 # AUTHOR: Shougo Matsushita <Shougo.Matsu at gmail.com>
 # License: MIT license
 # ============================================================================
 
-from defx.source.file import Source as File
+from defx.defx import Defx
 
 
-class Defx(object):
+class View(object):
 
     def __init__(self, vim):
         self._vim = vim
+        self._defx = Defx(self._vim)
 
-    def gather_candidates(self):
-        f = File(self._vim)
-        return f.gather_candidates({})
+    def redraw(self):
+        self._vim.current.buffer[:] = [x['word'] for x in
+                                       self._defx.gather_candidates()]
