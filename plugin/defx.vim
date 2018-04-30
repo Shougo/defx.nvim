@@ -8,3 +8,5 @@ if exists('g:loaded_defx')
   finish
 endif
 let g:loaded_defx = 1
+
+command! Defx call defx#initialize()
