@@ -11,6 +11,7 @@ class Defx(object):
 
     def __init__(self, vim):
         self._vim = vim
+        self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
     def gather_candidates(self):
         f = File(self._vim)

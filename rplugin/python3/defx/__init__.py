@@ -28,6 +28,9 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
             self._defx = View(self._vim)
             self._defx.redraw()
 
+        @neovim.function('_defx_do_action')
+        def do_action(self, args):
+            self._defx.do_action(args[0])
 
 if find_loader('yarp'):
 

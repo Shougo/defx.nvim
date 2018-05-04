@@ -20,12 +20,6 @@ function! defx#init#_initialize() abort
   augroup END
 endfunction
 function! defx#init#_channel() abort
-  if !has('timers')
-    call defx#util#print_error(
-          \ 'defx requires timers support("+timers").')
-    return 1
-  endif
-
   try
     if defx#util#has_yarp()
       let g:defx#_yarp = yarp#py3('defx')

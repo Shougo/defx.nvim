@@ -25,6 +25,7 @@ class Source(Base):
                 'word': f,
                 'abbr': f + ('/' if os.path.isdir(f) else ''),
                 'kind': ('directory' if os.path.isdir(f) else 'file'),
+                'is_directory': os.path.isdir(f),
                 'action__path': abspath(self.vim, f),
             })
         return candidates
