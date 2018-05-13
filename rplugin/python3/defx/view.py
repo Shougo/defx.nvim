@@ -22,7 +22,11 @@ class View(object):
 
     def redraw(self):
         self._candidates = self._defx.gather_candidates()
+        options = self._vim.current.buffer.options
+        options['modifiable'] = True
         self._vim.current.buffer[:] = [x['word'] for x in self._candidates]
+        options['modifiable'] = False
+        options['modified'] = False
 
     def do_action(self, action):
         cursor = self._vim.current.window.cursor
