@@ -14,3 +14,11 @@ def abspath(vim, path):
 
 def expand(path):
     return os.path.expandvars(os.path.expanduser(path))
+
+
+def error(vim, expr):
+    if hasattr(vim, 'err_write'):
+        string = (expr if isinstance(expr, str) else str(expr))
+        return vim.err_write('[defx] ' + string + '\n')
+    else:
+        vim.call('defx#util#print_error', expr)

@@ -41,7 +41,7 @@ It can replace deprecated vimfiler plugin.
 
 ## Installation
 
-**Note:** defx requires Neovim(latest is recommended) or Vim8 with Python3 and
+**Note:** defx requires Neovim(latest is recommended) or Vim8 with Python3.6+ and
 timers(neovim ver.0.2.0+) enabled.  See [requirements](#requirements) if you
 aren't sure whether you have this.
 
@@ -75,8 +75,9 @@ For manual installation(not recommended)
 
 ## Requirements
 
-defx requires Neovim or Vim8 with if\_python3.  If `:echo has("python3")`
-returns `1`, then you have python 3 support; otherwise, see below.
+defx requires Python3.6+ and Neovim or Vim8 with if\_python3.  If `:echo
+has("python3")` returns `1`, then you have python 3 support; otherwise, see
+below.
 
 You can enable Python3 interface with pip:
 
