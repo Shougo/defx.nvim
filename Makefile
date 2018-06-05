@@ -18,7 +18,7 @@ lint:
 	flake8 --version
 	flake8 rplugin/python3/defx
 	mypy --version
-	mypy --silent-imports rplugin/python3/defx
+	mypy --silent-imports --fast-parser --strict-optional rplugin/python3/defx
 
 test:
 	themis --version
