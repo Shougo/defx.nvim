@@ -16,11 +16,23 @@ class Defx(object):
         self._vim = vim
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
-        # Python version check
-        # Python3.6+ is required.
-        if sys.version_info.major == 3 and sys.version_info.minor < 6:
-            error(self._vim, 'Python 3.6+ is required.')
+        if Defx.version_check():
+            error(self._vim, 'Python 3.6.1+ is required.')
 
     def gather_candidates(self):
         f = File(self._vim)
         return f.gather_candidates({})
+
+    @staticmethod
+    def version_check():
+        # Python version check
+        # Python3.6.1+ is required.
+        version = sys.version_info
+        if version.major < 3:
+            return True
+        if version.major == 3 and version.minor < 6:
+            return True
+        if version.major == 3 and version.minor == 6 and version.micro < 1:
+            return True
+
+        return False
