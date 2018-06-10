@@ -4,12 +4,14 @@
 # License: MIT license
 # ============================================================================
 
+from defx.context import Context
+
 import os
 
 
 def _open(vim, context):
     cwd = vim.call('getcwd')
-    for target in context['targets']:
+    for target in context.targets:
         path = target['action__path']
 
         if path.startswith(cwd):

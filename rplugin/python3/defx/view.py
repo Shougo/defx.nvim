@@ -5,6 +5,7 @@
 # ============================================================================
 
 from defx.defx import Defx
+from defx.context import Context
 import defx.action
 
 
@@ -31,7 +32,6 @@ class View(object):
     def do_action(self, action):
         cursor = self._vim.current.window.cursor
 
-        context = {}
-        context['targets'] = [self._candidates[cursor[0]-1]]
+        context = Context(targets=[self._candidates[cursor[0]-1]])
 
         defx.action.do_action(self._vim, action, context)
