@@ -23,13 +23,18 @@ class Defx(object):
             error(self._vim, 'Python 3.6.1+ is required.')
 
     def gather_candidates(self) -> typing.List:
+        """
+        Returns file candidates
+        """
         f = File(self._vim)  # type: ignore
         return f.gather_candidates(Context(targets=[]))
 
     @staticmethod
     def version_check() -> bool:
-        # Python version check
-        # Python3.6.1+ is required.
+        """
+        Checks Python version.
+        Python3.6.1+ is required for defx.
+        """
         version = sys.version_info
         if version.major < 3:
             return True

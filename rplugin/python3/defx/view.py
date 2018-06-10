@@ -24,6 +24,9 @@ class View(object):
                           '  defx#do_action("open")')
 
     def redraw(self) -> None:
+        """
+        Redraw defx buffer.
+        """
         self._candidates = self._defx.gather_candidates()
         options = self._vim.current.buffer.options
         options['modifiable'] = True
@@ -32,6 +35,9 @@ class View(object):
         options['modified'] = False
 
     def do_action(self, action: str) -> None:
+        """
+        Do "action" action.
+        """
         cursor = self._vim.current.window.cursor
 
         context = Context(targets=[self._candidates[cursor[0]-1]])

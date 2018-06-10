@@ -11,6 +11,9 @@ from neovim import Nvim
 
 
 def _open(vim: Nvim, context: Context):
+    """
+    Open the file.
+    """
     cwd = vim.call('getcwd')
     for target in context.targets:
         path = target['action__path']
@@ -29,6 +32,9 @@ def _open(vim: Nvim, context: Context):
 
 
 def do_action(vim: Nvim, action: str, context: Context):
+    """
+    Do "action" action.
+    """
     return DEFAULT_ACTIONS[action](vim, context)
 
 
