@@ -9,9 +9,9 @@ CONTENTS						*defx-contents*
 Introduction		|defx-introduction|
 Install			|defx-install|
 Interface		|defx-interface|
-  Variables		  |defx-variables|
-  Key mappings		  |defx-key-mappings|
   Functions		  |defx-functions|
+  Key mappings		  |defx-key-mappings|
+  Actions		  |defx-actions|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -58,13 +58,30 @@ You can check the Python3 installation by |:checkhealth| command in neovim.
 INTERFACE						*defx-interface*
 
 ------------------------------------------------------------------------------
-VARIABLES	 					*defx-variables*
-
-------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*
+
+defx#do_action({action})				*defx#do_action()*
+		Fire {action} action.  You can find the actions list in
+		|defx-actions|.
+		Note: It is used to define mappings. >
+
+	autocmd MyAutoCmd FileType defx call s:defx_my_settings()
+	function! s:defx_my_settings() abort
+	  " Define mappings
+	  nnoremap <silent><buffer><expr><CR>  defx#do_action('open')
+	endfunction
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 						*defx-key-mappings*
+
+Defx does not define any default mappings.  You need to define your original
+mappings by |defx#do_action()|.
+
+------------------------------------------------------------------------------
+ACTIONS 						*defx-actions*
+
+open							*defx-action-open*
+		Open the file.
 
 ==============================================================================
 EXAMPLES						*defx-examples*
