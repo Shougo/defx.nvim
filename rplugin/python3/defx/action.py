@@ -4,12 +4,13 @@
 # License: MIT license
 # ============================================================================
 
-from defx.context import Context
-
 import os
 
+from defx.context import Context
+from neovim import Nvim
 
-def _open(vim, context):
+
+def _open(vim: Nvim, context: Context):
     cwd = vim.call('getcwd')
     for target in context.targets:
         path = target['action__path']
@@ -22,11 +23,12 @@ def _open(vim, context):
             vim.call(
                 'defx#util#execute_path', 'edit', path)
         elif vim.call('bufwinnr',
-                            match_path) != vim.current.buffer:
+                      match_path) != vim.current.buffer:
             vim.command('buffer' +
-                                str(vim.call('bufnr', path)))
+                        str(vim.call('bufnr', path)))
 
-def do_action(vim, action, context):
+
+def do_action(vim: Nvim, action: str, context: Context):
     return DEFAULT_ACTIONS[action](vim, context)
 
 

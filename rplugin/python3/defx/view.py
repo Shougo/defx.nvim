@@ -4,14 +4,16 @@
 # License: MIT license
 # ============================================================================
 
-from defx.defx import Defx
 from defx.context import Context
+from defx.defx import Defx
+from neovim import Nvim
+
 import defx.action
 
 
 class View(object):
 
-    def __init__(self, vim):
+    def __init__(self, vim: Nvim) -> None:
         self._vim = vim
         self._defx = Defx(self._vim)
 
@@ -21,7 +23,7 @@ class View(object):
         self._vim.command('nnoremap <silent><buffer><expr><CR>' +
                           '  defx#do_action("open")')
 
-    def redraw(self):
+    def redraw(self) -> None:
         self._candidates = self._defx.gather_candidates()
         options = self._vim.current.buffer.options
         options['modifiable'] = True
@@ -29,7 +31,7 @@ class View(object):
         options['modifiable'] = False
         options['modified'] = False
 
-    def do_action(self, action):
+    def do_action(self, action: str) -> None:
         cursor = self._vim.current.window.cursor
 
         context = Context(targets=[self._candidates[cursor[0]-1]])

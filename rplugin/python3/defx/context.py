@@ -6,5 +6,6 @@
 
 import typing
 
+
 class Context(typing.NamedTuple):
     targets: typing.List

@@ -5,26 +5,29 @@
 # ============================================================================
 
 import sys
+import typing
 
 from defx.source.file import Source as File
+from defx.context import Context
 from defx.util import error
+from neovim import Nvim
 
 
 class Defx(object):
 
-    def __init__(self, vim):
+    def __init__(self, vim: Nvim) -> None:
         self._vim = vim
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
         if Defx.version_check():
             error(self._vim, 'Python 3.6.1+ is required.')
 
-    def gather_candidates(self):
-        f = File(self._vim)
-        return f.gather_candidates({})
+    def gather_candidates(self) -> typing.List:
+        f = File(self._vim)  # type: ignore
+        return f.gather_candidates(Context(targets=[]))
 
     @staticmethod
-    def version_check():
+    def version_check() -> bool:
         # Python version check
         # Python3.6.1+ is required.
         version = sys.version_info
