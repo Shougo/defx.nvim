@@ -17,22 +17,29 @@ class View(object):
         self._vim = vim
         self._defx = Defx(self._vim)
 
-        self._vim.command('enew')
+        # Create new buffer
+        self._vim.call(
+            'denite#util#execute_path',
+            'silent keepalt edit', '[defx]')
 
-        # Define mappings
-        self._vim.command('nnoremap <silent><buffer><expr><CR>' +
-                          '  defx#do_action("open")')
+        self._options = self._vim.current.buffer.options
+        self._options['buftype'] = 'nofile'
+        self._options['swapfile'] = False
+        self._options['modeline'] = False
+        self._options['filetype'] = 'defx'
+        self._options['modifiable'] = False
+        self._options['modified'] = False
+        self._vim.command('silent doautocmd FileType defx')
 
     def redraw(self) -> None:
         """
         Redraw defx buffer.
         """
         self._candidates = self._defx.gather_candidates()
-        options = self._vim.current.buffer.options
-        options['modifiable'] = True
+        self._options['modifiable'] = True
         self._vim.current.buffer[:] = [x['word'] for x in self._candidates]
-        options['modifiable'] = False
-        options['modified'] = False
+        self._options['modifiable'] = False
+        self._options['modified'] = False
 
     def do_action(self, action: str) -> None:
         """
