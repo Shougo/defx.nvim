@@ -20,7 +20,6 @@ def _open(vim: Nvim, context: Context):
 
         if path.startswith(cwd):
             path = os.path.relpath(path, cwd)
-            match_path = '^{0}$'.format(path)
 
         vim.call(
             'defx#util#execute_path', 'edit', path)
