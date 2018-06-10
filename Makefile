@@ -21,8 +21,8 @@ lint:
 	mypy --ignore-missing-imports --follow-imports=skip --strict-optional rplugin/python3/defx
 
 test:
-	themis --version
-	themis test/autoload/*
+	# themis --version
+	# themis test/autoload/*
 	pytest --version
 	pytest
 

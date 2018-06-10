@@ -3,3 +3,4 @@ doc/tags
 vim-themis
 .cache
 .mypy_cache/
+.pytest_cache/
