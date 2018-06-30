@@ -8,7 +8,7 @@ import glob
 import os
 import typing
 
-from .base import Base
+from defx.base.source import Base
 from defx.context import Context
 from defx.util import abspath
 from neovim import Nvim
