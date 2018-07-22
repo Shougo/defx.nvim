@@ -35,12 +35,5 @@ class Defx(object):
         Checks Python version.
         Python3.6.1+ is required for defx.
         """
-        version = sys.version_info
-        if version.major < 3:
-            return True
-        if version.major == 3 and version.minor < 6:
-            return True
-        if version.major == 3 and version.minor == 6 and version.micro < 1:
-            return True
-
-        return False
+        v = sys.version_info
+        return (v.major, v.minor, v.micro) < (3, 6, 1)
