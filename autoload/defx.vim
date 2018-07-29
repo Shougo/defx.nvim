@@ -8,6 +8,16 @@ function! defx#initialize() abort
   return defx#init#_initialize()
 endfunction
 
+function! defx#start(paths, user_context) abort
+  call defx#initialize()
+  let context = defx#init#_context(a:user_context)
+  let paths = a:paths
+  if empty(paths)
+    let paths = [getcwd()]
+  endif
+  return _defx_start(paths, context)
+endfunction
+
 function! defx#do_action(action) abort
   call _defx_do_action(a:action)
   return ":\<C-u>redraw\<CR>"

@@ -9,6 +9,7 @@ CONTENTS						*defx-contents*
 Introduction		|defx-introduction|
 Install			|defx-install|
 Interface		|defx-interface|
+  Commands		  |defx-commands|
   Functions		  |defx-functions|
   Key mappings		  |defx-key-mappings|
   Actions		  |defx-actions|
@@ -56,6 +57,12 @@ You can check the Python3 installation by |:checkhealth| command in neovim.
 
 ==============================================================================
 INTERFACE						*defx-interface*
+
+------------------------------------------------------------------------------
+COMMANDS 						*defx-commands*
+
+:Defx [{options}] {paths}				*:Defx*
+		Creates a new Defx buffer.
 
 ------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*

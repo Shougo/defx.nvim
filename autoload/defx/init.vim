@@ -64,3 +64,10 @@ endfunction
 function! defx#init#_check_channel() abort
   return !exists('g:defx#_initialized')
 endfunction
+
+function! defx#init#_user_options() abort
+  return {}
+endfunction
+function! defx#init#_context(user_context) abort
+  return {}
+endfunction

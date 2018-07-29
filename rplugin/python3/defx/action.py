@@ -19,13 +19,12 @@ def _open(view: View, defx: Defx, context: Context):
     for target in context.targets:
         path = target['action__path']
 
-        if path.startswith(cwd):
-            path = os.path.relpath(path, cwd)
-
         if os.path.isdir(path):
             defx.cd(path)
             view.redraw()
         else:
+            if path.startswith(cwd):
+                path = os.path.relpath(path, cwd)
             view._vim.call('defx#util#execute_path', 'edit', path)
 
 

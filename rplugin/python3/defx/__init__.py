@@ -26,9 +26,14 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
         def __init__(self, vim: Nvim) -> None:
             self._vim = vim
 
-        @neovim.function('_defx_init', sync=False)
+        @neovim.function('_defx_init')
         def init_channel(self, args: typing.List) -> None:
+            self._vim.vars['defx#_channel_id'] = self._vim.channel_id
+
+        @neovim.function('_defx_start')
+        def start(self, args: typing.List) -> None:
             self._defx = View(self._vim)
+            self._defx._defx.cd(args[0][0])
             self._defx.redraw()
 
         @neovim.function('_defx_do_action')

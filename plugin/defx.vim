@@ -9,4 +9,6 @@ if exists('g:loaded_defx')
 endif
 let g:loaded_defx = 1
 
-command! Defx call defx#initialize()
+command! -nargs=* -range -complete=customlist,defx#util#complete
+      \ Defx
+      \ call defx#util#call_defx('Defx', <q-args>)

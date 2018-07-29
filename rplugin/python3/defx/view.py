@@ -17,7 +17,7 @@ class View(object):
 
         # Create new buffer
         self._vim.call(
-            'denite#util#execute_path',
+            'defx#util#execute_path',
             'silent keepalt edit', '[defx]')
 
         self._options = self._vim.current.buffer.options
