@@ -30,7 +30,14 @@ class Defx(object):
         Returns file candidates
         """
         f = File(self._vim)  # type: ignore
-        return f.gather_candidates(Context(targets=[]), self._cwd)
+        candidates = f.gather_candidates(Context(targets=[]), self._cwd)
+
+        # Sort
+        dirs = sorted([x for x in candidates if x['is_directory']],
+                      key=lambda x: x['abbr'])
+        files = sorted([x for x in candidates if not x['is_directory']],
+                       key=lambda x: x['abbr'])
+        return dirs + files
 
     @staticmethod
     def version_check() -> bool:
