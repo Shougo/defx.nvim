@@ -7,29 +7,33 @@
 import os
 
 from defx.context import Context
-from neovim import Nvim
+from defx.defx import Defx
+from defx.view import View
 
 
-def _open(vim: Nvim, context: Context):
+def _open(view: View, defx: Defx, context: Context):
     """
     Open the file.
     """
-    cwd = vim.call('getcwd')
+    cwd = view._vim.call('getcwd')
     for target in context.targets:
         path = target['action__path']
 
         if path.startswith(cwd):
             path = os.path.relpath(path, cwd)
 
-        vim.call(
-            'defx#util#execute_path', 'edit', path)
+        if os.path.isdir(path):
+            defx.cd(path)
+            view.redraw()
+        else:
+            view._vim.call('defx#util#execute_path', 'edit', path)
 
 
-def do_action(vim: Nvim, action: str, context: Context):
+def do_action(view: View, defx: Defx, action: str, context: Context):
     """
     Do "action" action.
     """
-    return DEFAULT_ACTIONS[action](vim, context)
+    return DEFAULT_ACTIONS[action](view, defx, context)
 
 
 DEFAULT_ACTIONS = {

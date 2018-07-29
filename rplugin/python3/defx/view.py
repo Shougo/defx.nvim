@@ -8,14 +8,12 @@ from defx.context import Context
 from defx.defx import Defx
 from neovim import Nvim
 
-import defx.action
-
 
 class View(object):
 
     def __init__(self, vim: Nvim) -> None:
         self._vim = vim
-        self._defx = Defx(self._vim)
+        self._defx = Defx(self._vim, self._vim.call('getcwd'))
 
         # Create new buffer
         self._vim.call(
@@ -37,7 +35,7 @@ class View(object):
         """
         self._candidates = self._defx.gather_candidates()
         self._options['modifiable'] = True
-        self._vim.current.buffer[:] = [x['word'] for x in self._candidates]
+        self._vim.current.buffer[:] = [x['abbr'] for x in self._candidates]
         self._options['modifiable'] = False
         self._options['modified'] = False
 
@@ -49,4 +47,5 @@ class View(object):
 
         context = Context(targets=[self._candidates[cursor[0]-1]])
 
-        defx.action.do_action(self._vim, action, context)
+        import defx.action
+        defx.action.do_action(self, self._defx, action, context)

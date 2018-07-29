@@ -4,7 +4,6 @@
 # License: MIT license
 # ============================================================================
 
-import glob
 import os
 import typing
 
@@ -22,9 +21,9 @@ class Source(Base):
         self.name = 'file'
         self.kind = 'file'
 
-    def gather_candidates(self, context: Context) -> typing.List:
+    def gather_candidates(self, context: Context, path) -> typing.List:
         candidates = []
-        for f in glob.glob('.*'):
+        for f in os.listdir(path):
             candidates.append({
                 'word': f,
                 'abbr': f + ('/' if os.path.isdir(f) else ''),

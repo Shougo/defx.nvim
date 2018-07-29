@@ -15,19 +15,24 @@ from neovim import Nvim
 
 class Defx(object):
 
-    def __init__(self, vim: Nvim) -> None:
+    def __init__(self, vim: Nvim, cwd: str) -> None:
         self._vim = vim
+        self.cd(cwd)
+
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
         if Defx.version_check():
             error(self._vim, 'Python 3.6.1+ is required.')
+
+    def cd(self, cwd: str) -> None:
+        self._cwd = cwd
 
     def gather_candidates(self) -> typing.List:
         """
         Returns file candidates
         """
         f = File(self._vim)  # type: ignore
-        return f.gather_candidates(Context(targets=[]))
+        return f.gather_candidates(Context(targets=[]), self._cwd)
 
     @staticmethod
     def version_check() -> bool:
