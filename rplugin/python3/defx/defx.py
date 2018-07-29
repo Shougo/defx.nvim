@@ -19,8 +19,6 @@ class Defx(object):
         self._vim = vim
         self.cd(cwd)
 
-        self._vim.vars['defx#_channel_id'] = self._vim.channel_id
-
         if Defx.version_check():
             error(self._vim, 'Python 3.6.1+ is required.')
 

@@ -23,12 +23,12 @@ class Source(Base):
 
     def gather_candidates(self, context: Context, path) -> typing.List:
         candidates = []
-        for f in os.listdir(path):
+        for entry in os.scandir(path):
             candidates.append({
-                'word': f,
-                'abbr': f + ('/' if os.path.isdir(f) else ''),
-                'kind': ('directory' if os.path.isdir(f) else 'file'),
-                'is_directory': os.path.isdir(f),
-                'action__path': abspath(self.vim, f),
+                'word': entry.path,
+                'abbr': entry.name + ('/' if entry.is_dir() else ''),
+                'kind': ('directory' if entry.is_dir() else 'file'),
+                'is_directory': entry.is_dir(),
+                'action__path': entry.path,
             })
         return candidates

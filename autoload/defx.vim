@@ -15,6 +15,7 @@ function! defx#start(paths, user_context) abort
   if empty(paths)
     let paths = [getcwd()]
   endif
+  let paths = map(paths, "fnamemodify(v:val, ':p')")
   return _defx_start(paths, context)
 endfunction
 
