@@ -22,6 +22,8 @@ class Source(Base):
 
     def gather_candidates(self, context: Context, path) -> typing.List:
         candidates = []
+        if not os.path.isdir(path):
+            return []
         for entry in os.scandir(path):
             candidates.append({
                 'word': entry.path,

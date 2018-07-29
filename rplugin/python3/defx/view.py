@@ -45,6 +45,9 @@ class View(object):
         """
         cursor = self._vim.current.window.cursor
 
+        if not self._candidates:
+            return
+
         context = Context(targets=[self._candidates[cursor[0]-1]])
 
         import defx.action
