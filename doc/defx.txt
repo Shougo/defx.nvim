@@ -87,6 +87,12 @@ mappings by |defx#do_action()|.
 ------------------------------------------------------------------------------
 ACTIONS 						*defx-actions*
 
+new_directory 					*defx-action-new_directory*
+		Create a new directory.
+
+new_file 						*defx-action-new_file*
+		Create a new file.
+
 open							*defx-action-open*
 		Open the file.
 

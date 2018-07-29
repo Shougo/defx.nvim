@@ -6,16 +6,8 @@
 
 import os
 import typing
-from os.path import normpath, join
 
 from neovim import Nvim
-
-
-def abspath(vim: Nvim, path: str):
-    """
-    Returns the absolute path.
-    """
-    return normpath(join(vim.call('getcwd'), expand(path)))
 
 
 def expand(path: str):
@@ -34,3 +26,18 @@ def error(vim: Nvim, expr: typing.Any):
         return vim.err_write('[defx] ' + string + '\n')
     else:
         vim.call('defx#util#print_error', expr)
+
+
+def cwd_input(vim: Nvim, cwd: str, prompt: str,
+              text: str='', completion: str='') -> str:
+    """
+    Returns the absolute input path in cwd.
+    """
+    save_cwd = vim.call('getcwd')
+    vim.command('lcd {}'.format(cwd))
+
+    filename = vim.call('input', prompt, text, completion)
+    filename = os.path.normpath(os.path.join(cwd, filename))
+
+    vim.command('lcd {}'.format(save_cwd))
+    return filename
