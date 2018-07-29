@@ -9,7 +9,6 @@ import typing
 
 from defx.base.source import Base
 from defx.context import Context
-from defx.util import abspath
 from neovim import Nvim
 
 

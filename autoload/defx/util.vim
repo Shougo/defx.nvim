@@ -151,9 +151,9 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
   else
     " Path names completion.
     let files = filter(glob(a:arglead . '*', v:true, v:true),
-          \ "stridx(tolower(v:val), tolower(a:arglead)) == 0")
+          \ 'stridx(tolower(v:val), tolower(a:arglead)) == 0')
     let files = filter(files, 'isdirectory(v:val)')
-    if a:arglead =~ '^\~'
+    if a:arglead =~# '^\~'
       let home_pattern = '^'.
             \ s:substitute_path_separator(expand('~')).'/'
       call map(files, "substitute(v:val, home_pattern, '~/', '')")
