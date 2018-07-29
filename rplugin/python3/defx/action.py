@@ -4,14 +4,24 @@
 # License: MIT license
 # ============================================================================
 
+from enum import auto, IntFlag
 import os
+import typing
 
 from defx.context import Context
 from defx.defx import Defx
 from defx.view import View
 
 
-def _open(view: View, defx: Defx, context: Context):
+def do_action(view: View, defx: Defx, action_name: str, context: Context):
+    """
+    Do "action_name" action.
+    """
+    action = DEFAULT_ACTIONS[action_name]
+    return action.func(view, defx, context)
+
+
+def _open(view: View, defx: Defx, context: Context) -> None:
     """
     Open the file.
     """
@@ -28,13 +38,16 @@ def _open(view: View, defx: Defx, context: Context):
             view._vim.call('defx#util#execute_path', 'edit', path)
 
 
-def do_action(view: View, defx: Defx, action: str, context: Context):
-    """
-    Do "action" action.
-    """
-    return DEFAULT_ACTIONS[action](view, defx, context)
+class ActionAttr(IntFlag):
+    REDRAW = auto()
+    NONE = 0
+
+
+class ActionTable(typing.NamedTuple):
+    func: typing.Callable[[View, Defx, Context], None]
+    attr: ActionAttr = ActionAttr.NONE
 
 
 DEFAULT_ACTIONS = {
-    'open': _open,
+    'open': ActionTable(func=_open),
 }
