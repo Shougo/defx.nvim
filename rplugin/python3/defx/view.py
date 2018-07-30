@@ -42,6 +42,14 @@ class View(object):
         """
         self._candidates = []
         for defx in self._defxs:
+            self._candidates.append({
+                'word': defx._cwd,
+                'abbr': defx._cwd + '/',
+                'kind': 'directory',
+                'is_directory': True,
+                'is_root': True,
+                'action__path': defx._cwd,
+            })
             self._candidates += defx.gather_candidates()
         self._options['modifiable'] = True
         self._vim.current.buffer[:] = [x['abbr'] for x in self._candidates]

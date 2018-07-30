@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import os
 import sys
 import typing
 
@@ -17,13 +18,15 @@ class Defx(object):
 
     def __init__(self, vim: Nvim, cwd: str) -> None:
         self._vim = vim
+        self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
 
         if Defx.version_check():
             error(self._vim, 'Python 3.6.1+ is required.')
 
-    def cd(self, cwd: str) -> None:
-        self._cwd = cwd
+    def cd(self, path: str) -> None:
+        path = os.path.normpath(os.path.join(self._cwd, path))
+        self._cwd = path
 
     def gather_candidates(self) -> typing.List:
         """
