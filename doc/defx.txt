@@ -73,20 +73,6 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 		{args} behavior depends on {action}.
 		Note: It is used to define mappings. >
 
-	autocmd MyAutoCmd FileType defx call s:defx_my_settings()
-	function! s:defx_my_settings() abort
-	  " Define mappings
-	  nnoremap <silent><buffer><expr><CR>  defx#do_action('open')
-	  nnoremap <silent><buffer><expr>h     defx#do_action('cd', ['..'])
-	  nnoremap <silent><buffer><expr>~     defx#do_action('cd')
-	endfunction
-
-------------------------------------------------------------------------------
-KEY MAPPINGS 						*defx-key-mappings*
-
-Defx does not define any default mappings.  You need to define your original
-mappings by |defx#do_action()|.
-
 ------------------------------------------------------------------------------
 ACTIONS 						*defx-actions*
 
@@ -112,7 +98,24 @@ toggle_select					*defx-action-toggle_select*
 
 ==============================================================================
 EXAMPLES						*defx-examples*
-
+>
+	autocmd FileType defx call s:defx_my_settings()
+	function! s:defx_my_settings() abort
+	  " Define mappings
+	  nnoremap <silent><buffer><expr><CR>
+	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr>K
+	  \ defx#do_action('new_directory')
+	  nnoremap <silent><buffer><expr>N
+	  \ defx#do_action('new_file')
+	  nnoremap <silent><buffer><expr>h
+	  \ defx#do_action('cd', ['..'])
+	  nnoremap <silent><buffer><expr>~
+	  \ defx#do_action('cd')
+	  nnoremap <silent><buffer><expr><Space>
+	  \ defx#do_action('toggle_select') . 'j'
+	endfunction
+<
 ==============================================================================
 FREQUENTLY ASKED QUESTIONS (FAQ)			*defx-faq*
 
