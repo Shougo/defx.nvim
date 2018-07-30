@@ -14,6 +14,8 @@ class View(object):
     def __init__(self, vim: Nvim) -> None:
         self._vim = vim
         self._defx = Defx(self._vim, self._vim.call('getcwd'))
+        self._candidates = []
+        self._selected_candidates = []
 
         # Create new buffer
         self._vim.call(
