@@ -38,6 +38,8 @@ class View(object):
         self._options['modified'] = False
         self._vim.command('silent doautocmd FileType defx')
 
+        self._column = Filename(self._vim)
+
     def redraw(self) -> None:
         """
         Redraw defx buffer.
@@ -56,10 +58,9 @@ class View(object):
             self._candidates += defx.gather_candidates()
 
         self._options['modifiable'] = True
-        column = Filename(self._vim)
         context = Context()
         self._vim.current.buffer[:] = [
-            column.get(context, x) for x in self._candidates
+            self._column.get(context, x) for x in self._candidates
         ]
         self._options['modifiable'] = False
         self._options['modified'] = False
