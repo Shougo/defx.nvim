@@ -12,7 +12,6 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
-from defx.util import error
 
 
 class View(object):
