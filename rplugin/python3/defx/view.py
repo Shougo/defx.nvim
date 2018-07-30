@@ -9,6 +9,7 @@ import typing
 
 from defx.context import Context
 from defx.defx import Defx
+from defx.column.filename import Column as Filename
 
 
 class View(object):
@@ -55,7 +56,11 @@ class View(object):
             self._candidates += defx.gather_candidates()
 
         self._options['modifiable'] = True
-        self._vim.current.buffer[:] = [x['abbr'] for x in self._candidates]
+        column = Filename(self._vim)
+        context = Context()
+        self._vim.current.buffer[:] = [
+            column.get(context, x) for x in self._candidates
+        ]
         self._options['modifiable'] = False
         self._options['modified'] = False
 
