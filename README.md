@@ -1,8 +1,3 @@
-Note: This is the vaporware!
-
-It is not implemented yet.  It will be released in 2018 someday.
-
-
 ## About
 Defx is a dark powered plugin for Neovim/Vim to browse files.
 It can replace deprecated vimfiler plugin.
