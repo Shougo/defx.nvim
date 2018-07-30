@@ -16,10 +16,12 @@ from defx.column.mark import Column as Mark
 
 class View(object):
 
-    def __init__(self, vim: Nvim, paths: typing.List[str]) -> None:
+    def __init__(self, vim: Nvim,
+                 paths: typing.List[str], context: dict) -> None:
         self._vim: Nvim = vim
         self._candidates: typing.List = []
         self._selected_candidates: typing.List = []
+        self._context = Context(**context)
 
         # Initialize defx
         self._defxs: typing.List[Defx] = []
@@ -43,10 +45,13 @@ class View(object):
         self._columns: typing.List[Column] = [
             Mark(self._vim), Filename(self._vim)]
 
-    def redraw(self) -> None:
+    def redraw(self, is_force: bool = False) -> None:
         """
         Redraw defx buffer.
         """
+
+        if not is_force:
+            self._selected_candidates = []
 
         self._candidates = []
         for defx in self._defxs:
@@ -65,9 +70,8 @@ class View(object):
             self._candidates[index]['is_selected'] = True
 
         self._options['modifiable'] = True
-        context = Context()
         self._vim.current.buffer[:] = [
-            self.get_columns_text(context, x)
+            self.get_columns_text(self._context, x)
             for x in self._candidates
         ]
         self._options['modifiable'] = False
@@ -80,20 +84,23 @@ class View(object):
         return text
 
     def get_selected_candidates(self) -> typing.List[dict]:
-        cursor = self._vim.current.window.cursor
-        return [self._candidates[cursor[0]-1]]
+        if not self._selected_candidates:
+            return [self._candidates[self._context.cursor - 1]]
+        else:
+            return [self._candidates[x] for x in self._selected_candidates]
 
     def do_action(self, action_name: str,
-                  action_args: typing.List[str]) -> None:
+                  action_args: typing.List[str], new_context: dict) -> None:
         """
         Do "action" action.
         """
         if not self._candidates:
             return
 
-        context = Context(
+        context = self._context._replace(
             targets=self.get_selected_candidates(),
-            args=action_args
+            args=action_args,
+            cursor=new_context['cursor']
         )
 
         import defx.action as action

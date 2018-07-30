@@ -13,6 +13,6 @@ def test_do_action():
     vim.call.return_value = ''
     vim.current = MagicMock()
 
-    defx = View(vim, [])
+    defx = View(vim, [], {})
     defx.redraw()
-    defx.do_action('open', [])
+    defx.do_action('open', [], {})

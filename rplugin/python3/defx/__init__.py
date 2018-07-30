@@ -32,16 +32,16 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
 
         @neovim.function('_defx_start')
         def start(self, args: typing.List) -> None:
-            self._view = View(self._vim, args[0])
+            self._view = View(self._vim, args[0], args[1])
             self._view.redraw()
 
         @neovim.function('_defx_do_action')
         def do_action(self, args: typing.List) -> None:
-            self._view.do_action(args[0], args[1])
+            self._view.do_action(args[0], args[1], args[2])
 
 if find_loader('yarp'):
 
-    global_defx = View(vim, [])
+    global_defx = View(vim, [], {})
 
     def defx_init() -> None:
         pass

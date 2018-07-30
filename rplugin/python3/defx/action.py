@@ -21,7 +21,7 @@ def do_action(view: View, defx: Defx, action_name: str, context: Context):
     action = DEFAULT_ACTIONS[action_name]
     action.func(view, defx, context)
     if ActionAttr.REDRAW in action.attr:
-        view.redraw()
+        view.redraw(True)
 
 
 def _cd(view: View, defx: Defx, context: Context) -> None:
@@ -35,6 +35,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         return
 
     defx.cd(path)
+    view._selected_candidates = []
 
 
 def _open(view: View, defx: Defx, context: Context) -> None:
@@ -47,7 +48,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
 
         if os.path.isdir(path):
             defx.cd(path)
-            view.redraw()
+            view.redraw(True)
         else:
             if path.startswith(cwd):
                 path = os.path.relpath(path, cwd)
@@ -82,7 +83,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
 
 
 def _toggle_select(view: View, defx: Defx, context: Context):
-    index = view._vim.current.window.cursor[0] - 1
+    index = context.cursor - 1
     if index in view._selected_candidates:
         view._selected_candidates.remove(index)
     else:
