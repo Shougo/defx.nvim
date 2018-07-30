@@ -81,6 +81,14 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         f.write('')
 
 
+def _toggle_select(view: View, defx: Defx, context: Context):
+    index = view._vim.current.window.cursor
+    if index in view._selected_candidates:
+        view._selected_candidates.remove(index)
+    else:
+        view._selected_candidates.append(index)
+
+
 class ActionAttr(IntFlag):
     REDRAW = auto()
     NONE = 0
@@ -98,4 +106,6 @@ DEFAULT_ACTIONS = {
         func=_new_directory, attr=ActionAttr.REDRAW),
     'new_file': ActionTable(
         func=_new_file, attr=ActionAttr.REDRAW),
+    'toggle_select': ActionTable(
+        func=_toggle_select, attr=ActionAttr.REDRAW),
 }
