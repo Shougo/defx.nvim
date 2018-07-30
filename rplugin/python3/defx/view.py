@@ -15,12 +15,13 @@ class View(object):
 
     def __init__(self, vim: Nvim, paths: typing.List[str]) -> None:
         self._vim: Nvim = vim
+        self._candidates: typing.List = []
+        self._selected_candidates: typing.List = []
+
         # Initialize defx
         self._defxs: typing.List[Defx] = []
         for path in paths:
             self._defxs.append(Defx(self._vim, path))
-        self._candidates: typing.List = []
-        self._selected_candidates: typing.List = []
 
         # Create new buffer
         self._vim.call(
@@ -40,6 +41,7 @@ class View(object):
         """
         Redraw defx buffer.
         """
+
         self._candidates = []
         for defx in self._defxs:
             self._candidates.append({
@@ -51,6 +53,7 @@ class View(object):
                 'action__path': defx._cwd,
             })
             self._candidates += defx.gather_candidates()
+
         self._options['modifiable'] = True
         self._vim.current.buffer[:] = [x['abbr'] for x in self._candidates]
         self._options['modifiable'] = False
