@@ -20,7 +20,7 @@ class Source(Base):
         self.name = 'file'
         self.kind = 'file'
 
-    def gather_candidates(self, context: Context, path) -> typing.List:
+    def gather_candidates(self, context: Context, path: str) -> typing.List:
         candidates = []
         if not os.path.isdir(path):
             return []

@@ -4,18 +4,20 @@
 # License: MIT license
 # ============================================================================
 
+from neovim import Nvim
+import typing
+
 from defx.context import Context
 from defx.defx import Defx
-from neovim import Nvim
 
 
 class View(object):
 
     def __init__(self, vim: Nvim) -> None:
-        self._vim = vim
-        self._defx = Defx(self._vim, self._vim.call('getcwd'))
-        self._candidates = []
-        self._selected_candidates = []
+        self._vim: Nvim = vim
+        self._defx: Defx = Defx(self._vim, self._vim.call('getcwd'))
+        self._candidates: typing.List = []
+        self._selected_candidates: typing.List = []
 
         # Create new buffer
         self._vim.call(
