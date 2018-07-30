@@ -16,6 +16,7 @@ class Base(object):
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim
         self.name = 'base'
+        self.syntax_name = ''
 
     @abstractmethod
     def get(self, context: Context, candidate: typing.List[dict]) -> str:

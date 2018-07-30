@@ -15,6 +15,7 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'mark'
+        self.length = 2
 
     def get(self, context: Context, candidate: dict) -> str:
         if candidate.get('is_selected', False):
@@ -25,3 +26,8 @@ class Column(Base):
             return '+ '
         else:
             return '  '
+
+    def highlight(self, context: Context) -> None:
+        self.vim.command(
+            'highlight default link {0}_selected Type'.format(
+                self.syntax_name))

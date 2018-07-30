@@ -15,6 +15,7 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'filename'
+        self.length = 120
 
     def get(self, context: Context, candidate: dict) -> str:
         return candidate['abbr']

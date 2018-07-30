@@ -88,6 +88,7 @@ def _toggle_select(view: View, defx: Defx, context: Context):
         view._selected_candidates.remove(index)
     else:
         view._selected_candidates.append(index)
+    view.redraw()
 
 
 class ActionAttr(IntFlag):
@@ -107,6 +108,5 @@ DEFAULT_ACTIONS = {
         func=_new_directory, attr=ActionAttr.REDRAW),
     'new_file': ActionTable(
         func=_new_file, attr=ActionAttr.REDRAW),
-    'toggle_select': ActionTable(
-        func=_toggle_select, attr=ActionAttr.REDRAW),
+    'toggle_select': ActionTable(func=_toggle_select),
 }
