@@ -82,7 +82,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
 
 
 def _toggle_select(view: View, defx: Defx, context: Context):
-    index = view._vim.current.window.cursor
+    index = view._vim.current.window.cursor[0] - 1
     if index in view._selected_candidates:
         view._selected_candidates.remove(index)
     else:

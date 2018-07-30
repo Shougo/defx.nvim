@@ -7,9 +7,11 @@
 from neovim import Nvim
 import typing
 
+from defx.base.column import Base as Column
 from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
+from defx.column.mark import Column as Mark
 
 
 class View(object):
@@ -38,7 +40,8 @@ class View(object):
         self._options['modified'] = False
         self._vim.command('silent doautocmd FileType defx')
 
-        self._column = Filename(self._vim)
+        self._columns: typing.List[Column] = [
+            Mark(self._vim), Filename(self._vim)]
 
     def redraw(self) -> None:
         """
@@ -57,13 +60,24 @@ class View(object):
             })
             self._candidates += defx.gather_candidates()
 
+        # Set is_selected flag
+        for index in self._selected_candidates:
+            self._candidates[index]['is_selected'] = True
+
         self._options['modifiable'] = True
         context = Context()
         self._vim.current.buffer[:] = [
-            self._column.get(context, x) for x in self._candidates
+            self.get_columns_text(context, x)
+            for x in self._candidates
         ]
         self._options['modifiable'] = False
         self._options['modified'] = False
+
+    def get_columns_text(self, context: Context, candidate: dict) -> str:
+        text = ''
+        for column in self._columns:
+            text += column.get(context, candidate)
+        return text
 
     def get_selected_candidates(self) -> typing.List[dict]:
         cursor = self._vim.current.window.cursor
