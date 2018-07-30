@@ -37,7 +37,7 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
 
         @neovim.function('_defx_do_action')
         def do_action(self, args: typing.List) -> None:
-            self._view.do_action(args[0])
+            self._view.do_action(args[0], [])
 
 if find_loader('yarp'):
 

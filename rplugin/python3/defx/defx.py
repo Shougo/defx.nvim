@@ -30,7 +30,7 @@ class Defx(object):
         Returns file candidates
         """
         f = File(self._vim)  # type: ignore
-        candidates = f.gather_candidates(Context(targets=[]), self._cwd)
+        candidates = f.gather_candidates(Context(), self._cwd)
 
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],

@@ -15,4 +15,4 @@ def test_do_action():
 
     defx = View(vim, [])
     defx.redraw()
-    defx.do_action('open')
+    defx.do_action('open', [])

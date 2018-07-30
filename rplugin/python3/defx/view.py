@@ -52,14 +52,18 @@ class View(object):
         cursor = self._vim.current.window.cursor
         return [self._candidates[cursor[0]-1]]
 
-    def do_action(self, action_name: str) -> None:
+    def do_action(self, action_name: str,
+                  action_args: typing.List[str]) -> None:
         """
         Do "action" action.
         """
         if not self._candidates:
             return
 
-        context = Context(targets=self.get_selected_candidates())
+        context = Context(
+            targets=self.get_selected_candidates(),
+            args=action_args
+        )
 
         import defx.action as action
         for defx in self._defxs:

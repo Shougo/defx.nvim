@@ -8,4 +8,5 @@ import typing
 
 
 class Context(typing.NamedTuple):
-    targets: typing.List
+    targets: typing.List[dict] = []
+    args: typing.List[str] = []
