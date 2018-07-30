@@ -13,9 +13,12 @@ from defx.defx import Defx
 
 class View(object):
 
-    def __init__(self, vim: Nvim) -> None:
+    def __init__(self, vim: Nvim, paths: typing.List[str]) -> None:
         self._vim: Nvim = vim
-        self._defx: Defx = Defx(self._vim, self._vim.call('getcwd'))
+        # Initialize defx
+        self._defxs: typing.List[Defx] = []
+        for path in paths:
+            self._defxs.append(Defx(self._vim, path))
         self._candidates: typing.List = []
         self._selected_candidates: typing.List = []
 
@@ -37,22 +40,27 @@ class View(object):
         """
         Redraw defx buffer.
         """
-        self._candidates = self._defx.gather_candidates()
+        self._candidates = []
+        for defx in self._defxs:
+            self._candidates += defx.gather_candidates()
         self._options['modifiable'] = True
         self._vim.current.buffer[:] = [x['abbr'] for x in self._candidates]
         self._options['modifiable'] = False
         self._options['modified'] = False
 
-    def do_action(self, action: str) -> None:
+    def get_selected_candidates(self) -> typing.List[dict]:
+        cursor = self._vim.current.window.cursor
+        return [self._candidates[cursor[0]-1]]
+
+    def do_action(self, action_name: str) -> None:
         """
         Do "action" action.
         """
-        cursor = self._vim.current.window.cursor
-
         if not self._candidates:
             return
 
-        context = Context(targets=[self._candidates[cursor[0]-1]])
+        context = Context(targets=self.get_selected_candidates())
 
-        import defx.action
-        defx.action.do_action(self, self._defx, action, context)
+        import defx.action as action
+        for defx in self._defxs:
+            action.do_action(self, defx, action_name, context)
