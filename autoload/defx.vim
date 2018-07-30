@@ -19,7 +19,8 @@ function! defx#start(paths, user_context) abort
   return _defx_start(paths, context)
 endfunction
 
-function! defx#do_action(action) abort
-  call _defx_do_action(a:action)
+function! defx#do_action(action, ...) abort
+  let args = get(a:000, 0, [])
+  call _defx_do_action(a:action, args)
   return ":\<C-u>redraw\<CR>"
 endfunction

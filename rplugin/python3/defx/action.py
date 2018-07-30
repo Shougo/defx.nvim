@@ -10,7 +10,7 @@ import typing
 
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, cwd_input
+from defx.util import error, cwd_input, expand
 from defx.view import View
 
 
@@ -22,6 +22,19 @@ def do_action(view: View, defx: Defx, action_name: str, context: Context):
     action.func(view, defx, context)
     if ActionAttr.REDRAW in action.attr:
         view.redraw()
+
+
+def _cd(view: View, defx: Defx, context: Context) -> None:
+    """
+    Change the current directory.
+    """
+    path = context.args[0] if context.args else expand('~')
+    path = os.path.normpath(os.path.join(defx._cwd, path))
+    if not os.path.isdir(path):
+        error(view._vim, '{} is not directory'.format(path))
+        return
+
+    defx.cd(path)
 
 
 def _open(view: View, defx: Defx, context: Context) -> None:
@@ -79,6 +92,7 @@ class ActionTable(typing.NamedTuple):
 
 
 DEFAULT_ACTIONS = {
+    'cd': ActionTable(func=_cd, attr=ActionAttr.REDRAW),
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(
         func=_new_directory, attr=ActionAttr.REDRAW),

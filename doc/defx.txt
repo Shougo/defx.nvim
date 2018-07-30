@@ -67,15 +67,18 @@ COMMANDS 						*defx-commands*
 ------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*
 
-defx#do_action({action})				*defx#do_action()*
-		Fire {action} action.  You can find the actions list in
-		|defx-actions|.
+defx#do_action({action}[, {args}])			*defx#do_action()*
+		Fire {action} action with {args}.  You can find the actions
+		list in |defx-actions|.
+		{args} behavior depends on {action}.
 		Note: It is used to define mappings. >
 
 	autocmd MyAutoCmd FileType defx call s:defx_my_settings()
 	function! s:defx_my_settings() abort
 	  " Define mappings
 	  nnoremap <silent><buffer><expr><CR>  defx#do_action('open')
+	  nnoremap <silent><buffer><expr>h     defx#do_action('cd', ['..'])
+	  nnoremap <silent><buffer><expr>~     defx#do_action('cd')
 	endfunction
 
 ------------------------------------------------------------------------------
@@ -86,6 +89,14 @@ mappings by |defx#do_action()|.
 
 ------------------------------------------------------------------------------
 ACTIONS 						*defx-actions*
+
+cd 						*defx-action-cd*
+		Change the current directory.
+		Note: If the action args is empty, it means the home
+		directory.
+
+		Action args:
+			0. new current directory path
 
 new_directory 					*defx-action-new_directory*
 		Create a new directory.
