@@ -20,6 +20,7 @@ class Defx(object):
         self._vim = vim
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
+        self._source: File = File(self._vim)
 
         if Defx.version_check():
             error(self._vim, 'Python 3.6.1+ is required.')
@@ -28,12 +29,19 @@ class Defx(object):
         path = os.path.normpath(os.path.join(self._cwd, path))
         self._cwd = path
 
+    def get_root_candidate(self) -> dict:
+        """
+        Returns root candidate
+        """
+        root = self._source.get_root_candidate(Context(), self._cwd)
+        root['is_root'] = True
+        return root
+
     def gather_candidates(self) -> typing.List:
         """
         Returns file candidates
         """
-        f = File(self._vim)  # type: ignore
-        candidates = f.gather_candidates(Context(), self._cwd)
+        candidates = self._source.gather_candidates(Context(), self._cwd)
 
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],

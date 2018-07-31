@@ -20,6 +20,15 @@ class Source(Base):
         self.name = 'file'
         self.kind = 'file'
 
+    def get_root_candidate(self, context: Context, path: str) -> dict:
+        return {
+            'word': path,
+            'abbr': path + '/',
+            'kind': 'directory',
+            'is_directory': True,
+            'action__path': path,
+        }
+
     def gather_candidates(self, context: Context, path: str) -> typing.List:
         candidates = []
         if not os.path.isdir(path):
