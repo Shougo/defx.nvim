@@ -5,12 +5,10 @@
 # ============================================================================
 
 import os
-import sys
 import typing
 
 from defx.source.file import Source as File
 from defx.context import Context
-from defx.util import error
 from neovim import Nvim
 
 
