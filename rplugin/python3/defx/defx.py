@@ -22,9 +22,6 @@ class Defx(object):
         self.cd(cwd)
         self._source: File = File(self._vim)
 
-        if Defx.version_check():
-            error(self._vim, 'Python 3.6.1+ is required.')
-
     def cd(self, path: str) -> None:
         path = os.path.normpath(os.path.join(self._cwd, path))
         self._cwd = path
@@ -49,12 +46,3 @@ class Defx(object):
         files = sorted([x for x in candidates if not x['is_directory']],
                        key=lambda x: x['abbr'])
         return dirs + files
-
-    @staticmethod
-    def version_check() -> bool:
-        """
-        Checks Python version.
-        Python3.6.1+ is required for defx.
-        """
-        v = sys.version_info
-        return (v.major, v.minor, v.micro) < (3, 6, 1)

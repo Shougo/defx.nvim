@@ -20,6 +20,12 @@ function! defx#init#_initialize() abort
   augroup END
 endfunction
 function! defx#init#_channel() abort
+  if !has('python3')
+    call defx#util#print_error(
+          \ 'defx requires Python3 support("+python3").')
+    return
+  endif
+
   try
     if defx#util#has_yarp()
       let g:defx#_yarp = yarp#py3('defx')
@@ -36,9 +42,10 @@ function! defx#init#_channel() abort
     call defx#util#print_error(v:exception)
     call defx#util#print_error(v:throwpoint)
 
-    if !has('python3')
+    let python_version_check = defx#init#_python_version_check()
+    if python_version_check
       call defx#util#print_error(
-            \ 'defx requires Python3 support("+python3").')
+            \ 'defx requires Python 3.6.1+.')
     endif
 
     if defx#util#has_yarp()
@@ -65,6 +72,17 @@ function! defx#init#_check_channel() abort
   return !exists('g:defx#_initialized')
 endfunction
 
+function! defx#init#_python_version_check() abort
+  python3 << EOF
+import vim
+import sys
+vim.vars['defx#_python_version_check'] = (
+    sys.version_info.major,
+    sys.version_info.minor,
+    sys.version_info.micro) < (3, 6, 1)
+EOF
+  return g:defx#_python_version_check
+endfunction
 function! defx#init#_user_options() abort
   return {}
 endfunction
