@@ -63,14 +63,7 @@ class View(object):
 
         self._candidates = []
         for defx in self._defxs:
-            self._candidates.append({
-                'word': defx._cwd,
-                'abbr': defx._cwd + '/',
-                'kind': 'directory',
-                'is_directory': True,
-                'is_root': True,
-                'action__path': defx._cwd,
-            })
+            self._candidates.append(defx.get_root_candidate())
             self._candidates += defx.gather_candidates()
 
         # Set is_selected flag
