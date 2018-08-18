@@ -20,7 +20,7 @@ function! defx#start(paths, user_context) abort
 endfunction
 
 function! defx#do_action(action, ...) abort
-  let args = get(a:000, 0, [])
+  let args = defx#util#convert2list(get(a:000, 0, []))
   let context = defx#init#_context({})
   call _defx_do_action(a:action, args, context)
   return ":\<C-u>redraw\<CR>"
