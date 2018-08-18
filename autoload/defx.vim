@@ -20,6 +20,10 @@ function! defx#start(paths, user_context) abort
 endfunction
 
 function! defx#do_action(action, ...) abort
+  if &l:filetype !=# 'defx'
+    return
+  endif
+
   let args = defx#util#convert2list(get(a:000, 0, []))
   let context = defx#init#_context({})
   call _defx_do_action(a:action, args, context)
