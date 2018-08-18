@@ -7,10 +7,11 @@
 from enum import auto, IntFlag
 import os
 import typing
+import shutil
 
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, cwd_input, expand
+from defx.util import error, cwd_input, expand, confirm
 from defx.view import View
 
 
@@ -99,6 +100,23 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     view.redraw()
 
 
+def _remove(view: View, defx: Defx, context: Context) -> None:
+    """
+    Delete the file or directory.
+    """
+    if not confirm(view._vim, 'Are you sure you want to delete this node?'):
+        return
+
+    for target in context.targets:
+        path = target['action__path']
+
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+    view.redraw(True)
+
+
 class ActionAttr(IntFlag):
     REDRAW = auto()
     NONE = 0
@@ -115,4 +133,5 @@ DEFAULT_ACTIONS = {
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
     'toggle_select': ActionTable(func=_toggle_select),
+    'remove': ActionTable(func=_remove),
 }
