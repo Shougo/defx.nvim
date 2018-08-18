@@ -18,4 +18,4 @@ class Column(Base):
         self.length = 120
 
     def get(self, context: Context, candidate: dict) -> str:
-        return candidate['abbr']
+        return candidate['abbr']  # type: ignore

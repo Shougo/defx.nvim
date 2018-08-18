@@ -11,12 +11,12 @@ from defx.context import Context
 from neovim import Nvim
 
 
-class Base(object):
+class Base:
 
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim
         self.name = 'base'
 
     @abstractmethod
-    def gather_candidate(self, context: Context) -> typing.List:
+    def gather_candidates(self, context: Context, path: str) -> typing.List:
         pass

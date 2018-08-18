@@ -14,7 +14,8 @@ from defx.util import error, cwd_input, expand
 from defx.view import View
 
 
-def do_action(view: View, defx: Defx, action_name: str, context: Context):
+def do_action(view: View, defx: Defx,
+              action_name: str, context: Context) -> None:
     """
     Do "action_name" action.
     """
@@ -82,7 +83,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         f.write('')
 
 
-def _toggle_select(view: View, defx: Defx, context: Context):
+def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     index = context.cursor - 1
     if index in view._selected_candidates:
         view._selected_candidates.remove(index)

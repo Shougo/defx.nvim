@@ -44,10 +44,10 @@ class View(object):
 
         self._columns: typing.List[Column] = []
         for column in [Mark(self._vim), Filename(self._vim)]:
-            column.syntax_name = 'Defx_' + column.name  # type: ignore
+            column.syntax_name = 'Defx_' + column.name
             self._columns.append(column)
 
-    def init_syntax(self):
+    def init_syntax(self) -> None:
         for column in self._columns:
             if hasattr(column, 'highlight'):
                 self._vim.command('silent! syntax clear '

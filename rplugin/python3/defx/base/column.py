@@ -4,14 +4,12 @@
 # License: MIT license
 # ============================================================================
 
-import typing
-
 from abc import abstractmethod
 from defx.context import Context
 from neovim import Nvim
 
 
-class Base(object):
+class Base:
 
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim
@@ -19,5 +17,5 @@ class Base(object):
         self.syntax_name = ''
 
     @abstractmethod
-    def get(self, context: Context, candidate: typing.List[dict]) -> str:
+    def get(self, context: Context, candidate: dict) -> str:
         pass
