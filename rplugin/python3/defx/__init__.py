@@ -34,7 +34,7 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
         def start(self, args: typing.List) -> None:
             self._rplugin.start(args)
 
-        @neovim.function('_defx_do_action', sync=False)  # type: ignore
+        @neovim.function('_defx_do_action', sync=True)  # type: ignore
         def do_action(self, args: typing.List) -> None:
             self._rplugin.do_action(args)
 

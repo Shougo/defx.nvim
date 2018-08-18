@@ -177,7 +177,7 @@ function! defx#util#rpcrequest(event, args) abort
     if g:defx#_yarp.job_is_dead
       return
     endif
-    return g:defx#_yarp.notify(a:event, a:args)
+    return g:defx#_yarp.request(a:event, a:args)
   else
     return call(a:event, a:args)
   endif

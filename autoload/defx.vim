@@ -21,11 +21,14 @@ endfunction
 
 function! defx#do_action(action, ...) abort
   if &l:filetype !=# 'defx'
-    return
+    return ''
   endif
 
   let args = defx#util#convert2list(get(a:000, 0, []))
+  return printf(":\<C-u>call defx#_do_action(%s, %s)\<CR>",
+        \ string(a:action), string(args))
+endfunction
+function! defx#_do_action(action, args) abort
   let context = defx#init#_context({})
-  call defx#util#rpcrequest('_defx_do_action', [a:action, args, context])
-  return ":\<C-u>redraw\<CR>"
+  call defx#util#rpcrequest('_defx_do_action', [a:action, a:args, context])
 endfunction
