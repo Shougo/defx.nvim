@@ -92,10 +92,18 @@ EOF
   return g:defx#_python_version_check
 endfunction
 function! defx#init#_user_options() abort
-  return {}
+  return {
+        \ 'auto_cd': v:false,
+        \ }
 endfunction
-function! defx#init#_context(user_context) abort
+function! s:internal_options() abort
   return {
         \ 'cursor': line('.'),
         \ }
+endfunction
+function! defx#init#_context(user_context) abort
+  let context = s:internal_options()
+  call extend(context, defx#init#_user_options())
+  call extend(context, a:user_context)
+  return context
 endfunction

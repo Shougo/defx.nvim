@@ -12,7 +12,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
-from defx.util import error
+# from defx.util import error
 
 
 class View(object):
@@ -28,7 +28,7 @@ class View(object):
         self._defxs: typing.List[Defx] = []
         index = 0
         for path in paths:
-            self._defxs.append(Defx(self._vim, path, index))
+            self._defxs.append(Defx(self._vim, self._context, path, index))
             index += 1
 
         # Create new buffer

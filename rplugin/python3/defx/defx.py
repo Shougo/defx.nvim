@@ -14,23 +14,28 @@ from neovim import Nvim
 
 class Defx(object):
 
-    def __init__(self, vim: Nvim, cwd: str, index: int) -> None:
+    def __init__(self, vim: Nvim, context: Context,
+                 cwd: str, index: int) -> None:
         self._vim = vim
+        self._context = context
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
         self._source: File = File(self._vim)
         self._index = index
-        self._cursor_history = {}
+        self._cursor_history: typing.Dict[str, str] = {}
 
     def cd(self, path: str) -> None:
         path = os.path.normpath(os.path.join(self._cwd, path))
         self._cwd = path
 
+        if self._context.auto_cd:
+            self._vim.command('lcd ' + path)
+
     def get_root_candidate(self) -> dict:
         """
         Returns root candidate
         """
-        root = self._source.get_root_candidate(Context(), self._cwd)
+        root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
         return root
 
@@ -38,7 +43,7 @@ class Defx(object):
         """
         Returns file candidates
         """
-        candidates = self._source.gather_candidates(Context(), self._cwd)
+        candidates = self._source.gather_candidates(self._context, self._cwd)
 
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],

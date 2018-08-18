@@ -13,6 +13,7 @@ Interface		|defx-interface|
   Functions		  |defx-functions|
   Key mappings		  |defx-key-mappings|
   Actions		  |defx-actions|
+  Options		  |defx-options|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -100,6 +101,20 @@ open							*defx-action-open*
 
 toggle_select					*defx-action-toggle_select*
 		Toggle the cursor candidate select.
+
+------------------------------------------------------------------------------
+OPTIONS							*defx-options*
+
+							*defx-option-no-*
+		-no-{option-name}
+		Disable {option-name} flag.
+		Note: If you use both {option-name} and -no-{option-name} in
+		the same denite buffer, it is undefined.
+
+							*defx-option-auto-cd*
+-auto-cd
+		Change the working directory while navigating with defx.
+		Default: false
 
 ==============================================================================
 EXAMPLES						*defx-examples*
