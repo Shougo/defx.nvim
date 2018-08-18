@@ -94,7 +94,7 @@ new_directory 					*defx-action-new_directory*
 		Create a new directory.
 
 new_file 						*defx-action-new_file*
-		Create a new file.
+		Create a new file and directory if provided.
 
 open							*defx-action-open*
 		Open the file.

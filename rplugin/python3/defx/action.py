@@ -72,13 +72,17 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
 
 def _new_file(view: View, defx: Defx, context: Context) -> None:
     """
-    Create a new file.
+    Create a new file and it's parent directories.
     """
     filename = cwd_input(view._vim, defx._cwd,
                          'Please input a new filename: ', '', 'file')
     if os.path.exists(filename):
         error(view._vim, '{} is already exists'.format(filename))
         return
+
+    dirname = os.path.dirname(filename)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
     with open(filename, 'w') as f:
         f.write('')
