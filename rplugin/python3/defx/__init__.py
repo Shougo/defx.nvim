@@ -7,8 +7,7 @@
 import typing
 
 from importlib import find_loader
-from defx.view import View
-from neovim import Nvim
+from defx.rplugin import Rplugin
 
 
 if find_loader('yarp'):
@@ -18,30 +17,36 @@ else:
     vim = neovim
 
 if 'neovim' in locals() and hasattr(neovim, 'plugin'):
+    from neovim import Nvim
     # Neovim only
 
     @neovim.plugin
-    class DefxHandlers(object):
+    class DefxHandlers:
 
         def __init__(self, vim: Nvim) -> None:
-            self._vim = vim
+            self._rplugin = Rplugin(vim)
 
         @neovim.function('_defx_init')  # type: ignore
         def init_channel(self, args: typing.List) -> None:
-            self._vim.vars['defx#_channel_id'] = self._vim.channel_id
+            self._rplugin.init_channel(args)
 
         @neovim.function('_defx_start')  # type: ignore
         def start(self, args: typing.List) -> None:
-            self._view = View(self._vim, args[0], args[1])
-            self._view.redraw()
+            self._rplugin.start(args)
 
         @neovim.function('_defx_do_action')  # type: ignore
         def do_action(self, args: typing.List) -> None:
-            self._view.do_action(args[0], args[1], args[2])
+            self._rplugin.do_action(args)
 
 if find_loader('yarp'):
 
-    global_defx = View(vim, [], {})
+    global_defx = Rplugin(vim)
 
-    def defx_init() -> None:
+    def _defx_init() -> None:
         pass
+
+    def _defx_start(args: typing.List) -> None:
+        global_defx.start(args)
+
+    def _defx_do_action(args: typing.List) -> None:
+        global_defx.do_action(args)
