@@ -67,6 +67,8 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
         return
 
     os.mkdir(filename)
+    view.redraw(True)
+    view.search_file(filename, defx._index)
 
 
 def _new_file(view: View, defx: Defx, context: Context) -> None:
@@ -81,6 +83,8 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
 
     with open(filename, 'w') as f:
         f.write('')
+    view.redraw(True)
+    view.search_file(filename, defx._index)
 
 
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
@@ -105,9 +109,7 @@ class ActionTable(typing.NamedTuple):
 DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd, attr=ActionAttr.REDRAW),
     'open': ActionTable(func=_open),
-    'new_directory': ActionTable(
-        func=_new_directory, attr=ActionAttr.REDRAW),
-    'new_file': ActionTable(
-        func=_new_file, attr=ActionAttr.REDRAW),
+    'new_directory': ActionTable(func=_new_directory),
+    'new_file': ActionTable(func=_new_file),
     'toggle_select': ActionTable(func=_toggle_select),
 }

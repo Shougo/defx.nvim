@@ -12,6 +12,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
+# from defx.util import error
 
 
 class View(object):
@@ -97,6 +98,15 @@ class View(object):
             candidates = [self._candidates[x]
                           for x in self._selected_candidates]
         return [x for x in candidates if x['_defx_index'] == index]
+
+    def search_file(self, path: str, index: int) -> None:
+        linenr = 1
+        for candidate in self._candidates:
+            if (candidate['_defx_index'] == index and
+                    candidate['action__path'] == path):
+                self._vim.call('cursor', [linenr, 1])
+                return
+            linenr += 1
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str], new_context: dict) -> None:
