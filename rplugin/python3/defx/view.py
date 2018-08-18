@@ -25,8 +25,10 @@ class View(object):
 
         # Initialize defx
         self._defxs: typing.List[Defx] = []
+        index = 0
         for path in paths:
-            self._defxs.append(Defx(self._vim, path))
+            self._defxs.append(Defx(self._vim, path, index))
+            index += 1
 
         # Create new buffer
         self._vim.call(
@@ -63,8 +65,11 @@ class View(object):
 
         self._candidates = []
         for defx in self._defxs:
-            self._candidates.append(defx.get_root_candidate())
-            self._candidates += defx.gather_candidates()
+            candidates = [defx.get_root_candidate()]
+            candidates += defx.gather_candidates()
+            for candidate in candidates:
+                candidate['_defx_index'] = defx._index
+            self._candidates += candidates
 
         # Set is_selected flag
         for index in self._selected_candidates:
@@ -84,11 +89,14 @@ class View(object):
             text += column.get(context, candidate)
         return text
 
-    def get_selected_candidates(self, cursor: int) -> typing.List[dict]:
+    def get_selected_candidates(
+            self, cursor: int, index: int) -> typing.List[dict]:
         if not self._selected_candidates:
-            return [self._candidates[cursor - 1]]
+            candidates = [self._candidates[cursor - 1]]
         else:
-            return [self._candidates[x] for x in self._selected_candidates]
+            candidates = [self._candidates[x]
+                          for x in self._selected_candidates]
+        return [x for x in candidates if x['_defx_index'] == index]
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str], new_context: dict) -> None:
@@ -99,12 +107,15 @@ class View(object):
             return
 
         cursor = new_context['cursor']
-        context = self._context._replace(
-            targets=self.get_selected_candidates(cursor),
-            args=action_args,
-            cursor=cursor
-        )
 
         import defx.action as action
         for defx in self._defxs:
+            targets = self.get_selected_candidates(cursor, defx._index)
+            if not targets:
+                continue
+            context = self._context._replace(
+                targets=targets,
+                args=action_args,
+                cursor=cursor
+            )
             action.do_action(self, defx, action_name, context)
