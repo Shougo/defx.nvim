@@ -12,7 +12,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
-# from defx.util import error
+from defx.util import error
 
 
 class View(object):
@@ -90,14 +90,28 @@ class View(object):
             text += column.get(context, candidate)
         return text
 
+    def get_cursor_candidate(self, cursor: int) -> dict:
+        return self._candidates[cursor - 1]
+
     def get_selected_candidates(
             self, cursor: int, index: int) -> typing.List[dict]:
         if not self._selected_candidates:
-            candidates = [self._candidates[cursor - 1]]
+            candidates = [self.get_cursor_candidate(cursor)]
         else:
             candidates = [self._candidates[x]
                           for x in self._selected_candidates]
         return [x for x in candidates if x['_defx_index'] == index]
+
+    def cd(self, defx: Defx, path: str, cursor: int) -> None:
+        # Save previous cursor position
+        history = defx._cursor_history
+        history[defx._cwd] = self.get_cursor_candidate(cursor)['action__path']
+
+        defx.cd(path)
+        self.redraw(True)
+        if path in history:
+            self.search_file(history[path], defx._index)
+        self._selected_candidates = []
 
     def search_file(self, path: str, index: int) -> None:
         linenr = 1

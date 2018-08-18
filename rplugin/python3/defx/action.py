@@ -35,7 +35,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         error(view._vim, '{} is not directory'.format(path))
         return
 
-    defx.cd(path)
+    view.cd(defx, path, context.cursor)
     view._selected_candidates = []
 
 
@@ -48,8 +48,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
         path = target['action__path']
 
         if os.path.isdir(path):
-            defx.cd(path)
-            view.redraw(True)
+            view.cd(defx, path, context.cursor)
         else:
             if path.startswith(cwd):
                 path = os.path.relpath(path, cwd)
@@ -107,7 +106,7 @@ class ActionTable(typing.NamedTuple):
 
 
 DEFAULT_ACTIONS = {
-    'cd': ActionTable(func=_cd, attr=ActionAttr.REDRAW),
+    'cd': ActionTable(func=_cd),
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),

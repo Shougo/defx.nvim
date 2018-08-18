@@ -20,6 +20,7 @@ class Defx(object):
         self.cd(cwd)
         self._source: File = File(self._vim)
         self._index = index
+        self._cursor_history = {}
 
     def cd(self, path: str) -> None:
         path = os.path.normpath(os.path.join(self._cwd, path))
