@@ -164,3 +164,21 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
 
   return uniq(sort(filter(_, 'stridx(v:val, a:arglead) == 0')))
 endfunction
+
+function! defx#util#has_yarp() abort
+  return !has('nvim')
+endfunction
+function! defx#util#rpcrequest(event, args) abort
+  if !defx#init#_check_channel()
+    return ''
+  endif
+
+  if defx#util#has_yarp()
+    if g:defx#_yarp.job_is_dead
+      return
+    endif
+    return g:defx#_yarp.notify(a:event, a:args)
+  else
+    return call(a:event, a:args)
+  endif
+endfunction

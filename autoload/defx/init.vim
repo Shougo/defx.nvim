@@ -4,14 +4,6 @@
 " License: MIT license
 "=============================================================================
 
-if !exists('s:is_enabled')
-  let s:is_enabled = 0
-endif
-
-function! defx#init#_is_enabled() abort
-  return s:is_enabled
-endfunction
-
 function! defx#init#_initialize() abort
   call defx#init#_channel()
 
@@ -23,21 +15,22 @@ function! defx#init#_channel() abort
   if !has('python3')
     call defx#util#print_error(
           \ 'defx requires Python3 support("+python3").')
-    return
+    return v:true
   endif
   if has('nvim') && !has('nvim-0.3.0')
     call defx#util#print_error('defx requires nvim 0.3.0+.')
-    return
+    return v:true
   endif
-  if !has('nvim') && v:version >= 801
+  if !has('nvim') && v:version < 801
     call defx#util#print_error('defx requires Vim 8.1+.')
-    return
+    return v:true
   endif
 
   try
     if defx#util#has_yarp()
       let g:defx#_yarp = yarp#py3('defx')
-      call g:defx#_yarp.notify('defx_init')
+      call g:defx#_yarp.request('_defx_init')
+      let g:defx#_channel_id = 1
     else
       " rplugin.vim may not be loaded on VimEnter
       if !exists('g:loaded_remote_plugins')
@@ -73,11 +66,11 @@ function! defx#init#_channel() abort
           \ .'See also :CheckHealth.')
     endif
 
-    return 1
+    return v:true
   endtry
 endfunction
 function! defx#init#_check_channel() abort
-  return !exists('g:defx#_initialized')
+  return exists('g:defx#_channel_id')
 endfunction
 
 function! defx#init#_python_version_check() abort

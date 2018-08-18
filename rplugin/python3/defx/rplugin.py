@@ -15,7 +15,7 @@ class Rplugin:
     def __init__(self, vim: Nvim) -> None:
         self._vim = vim
 
-    def init_channel(self, args: typing.List) -> None:
+    def init_channel(self) -> None:
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
     def start(self, args: typing.List) -> None:

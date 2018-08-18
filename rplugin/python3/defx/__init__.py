@@ -26,15 +26,15 @@ if 'neovim' in locals() and hasattr(neovim, 'plugin'):
         def __init__(self, vim: Nvim) -> None:
             self._rplugin = Rplugin(vim)
 
-        @neovim.function('_defx_init')  # type: ignore
+        @neovim.function('_defx_init', sync=True)  # type: ignore
         def init_channel(self, args: typing.List) -> None:
-            self._rplugin.init_channel(args)
+            self._rplugin.init_channel()
 
-        @neovim.function('_defx_start')  # type: ignore
+        @neovim.function('_defx_start', sync=True)  # type: ignore
         def start(self, args: typing.List) -> None:
             self._rplugin.start(args)
 
-        @neovim.function('_defx_do_action')  # type: ignore
+        @neovim.function('_defx_do_action', sync=False)  # type: ignore
         def do_action(self, args: typing.List) -> None:
             self._rplugin.do_action(args)
 
