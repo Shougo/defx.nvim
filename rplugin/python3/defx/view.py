@@ -37,6 +37,7 @@ class View(object):
             'silent keepalt edit', '[defx]')
 
         self._vim.current.window.options['list'] = False
+        self._vim.current.window.options['wrap'] = False
         self._options = self._vim.current.buffer.options
         self._options['buftype'] = 'nofile'
         self._options['swapfile'] = False
