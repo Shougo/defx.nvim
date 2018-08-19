@@ -99,10 +99,11 @@ new_file 						*defx-action-new_file*
 open							*defx-action-open*
 		Open the file.
 
-toggle_select					*defx-action-toggle_select*
-		Toggle the cursor candidate select.
 remove						      *defx-action-remove*
 		Delete the file/directory under cursor or from selected list.
+
+toggle_select					*defx-action-toggle_select*
+		Toggle the cursor candidate select.
 
 ------------------------------------------------------------------------------
 OPTIONS							*defx-options*
