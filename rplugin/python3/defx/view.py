@@ -12,7 +12,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
-# from defx.util import error
+from defx.util import error
 
 
 class View(object):
@@ -36,6 +36,7 @@ class View(object):
             'defx#util#execute_path',
             'silent keepalt edit', '[defx]')
 
+        self._vim.current.window.options['list'] = False
         self._options = self._vim.current.buffer.options
         self._options['buftype'] = 'nofile'
         self._options['swapfile'] = False
@@ -45,16 +46,28 @@ class View(object):
         self._options['modified'] = False
         self._vim.command('silent doautocmd FileType defx')
 
+        # Initialize columns
         self._columns: typing.List[Column] = []
         for column in [Mark(self._vim), Filename(self._vim)]:
             column.syntax_name = 'Defx_' + column.name
             self._columns.append(column)
 
+        self.init_syntax()
+
     def init_syntax(self) -> None:
+        start = 1
         for column in self._columns:
-            if hasattr(column, 'highlight'):
-                self._vim.command('silent! syntax clear '
-                                  + column.syntax_name)
+            self._vim.command(
+                'silent! syntax clear ' + column.syntax_name)
+            self._vim.command(
+                'syntax region ' + column.syntax_name +
+                ' start=/\%' + str(start) + 'v/ end=/\%' +
+                str(start + column.length() - 1) + 'v/ keepend oneline')
+            column.highlight()
+            start += column.length()
+
+    def debug(self, expr: typing.Any) -> None:
+        error(self._vim, expr)
 
     def redraw(self, is_force: bool = False) -> None:
         """

@@ -15,7 +15,21 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'filename'
-        self.length = 120
+        self.vars = {
+            'length': 120,
+        }
 
     def get(self, context: Context, candidate: dict) -> str:
-        return candidate['abbr']  # type: ignore
+        spaces_len = self.vars['length'] - len(candidate['abbr'])
+        return candidate['abbr'] + (' ' * spaces_len)  # type: ignore
+
+    def length(self) -> int:
+        return self.vars['length']
+
+    def highlight(self) -> None:
+        self.vim.command(
+            'syntax match {0}_{1} /.*\// contained containedin={0}'.format(
+                self.syntax_name, 'directory'))
+        self.vim.command(
+            'highlight default link {}_{} {}'.format(
+                self.syntax_name, 'directory', 'PreProc'))

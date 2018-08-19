@@ -4,8 +4,11 @@
 # License: MIT license
 # ============================================================================
 
+import typing
 from abc import abstractmethod
+
 from defx.context import Context
+from defx.util import error
 from neovim import Nvim
 
 
@@ -16,6 +19,16 @@ class Base:
         self.name = 'base'
         self.syntax_name = ''
 
+    def debug(self, expr: typing.Any) -> None:
+        error(self.vim, expr)
+
     @abstractmethod
     def get(self, context: Context, candidate: dict) -> str:
+        pass
+
+    @abstractmethod
+    def length(self) -> int:
+        pass
+
+    def highlight(self) -> None:
         pass

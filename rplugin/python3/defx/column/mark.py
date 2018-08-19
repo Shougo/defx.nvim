@@ -15,19 +15,36 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'mark'
-        self.length = 2
+        self.vars = {
+            'selected_icon': '*',
+            'root_icon': '-',
+            'directory_icon': '+',
+        }
 
     def get(self, context: Context, candidate: dict) -> str:
         if candidate.get('is_selected', False):
-            return '* '
+            icon = self.vars['selected_icon']
         elif candidate.get('is_root', False):
-            return '- '
+            icon = self.vars['root_icon']
         elif candidate['is_directory']:
-            return '+ '
+            icon = self.vars['directory_icon']
         else:
-            return '  '
+            icon = ' '
+        return icon + ' '
 
-    def highlight(self, context: Context) -> None:
-        self.vim.command(
-            'highlight default link {0}_selected Type'.format(
-                self.syntax_name))
+    def length(self) -> int:
+        return 2
+
+    def highlight(self) -> None:
+        for icon, syntax in {
+                'selected': 'Statement',
+                'root': 'Identifier',
+                'directory': 'Special',
+        }.items():
+            self.vim.command(
+                ('syntax match {0}_{1} /[{2}]/ ' +
+                 'contained containedin={0}').format(
+                    self.syntax_name, icon, self.vars[icon + '_icon']))
+            self.vim.command(
+                'highlight default link {}_{} {}'.format(
+                    self.syntax_name, icon, syntax))
