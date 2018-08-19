@@ -99,6 +99,9 @@ new_file 						*defx-action-new_file*
 open							*defx-action-open*
 		Open the file.
 
+rename						      *defx-action-rename*
+		Rename the file/directory under cursor or from selected list.
+
 remove						      *defx-action-remove*
 		Delete the file/directory under cursor or from selected list.
 
@@ -131,8 +134,10 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('new_directory')
 	  nnoremap <silent><buffer><expr> N
 	  \ defx#do_action('new_file')
-	  nnoremap <silent><buffer><expr> D
+	  nnoremap <silent><buffer><expr> d
 	  \ defx#do_action('remove')
+	  nnoremap <silent><buffer><expr> r
+	  \ defx#do_action('rename')
 	  nnoremap <silent><buffer><expr> h
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~

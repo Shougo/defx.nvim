@@ -29,7 +29,7 @@ class Defx(object):
         self._cwd = path
 
         if self._context.auto_cd:
-            self._vim.command('lcd ' + path)
+            self._vim.command('silent lcd ' + path)
 
     def get_root_candidate(self) -> dict:
         """

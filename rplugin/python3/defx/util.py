@@ -34,12 +34,12 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     Returns the absolute input path in cwd.
     """
     save_cwd = vim.call('getcwd')
-    vim.command('lcd {}'.format(cwd))
+    vim.command('silent lcd {}'.format(cwd))
 
     filename: str = vim.call('input', prompt, text, completion)
     filename = os.path.normpath(os.path.join(cwd, filename))
 
-    vim.command('lcd {}'.format(save_cwd))
+    vim.command('silent lcd {}'.format(save_cwd))
     return filename
 
 

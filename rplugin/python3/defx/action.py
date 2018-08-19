@@ -91,15 +91,6 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     view.search_file(filename, defx._index)
 
 
-def _toggle_select(view: View, defx: Defx, context: Context) -> None:
-    index = context.cursor - 1
-    if index in view._selected_candidates:
-        view._selected_candidates.remove(index)
-    else:
-        view._selected_candidates.append(index)
-    view.redraw()
-
-
 def _remove(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
@@ -117,6 +108,36 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
 
 
+def _rename(view: View, defx: Defx, context: Context) -> None:
+    """
+    Rename the file or directory.
+    """
+    for target in context.targets:
+        path = target['action__path']
+        filename = cwd_input(
+            view._vim, defx._cwd,
+            ('New name: {} -> '.format(path)), path, 'file')
+        if not filename or filename == path:
+            continue
+        if os.path.exists(filename):
+            error(view._vim, '{} is already exists'.format(filename))
+            continue
+
+        os.rename(path, filename)
+
+        view.redraw(True)
+        view.search_file(filename, defx._index)
+
+
+def _toggle_select(view: View, defx: Defx, context: Context) -> None:
+    index = context.cursor - 1
+    if index in view._selected_candidates:
+        view._selected_candidates.remove(index)
+    else:
+        view._selected_candidates.append(index)
+    view.redraw()
+
+
 class ActionAttr(IntFlag):
     REDRAW = auto()
     NONE = 0
@@ -132,6 +153,7 @@ DEFAULT_ACTIONS = {
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
-    'toggle_select': ActionTable(func=_toggle_select),
     'remove': ActionTable(func=_remove),
+    'rename': ActionTable(func=_rename),
+    'toggle_select': ActionTable(func=_toggle_select),
 }
