@@ -31,6 +31,17 @@ class View(object):
             self._defxs.append(Defx(self._vim, self._context, path, index))
             index += 1
 
+        self.init_buffer()
+
+        # Initialize columns
+        self._columns: typing.List[Column] = []
+        for column in [Mark(self._vim), Filename(self._vim)]:
+            column.syntax_name = 'Defx_' + column.name
+            self._columns.append(column)
+
+        self.init_syntax()
+
+    def init_buffer(self) -> None:
         # Create new buffer
         self._vim.call(
             'defx#util#execute_path',
@@ -46,14 +57,9 @@ class View(object):
         self._options['modifiable'] = False
         self._options['modified'] = False
         self._vim.command('silent doautocmd FileType defx')
-
-        # Initialize columns
-        self._columns: typing.List[Column] = []
-        for column in [Mark(self._vim), Filename(self._vim)]:
-            column.syntax_name = 'Defx_' + column.name
-            self._columns.append(column)
-
-        self.init_syntax()
+        self._vim.command('augroup defx | autocmd! | augroup END')
+        self._vim.command('autocmd defx FocusGained <buffer> ' +
+                          'call defx#_do_action("redraw", [])')
 
     def init_syntax(self) -> None:
         start = 1
@@ -78,6 +84,8 @@ class View(object):
         if is_force:
             self._selected_candidates = []
 
+        prev = self.get_cursor_candidate(self._vim.call('line', '.'))
+
         self._candidates = []
         for defx in self._defxs:
             candidates = [defx.get_root_candidate()]
@@ -98,6 +106,9 @@ class View(object):
         self._options['modifiable'] = False
         self._options['modified'] = False
 
+        if prev:
+            self.search_file(prev['action__path'], prev['_defx_index'])
+
     def get_columns_text(self, context: Context, candidate: dict) -> str:
         text = ''
         for column in self._columns:
@@ -105,7 +116,10 @@ class View(object):
         return text
 
     def get_cursor_candidate(self, cursor: int) -> dict:
-        return self._candidates[cursor - 1]
+        if len(self._candidates) < cursor:
+            return {}
+        else:
+            return self._candidates[cursor - 1]
 
     def get_selected_candidates(
             self, cursor: int, index: int) -> typing.List[dict]:

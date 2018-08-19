@@ -91,6 +91,10 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     view.search_file(filename, defx._index)
 
 
+def _redraw(view: View, defx: Defx, context: Context) -> None:
+    pass
+
+
 def _remove(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
@@ -153,6 +157,7 @@ DEFAULT_ACTIONS = {
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
+    'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
     'remove': ActionTable(func=_remove),
     'rename': ActionTable(func=_rename),
     'toggle_select': ActionTable(func=_toggle_select),
