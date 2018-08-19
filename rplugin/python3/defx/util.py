@@ -41,3 +41,11 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
 
     vim.command('lcd {}'.format(save_cwd))
     return filename
+
+
+def confirm(vim: Nvim, question: str) -> bool:
+    """
+    Confirm action
+    """
+    option: int = vim.call('confirm', question, '&Yes\n&No\n&Cancel')
+    return option is 1

@@ -7,10 +7,11 @@
 from enum import auto, IntFlag
 import os
 import typing
+import shutil
 
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, cwd_input, expand
+from defx.util import error, cwd_input, expand, confirm
 from defx.view import View
 
 
@@ -72,13 +73,17 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
 
 def _new_file(view: View, defx: Defx, context: Context) -> None:
     """
-    Create a new file.
+    Create a new file and it's parent directories.
     """
     filename = cwd_input(view._vim, defx._cwd,
                          'Please input a new filename: ', '', 'file')
     if os.path.exists(filename):
         error(view._vim, '{} is already exists'.format(filename))
         return
+
+    dirname = os.path.dirname(filename)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
     with open(filename, 'w') as f:
         f.write('')
@@ -93,6 +98,23 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     else:
         view._selected_candidates.append(index)
     view.redraw()
+
+
+def _remove(view: View, defx: Defx, context: Context) -> None:
+    """
+    Delete the file or directory.
+    """
+    if not confirm(view._vim, 'Are you sure you want to delete this node?'):
+        return
+
+    for target in context.targets:
+        path = target['action__path']
+
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+    view.redraw(True)
 
 
 class ActionAttr(IntFlag):
@@ -111,4 +133,5 @@ DEFAULT_ACTIONS = {
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
     'toggle_select': ActionTable(func=_toggle_select),
+    'remove': ActionTable(func=_remove),
 }

@@ -94,13 +94,15 @@ new_directory 					*defx-action-new_directory*
 		Create a new directory.
 
 new_file 						*defx-action-new_file*
-		Create a new file.
+		Create a new file and directory if provided.
 
 open							*defx-action-open*
 		Open the file.
 
 toggle_select					*defx-action-toggle_select*
 		Toggle the cursor candidate select.
+remove						      *defx-action-remove*
+		Delete the file/directory under cursor or from selected list.
 
 ------------------------------------------------------------------------------
 OPTIONS							*defx-options*
@@ -128,6 +130,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('new_directory')
 	  nnoremap <silent><buffer><expr> N
 	  \ defx#do_action('new_file')
+	  nnoremap <silent><buffer><expr> D
+	  \ defx#do_action('remove')
 	  nnoremap <silent><buffer><expr> h
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~
