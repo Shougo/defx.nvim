@@ -99,6 +99,9 @@ new_file 						*defx-action-new_file*
 open							*defx-action-open*
 		Open the file.
 
+		Action args:
+			0. open command(The default is |:edit|)
+
 redraw						      *defx-action-redraw*
 		Redraw the buffer.
 
@@ -133,6 +136,10 @@ EXAMPLES						*defx-examples*
 	  " Define mappings
 	  nnoremap <silent><buffer><expr> <CR>
 	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr> l
+	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr> E
+	  \ defx#do_action('open', 'vsplit')
 	  nnoremap <silent><buffer><expr> K
 	  \ defx#do_action('new_directory')
 	  nnoremap <silent><buffer><expr> N

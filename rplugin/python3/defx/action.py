@@ -45,6 +45,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
     Open the file.
     """
     cwd = view._vim.call('getcwd')
+    command = context.args[0] if context.args else 'edit'
     for target in context.targets:
         path = target['action__path']
 
@@ -53,7 +54,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
         else:
             if path.startswith(cwd):
                 path = os.path.relpath(path, cwd)
-            view._vim.call('defx#util#execute_path', 'edit', path)
+            view._vim.call('defx#util#execute_path', command, path)
 
 
 def _new_directory(view: View, defx: Defx, context: Context) -> None:
