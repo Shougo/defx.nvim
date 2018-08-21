@@ -56,6 +56,8 @@ class View(object):
         self._options['filetype'] = 'defx'
         self._options['modifiable'] = False
         self._options['modified'] = False
+        self._options['buflisted'] = False
+        self._options['bufhidden'] = 'wipe'
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('augroup defx | autocmd! | augroup END')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
