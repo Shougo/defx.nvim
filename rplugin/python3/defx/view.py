@@ -81,6 +81,12 @@ class View(object):
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 
+    def quit(self) -> None:
+        if self._vim.call('winnr', '$') != 1:
+            self._vim.command('close')
+        else:
+            self._vim.command('enew')
+
     def redraw(self, is_force: bool = False) -> None:
         """
         Redraw defx buffer.

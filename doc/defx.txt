@@ -102,6 +102,9 @@ open							*defx-action-open*
 		Action args:
 			0. open command(The default is |:edit|)
 
+quit							*defx-action-quit*
+		Quit the buffer.
+
 redraw						      *defx-action-redraw*
 		Redraw the buffer.
 
@@ -152,6 +155,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~
 	  \ defx#do_action('cd')
+	  nnoremap <silent><buffer><expr> q
+	  \ defx#do_action('quit')
 	  nnoremap <silent><buffer><expr> <Space>
 	  \ defx#do_action('toggle_select') . 'j'
 	  nnoremap <silent><buffer><expr> j
