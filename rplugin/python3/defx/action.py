@@ -40,23 +40,6 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     view._selected_candidates = []
 
 
-def _open(view: View, defx: Defx, context: Context) -> None:
-    """
-    Open the file.
-    """
-    cwd = view._vim.call('getcwd')
-    command = context.args[0] if context.args else 'edit'
-    for target in context.targets:
-        path = target['action__path']
-
-        if os.path.isdir(path):
-            view.cd(defx, path, context.cursor)
-        else:
-            if path.startswith(cwd):
-                path = os.path.relpath(path, cwd)
-            view._vim.call('defx#util#execute_path', command, path)
-
-
 def _new_directory(view: View, defx: Defx, context: Context) -> None:
     """
     Create a new directory.
@@ -90,6 +73,28 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         f.write('')
     view.redraw(True)
     view.search_file(filename, defx._index)
+
+
+def _open(view: View, defx: Defx, context: Context) -> None:
+    """
+    Open the file.
+    """
+    cwd = view._vim.call('getcwd')
+    command = context.args[0] if context.args else 'edit'
+    for target in context.targets:
+        path = target['action__path']
+
+        if os.path.isdir(path):
+            view.cd(defx, path, context.cursor)
+        else:
+            if path.startswith(cwd):
+                path = os.path.relpath(path, cwd)
+            view._vim.call('defx#util#execute_path', command, path)
+
+
+def _print(view: View, defx: Defx, context: Context) -> None:
+    for target in context.targets:
+        view._vim.call('defx#util#print_debug', target['action__path'])
 
 
 def _quit(view: View, defx: Defx, context: Context) -> None:
@@ -162,6 +167,7 @@ DEFAULT_ACTIONS = {
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
+    'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
     'remove': ActionTable(func=_remove),

@@ -102,6 +102,9 @@ open							*defx-action-open*
 		Action args:
 			0. open command(The default is |:edit|)
 
+print 						*defx-action-print*
+		Print the filename.
+
 quit							*defx-action-quit*
 		Quit the buffer.
 
@@ -165,6 +168,8 @@ EXAMPLES						*defx-examples*
 	  \ line('.') == 1 ? 'G' : 'k'
 	  nnoremap <silent><buffer><expr> <C-l>
 	  \ defx#do_action('redraw')
+	  nnoremap <silent><buffer><expr> <C-g>
+	  \ defx#do_action('print')
 	endfunction
 <
 ==============================================================================
