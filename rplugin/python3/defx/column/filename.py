@@ -16,7 +16,7 @@ class Column(Base):
 
         self.name = 'filename'
         self.vars = {
-            'length': 120,
+            'length': 100,
         }
 
     def get(self, context: Context, candidate: dict) -> str:
