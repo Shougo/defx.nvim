@@ -47,17 +47,20 @@ class View(object):
             'defx#util#execute_path',
             'silent keepalt edit', '[defx]')
 
-        self._vim.current.window.options['list'] = False
-        self._vim.current.window.options['wrap'] = False
-        self._options = self._vim.current.buffer.options
-        self._options['buftype'] = 'nofile'
-        self._options['swapfile'] = False
-        self._options['modeline'] = False
-        self._options['filetype'] = 'defx'
-        self._options['modifiable'] = False
-        self._options['modified'] = False
-        self._options['buflisted'] = False
-        self._options['bufhidden'] = 'wipe'
+        window_options = self._vim.current.window.options
+        window_options['list'] = False
+        window_options['wrap'] = False
+
+        self._buffer_options = self._vim.current.buffer.options
+        self._buffer_options['buftype'] = 'nofile'
+        self._buffer_options['swapfile'] = False
+        self._buffer_options['modeline'] = False
+        self._buffer_options['filetype'] = 'defx'
+        self._buffer_options['modifiable'] = False
+        self._buffer_options['modified'] = False
+        self._buffer_options['buflisted'] = False
+        self._buffer_options['bufhidden'] = 'wipe'
+
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('augroup defx | autocmd! | augroup END')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
@@ -83,6 +86,9 @@ class View(object):
         Redraw defx buffer.
         """
 
+        if self._vim.current.buffer.options['filetype'] != 'defx':
+            return
+
         if is_force:
             self._selected_candidates = []
 
@@ -100,13 +106,13 @@ class View(object):
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
 
-        self._options['modifiable'] = True
+        self._buffer_options['modifiable'] = True
         self._vim.current.buffer[:] = [
             self.get_columns_text(self._context, x)
             for x in self._candidates
         ]
-        self._options['modifiable'] = False
-        self._options['modified'] = False
+        self._buffer_options['modifiable'] = False
+        self._buffer_options['modified'] = False
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
