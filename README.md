@@ -89,8 +89,7 @@ https://github.com/roxma/vim-hug-neovim-rpc
 
 ## Note: Python3 must be enabled before updating remote plugins
 If Defx was installed prior to Python support being added to Neovim,
-`:UpdateRemotePlugins` should be executed manually in order to enable
-auto-completion.
+`:UpdateRemotePlugins` should be executed manually.
 
 
 ## Configuration Examples
