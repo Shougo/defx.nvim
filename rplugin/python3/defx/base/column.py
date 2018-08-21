@@ -18,6 +18,8 @@ class Base:
         self.vim = vim
         self.name = 'base'
         self.syntax_name = ''
+        self.start = -1
+        self.end = -1
 
     def debug(self, expr: typing.Any) -> None:
         error(self.vim, expr)

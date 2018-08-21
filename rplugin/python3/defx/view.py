@@ -35,8 +35,12 @@ class View(object):
 
         # Initialize columns
         self._columns: typing.List[Column] = []
+        start = 1
         for column in [Mark(self._vim), Filename(self._vim)]:
+            column.start = start
+            column.end = start + column.length() - 1
             column.syntax_name = 'Defx_' + column.name
+            start += column.length()
             self._columns.append(column)
 
         self.init_syntax()
@@ -67,16 +71,14 @@ class View(object):
                           'call defx#_do_action("redraw", [])')
 
     def init_syntax(self) -> None:
-        start = 1
         for column in self._columns:
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
             self._vim.command(
                 'syntax region ' + column.syntax_name +
-                ' start=/\%' + str(start) + 'v/ end=/\%' +
-                str(start + column.length() - 1) + 'v/ keepend oneline')
+                ' start=/\%' + str(column.start) + 'v/ end=/\%' +
+                str(column.end) + 'v/ keepend oneline')
             column.highlight()
-            start += column.length()
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)

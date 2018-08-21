@@ -31,5 +31,12 @@ class Column(Base):
             'syntax match {0}_{1} /.*\// contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         self.vim.command(
+            ('syntax match {0}_{1} /\%{2}c\..*/' +
+             ' contained containedin={0}').format(
+                 self.syntax_name, 'hidden', self.start))
+        self.vim.command(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'directory', 'PreProc'))
+        self.vim.command(
+            'highlight default link {}_{} {}'.format(
+                self.syntax_name, 'hidden', 'Comment'))
