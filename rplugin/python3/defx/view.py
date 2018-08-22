@@ -55,15 +55,15 @@ class View(object):
         window_options['list'] = False
         window_options['wrap'] = False
 
-        self._buffer_options = self._vim.current.buffer.options
-        self._buffer_options['buftype'] = 'nofile'
-        self._buffer_options['swapfile'] = False
-        self._buffer_options['modeline'] = False
-        self._buffer_options['filetype'] = 'defx'
-        self._buffer_options['modifiable'] = False
-        self._buffer_options['modified'] = False
-        self._buffer_options['buflisted'] = False
-        self._buffer_options['bufhidden'] = 'wipe'
+        buffer_options = self._vim.current.buffer.options
+        buffer_options['buftype'] = 'nofile'
+        buffer_options['swapfile'] = False
+        buffer_options['modeline'] = False
+        buffer_options['filetype'] = 'defx'
+        buffer_options['modifiable'] = False
+        buffer_options['modified'] = False
+        buffer_options['buflisted'] = False
+        buffer_options['bufhidden'] = 'wipe'
 
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('augroup defx | autocmd! | augroup END')
@@ -94,7 +94,8 @@ class View(object):
         Redraw defx buffer.
         """
 
-        if self._vim.current.buffer.options['filetype'] != 'defx':
+        buffer_options = self._vim.current.buffer.options
+        if buffer_options['filetype'] != 'defx':
             return
 
         if is_force:
@@ -114,13 +115,13 @@ class View(object):
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
 
-        self._buffer_options['modifiable'] = True
+        buffer_options['modifiable'] = True
         self._vim.current.buffer[:] = [
             self.get_columns_text(self._context, x)
             for x in self._candidates
         ]
-        self._buffer_options['modifiable'] = False
-        self._buffer_options['modified'] = False
+        buffer_options['modifiable'] = False
+        buffer_options['modified'] = False
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
