@@ -20,7 +20,7 @@ class Rplugin:
 
     def start(self, args: typing.List) -> None:
         self._view = View(self._vim, args[0], args[1])
-        self._view.redraw()
+        self._view.redraw(True)
 
     def do_action(self, args: typing.List) -> None:
         self._view.do_action(args[0], args[1], args[2])

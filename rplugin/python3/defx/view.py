@@ -89,20 +89,7 @@ class View(object):
         else:
             self._vim.command('enew')
 
-    def redraw(self, is_force: bool = False) -> None:
-        """
-        Redraw defx buffer.
-        """
-
-        buffer_options = self._vim.current.buffer.options
-        if buffer_options['filetype'] != 'defx':
-            return
-
-        if is_force:
-            self._selected_candidates = []
-
-        prev = self.get_cursor_candidate(self._vim.call('line', '.'))
-
+    def init_candidates(self) -> None:
         self._candidates = []
         for defx in self._defxs:
             candidates = [defx.get_root_candidate()]
@@ -114,6 +101,21 @@ class View(object):
         # Set is_selected flag
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
+
+    def redraw(self, is_force: bool = False) -> None:
+        """
+        Redraw defx buffer.
+        """
+
+        buffer_options = self._vim.current.buffer.options
+        if buffer_options['filetype'] != 'defx':
+            return
+
+        prev = self.get_cursor_candidate(self._vim.call('line', '.'))
+
+        if is_force:
+            self._selected_candidates = []
+            self.init_candidates()
 
         buffer_options['modifiable'] = True
         self._vim.current.buffer[:] = [
