@@ -134,6 +134,11 @@ OPTIONS							*defx-options*
 		Change the working directory while navigating with defx.
 		Default: false
 
+							*defx-option-search*
+-search={path}
+		Search the {path}.
+		Default: ''
+
 ==============================================================================
 EXAMPLES						*defx-examples*
 >
@@ -174,6 +179,11 @@ EXAMPLES						*defx-examples*
 <
 ==============================================================================
 FREQUENTLY ASKED QUESTIONS (FAQ)			*defx-faq*
+
+Q: I want to explore the folder where the current file is.
+
+A: >
+	Defx `expand('%:p:h')` -search=`expand('%:p')`
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

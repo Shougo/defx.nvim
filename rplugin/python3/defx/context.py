@@ -12,3 +12,4 @@ class Context(typing.NamedTuple):
     args: typing.List[str] = []
     cursor: int = 0
     auto_cd: bool = False
+    search: str = ''

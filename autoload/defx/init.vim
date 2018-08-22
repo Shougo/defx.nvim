@@ -87,6 +87,7 @@ endfunction
 function! defx#init#_user_options() abort
   return {
         \ 'auto_cd': v:false,
+        \ 'search': '',
         \ }
 endfunction
 function! s:internal_options() abort

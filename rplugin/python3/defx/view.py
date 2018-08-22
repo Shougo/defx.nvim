@@ -44,6 +44,11 @@ class View(object):
             self._columns.append(column)
 
         self.init_syntax()
+        self.redraw(True)
+
+        if self._context.search:
+            for defx in self._defxs:
+                self.search_file(self._context.search, defx._index)
 
     def init_buffer(self) -> None:
         # Create new buffer
