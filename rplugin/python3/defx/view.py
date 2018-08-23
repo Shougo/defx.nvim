@@ -103,10 +103,6 @@ class View(object):
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates
 
-        # Set is_selected flag
-        for index in self._selected_candidates:
-            self._candidates[index]['is_selected'] = True
-
     def redraw(self, is_force: bool = False) -> None:
         """
         Redraw defx buffer.
@@ -121,6 +117,10 @@ class View(object):
         if is_force:
             self._selected_candidates = []
             self.init_candidates()
+
+        # Set is_selected flag
+        for index in self._selected_candidates:
+            self._candidates[index]['is_selected'] = True
 
         buffer_options['modifiable'] = True
         self._vim.current.buffer[:] = [
