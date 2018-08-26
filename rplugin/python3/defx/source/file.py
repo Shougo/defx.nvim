@@ -23,7 +23,7 @@ class Source(Base):
     def get_root_candidate(self, context: Context, path: str) -> dict:
         return {
             'word': path,
-            'abbr': path + '/',
+            'abbr': self.vim.call('fnamemodify', path + '/', ':~'),
             'kind': 'directory',
             'is_directory': True,
             'action__path': path,
