@@ -152,6 +152,19 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     view.redraw()
 
 
+def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
+    index = 0
+    for candidate in view._candidates:
+        if (not candidate.get('is_root', False) and
+                candidate['_defx_index'] == defx._index):
+            if index in view._selected_candidates:
+                view._selected_candidates.remove(index)
+            else:
+                view._selected_candidates.append(index)
+        index += 1
+    view.redraw()
+
+
 class ActionAttr(IntFlag):
     REDRAW = auto()
     NONE = 0
@@ -173,4 +186,5 @@ DEFAULT_ACTIONS = {
     'remove': ActionTable(func=_remove),
     'rename': ActionTable(func=_rename),
     'toggle_select': ActionTable(func=_toggle_select),
+    'toggle_select_all': ActionTable(func=_toggle_select_all),
 }

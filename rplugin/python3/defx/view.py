@@ -119,6 +119,8 @@ class View(object):
             self.init_candidates()
 
         # Set is_selected flag
+        for candidate in self._candidates:
+            candidate['is_selected'] = False
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
 

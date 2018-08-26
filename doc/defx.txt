@@ -120,6 +120,9 @@ remove						      *defx-action-remove*
 toggle_select					*defx-action-toggle_select*
 		Toggle the cursor candidate select.
 
+toggle_select_all				*defx-action-toggle_select_all*
+		Toggle the all candidates select.
+
 ------------------------------------------------------------------------------
 OPTIONS							*defx-options*
 
@@ -169,6 +172,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('quit')
 	  nnoremap <silent><buffer><expr> <Space>
 	  \ defx#do_action('toggle_select') . 'j'
+	  nnoremap <silent><buffer><expr> *
+	  \ defx#do_action('toggle_select_all')
 	  nnoremap <silent><buffer><expr> j
 	  \ line('.') == line('$') ? 'gg' : 'j'
 	  nnoremap <silent><buffer><expr> k
