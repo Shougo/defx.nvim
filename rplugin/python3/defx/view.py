@@ -196,4 +196,7 @@ class View(object):
                 args=action_args,
                 cursor=cursor
             )
-            action.do_action(self, defx, action_name, context)
+            ret = action.do_action(self, defx, action_name, context)
+            if ret:
+                error(self._vim, 'Invalid action_name:' + action_name)
+                return

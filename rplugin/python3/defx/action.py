@@ -16,14 +16,17 @@ from defx.view import View
 
 
 def do_action(view: View, defx: Defx,
-              action_name: str, context: Context) -> None:
+              action_name: str, context: Context) -> bool:
     """
     Do "action_name" action.
     """
+    if action_name not in DEFAULT_ACTIONS:
+        return True
     action = DEFAULT_ACTIONS[action_name]
     action.func(view, defx, context)
     if ActionAttr.REDRAW in action.attr:
         view.redraw(True)
+    return False
 
 
 def _cd(view: View, defx: Defx, context: Context) -> None:
