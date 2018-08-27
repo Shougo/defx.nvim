@@ -5,6 +5,7 @@
 # ============================================================================
 
 from enum import auto, IntFlag
+import importlib
 import os
 import typing
 import shutil
@@ -125,6 +126,23 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
 
 
+def _remove_trash(view: View, defx: Defx, context: Context) -> None:
+    """
+    Delete the file or directory.
+    """
+    if not importlib.find_loader('send2trash'):
+        error(view._vim, '"Send2Trash" is not installed')
+        return
+
+    if not confirm(view._vim, 'Are you sure you want to delete this node?'):
+        return
+
+    import send2trash
+    for target in context.targets:
+        send2trash.send2trash(target['action__path'])
+    view.redraw(True)
+
+
 def _rename(view: View, defx: Defx, context: Context) -> None:
     """
     Rename the file or directory.
@@ -187,6 +205,7 @@ DEFAULT_ACTIONS = {
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
     'remove': ActionTable(func=_remove),
+    'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
     'toggle_select': ActionTable(func=_toggle_select),
     'toggle_select_all': ActionTable(func=_toggle_select_all),
