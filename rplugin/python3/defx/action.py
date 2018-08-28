@@ -113,7 +113,11 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
     """
-    if not confirm(view._vim, 'Are you sure you want to delete this node?'):
+    message = 'Are you sure you want to delete {}?'.format(
+        context.targets[0]['action__path']
+        if len(context.targets) == 1
+        else str(len(context.targets)) + ' files')
+    if not confirm(view._vim, message):
         return
 
     for target in context.targets:
@@ -134,7 +138,11 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
         error(view._vim, '"Send2Trash" is not installed')
         return
 
-    if not confirm(view._vim, 'Are you sure you want to delete this node?'):
+    message = 'Are you sure you want to delete {}?'.format(
+        context.targets[0]['action__path']
+        if len(context.targets) == 1
+        else str(len(context.targets)) + ' files')
+    if not confirm(view._vim, message):
         return
 
     import send2trash
