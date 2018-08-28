@@ -174,15 +174,13 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
 
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
-    index = 0
-    for candidate in view._candidates:
+    for [index, candidate] in enumerate(view._candidates):
         if (not candidate.get('is_root', False) and
                 candidate['_defx_index'] == defx._index):
             if index in view._selected_candidates:
                 view._selected_candidates.remove(index)
             else:
                 view._selected_candidates.append(index)
-        index += 1
     view.redraw()
 
 
