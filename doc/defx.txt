@@ -152,6 +152,10 @@ OPTIONS							*defx-options*
 		Specify defx columns.
 		Default: "mark:filename:type"
 
+						*defx-option-fnamewidth*
+-fnamewidth={filename-width}
+		Specifies the filename width of a defx buffer.
+
 							*defx-option-search*
 -search={path}
 		Search the {path}.

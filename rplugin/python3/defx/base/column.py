@@ -15,11 +15,12 @@ from neovim import Nvim
 class Base:
 
     def __init__(self, vim: Nvim) -> None:
-        self.vim = vim
-        self.name = 'base'
-        self.syntax_name = ''
-        self.start = -1
-        self.end = -1
+        self.vim: Nvim = vim
+        self.name: str = 'base'
+        self.syntax_name: str = ''
+        self.start: int = -1
+        self.end: int = -1
+        self.vars: dict = {}
 
     def on_init(self) -> None:
         pass
@@ -32,7 +33,7 @@ class Base:
         pass
 
     @abstractmethod
-    def length(self) -> int:
+    def length(self, context: Context) -> int:
         pass
 
     def highlight(self) -> None:

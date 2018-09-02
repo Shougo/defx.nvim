@@ -15,16 +15,13 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'filename'
-        self.vars = {
-            'length': 100,
-        }
 
     def get(self, context: Context, candidate: dict) -> str:
-        spaces_len = self.vars['length'] - len(candidate['abbr'])
+        spaces_len = context.fnamewidth - len(candidate['abbr'])
         return candidate['abbr'] + (' ' * spaces_len)  # type: ignore
 
-    def length(self) -> int:
-        return self.vars['length']
+    def length(self, context: Context) -> int:
+        return context.fnamewidth
 
     def highlight(self) -> None:
         self.vim.command(

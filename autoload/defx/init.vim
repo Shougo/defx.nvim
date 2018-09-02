@@ -88,6 +88,7 @@ function! defx#init#_user_options() abort
   return {
         \ 'auto_cd': v:false,
         \ 'columns': 'mark:filename:type',
+        \ 'fnamewidth': 100,
         \ 'search': '',
         \ }
 endfunction

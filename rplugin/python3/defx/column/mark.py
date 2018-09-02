@@ -22,17 +22,16 @@ class Column(Base):
         }
 
     def get(self, context: Context, candidate: dict) -> str:
+        icon: str = ' '
         if candidate.get('is_selected', False):
             icon = self.vars['selected_icon']
         elif candidate.get('is_root', False):
             icon = self.vars['root_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']
-        else:
-            icon = ' '
         return icon + ' '
 
-    def length(self) -> int:
+    def length(self, context: Context) -> int:
         return 2
 
     def highlight(self) -> None:

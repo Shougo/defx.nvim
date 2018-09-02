@@ -23,6 +23,8 @@ class View(object):
         self._vim: Nvim = vim
         self._candidates: typing.List[dict] = []
         self._selected_candidates: typing.List[int] = []
+
+        context['fnamewidth'] = int(context['fnamewidth'])
         self._context = Context(**context)
 
         # Initialize defx
@@ -44,9 +46,10 @@ class View(object):
         for column in self._columns:
             column.on_init()
             column.start = start
-            column.end = start + column.length() - 1
+            length = column.length(self._context)
+            column.end = start + length - 1
             column.syntax_name = 'Defx_' + column.name
-            start += column.length()
+            start += length
 
         self.init_syntax()
         self.redraw(True)

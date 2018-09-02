@@ -9,6 +9,7 @@ from defx.context import Context
 from neovim import Nvim
 
 import re
+import typing
 
 
 class Column(Base):
@@ -17,7 +18,7 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'mark'
-        types = [
+        types: typing.List[typing.Dict[str, str]] = [
             {
                 'name': 'text', 'pattern': '\.txt$',
                 'icon': '[T]', 'highlight': 'Constant'
@@ -47,10 +48,10 @@ class Column(Base):
     def get(self, context: Context, candidate: dict) -> str:
         for t in self.vars['types']:
             if re.search(t['pattern'], candidate['action__path']):
-                return t['icon'] + ' '
+                return t['icon'] + ' '  # type: ignore
         return ' ' * self._length
 
-    def length(self) -> int:
+    def length(self, context: Context) -> int:
         return self._length
 
     def highlight(self) -> None:
