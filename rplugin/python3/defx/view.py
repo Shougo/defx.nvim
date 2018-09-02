@@ -35,13 +35,16 @@ class View(object):
 
         # Initialize columns
         self._columns: typing.List[Column] = []
+        self._all_columns: typing.List[Column] = [
+            Mark(self._vim), Filename(self._vim)]
+        columns = self._context.columns.split(':')
+        self._columns = [x for x in self._all_columns if x.name in columns]
         start = 1
-        for column in [Mark(self._vim), Filename(self._vim)]:
+        for column in self._columns:
             column.start = start
             column.end = start + column.length() - 1
             column.syntax_name = 'Defx_' + column.name
             start += column.length()
-            self._columns.append(column)
 
         self.init_syntax()
         self.redraw(True)

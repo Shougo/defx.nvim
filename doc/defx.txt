@@ -136,7 +136,7 @@ toggle_select_all				*defx-action-toggle_select_all*
 OPTIONS							*defx-options*
 
 							*defx-option-no-*
-		-no-{option-name}
+-no-{option-name}
 		Disable {option-name} flag.
 		Note: If you use both {option-name} and -no-{option-name} in
 		the same denite buffer, it is undefined.
@@ -145,6 +145,11 @@ OPTIONS							*defx-options*
 -auto-cd
 		Change the working directory while navigating with defx.
 		Default: false
+
+							*defx-option-columns*
+-columns={columns1:columns2,...}
+		Specify defx columns.
+		Default: "mark:filename"
 
 							*defx-option-search*
 -search={path}
