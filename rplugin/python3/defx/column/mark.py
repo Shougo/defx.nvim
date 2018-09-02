@@ -36,7 +36,7 @@ class Column(Base):
         return 2
 
     def highlight(self) -> None:
-        for icon, syntax in {
+        for icon, highlight in {
                 'selected': 'Statement',
                 'root': 'Identifier',
                 'directory': 'Special',
@@ -47,4 +47,4 @@ class Column(Base):
                     self.syntax_name, icon, self.vars[icon + '_icon']))
             self.vim.command(
                 'highlight default link {}_{} {}'.format(
-                    self.syntax_name, icon, syntax))
+                    self.syntax_name, icon, highlight))

@@ -87,7 +87,7 @@ endfunction
 function! defx#init#_user_options() abort
   return {
         \ 'auto_cd': v:false,
-        \ 'columns': 'mark:filename',
+        \ 'columns': 'mark:filename:type',
         \ 'search': '',
         \ }
 endfunction

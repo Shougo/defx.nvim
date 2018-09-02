@@ -14,6 +14,7 @@ Interface		|defx-interface|
   Key mappings		  |defx-key-mappings|
   Actions		  |defx-actions|
   Options		  |defx-options|
+Columns			|defx-columns|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -149,12 +150,24 @@ OPTIONS							*defx-options*
 							*defx-option-columns*
 -columns={columns1:columns2,...}
 		Specify defx columns.
-		Default: "mark:filename"
+		Default: "mark:filename:type"
 
 							*defx-option-search*
 -search={path}
 		Search the {path}.
 		Default: ''
+
+------------------------------------------------------------------------------
+COLUMNS							*defx-columns*
+
+							*defx-column-filename*
+filename	File name.
+
+							*defx-column-mark*
+mark		File selected mark.
+
+							*defx-column-type*
+type		File type.
 
 ==============================================================================
 EXAMPLES						*defx-examples*

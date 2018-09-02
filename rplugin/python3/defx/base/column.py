@@ -21,6 +21,9 @@ class Base:
         self.start = -1
         self.end = -1
 
+    def on_init(self) -> None:
+        pass
+
     def debug(self, expr: typing.Any) -> None:
         error(self.vim, expr)
 

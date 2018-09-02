@@ -12,6 +12,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
+from defx.column.type import Column as Type
 from defx.util import error
 
 
@@ -36,11 +37,12 @@ class View(object):
         # Initialize columns
         self._columns: typing.List[Column] = []
         self._all_columns: typing.List[Column] = [
-            Mark(self._vim), Filename(self._vim)]
+            Mark(self._vim), Filename(self._vim), Type(self._vim)]
         columns = self._context.columns.split(':')
         self._columns = [x for x in self._all_columns if x.name in columns]
         start = 1
         for column in self._columns:
+            column.on_init()
             column.start = start
             column.end = start + column.length() - 1
             column.syntax_name = 'Defx_' + column.name
