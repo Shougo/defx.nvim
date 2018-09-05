@@ -39,11 +39,14 @@ class Defx(object):
         root['is_root'] = True
         return root
 
-    def gather_candidates(self) -> typing.List:
+    def gather_candidates(self, path: str='') -> typing.List:
         """
         Returns file candidates
         """
-        candidates = self._source.gather_candidates(self._context, self._cwd)
+        if not path:
+            path = self._cwd
+
+        candidates = self._source.gather_candidates(self._context, path)
 
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],
