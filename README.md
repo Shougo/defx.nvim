@@ -32,8 +32,6 @@ It can replace deprecated vimfiler plugin.
 
 * Windows supporters are needed
 
-* The original trashbox feature
-
 * Maximum features dislike other file managers
 
 
