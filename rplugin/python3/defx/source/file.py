@@ -9,6 +9,7 @@ import typing
 
 from defx.base.source import Base
 from defx.context import Context
+from defx.util import error
 from neovim import Nvim
 
 
@@ -32,6 +33,7 @@ class Source(Base):
     def gather_candidates(self, context: Context, path: str) -> typing.List:
         candidates = []
         if not os.path.isdir(path):
+            error(self.vim, '"{}" is not directory.'.format(path))
             return []
         for entry in os.scandir(path):
             candidates.append({
