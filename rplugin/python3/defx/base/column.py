@@ -8,7 +8,6 @@ import typing
 from abc import abstractmethod
 
 from defx.context import Context
-from defx.util import error
 from neovim import Nvim
 
 
@@ -24,9 +23,6 @@ class Base:
 
     def on_init(self) -> None:
         pass
-
-    def debug(self, expr: typing.Any) -> None:
-        error(self.vim, expr)
 
     @abstractmethod
     def get(self, context: Context, candidate: dict) -> str:

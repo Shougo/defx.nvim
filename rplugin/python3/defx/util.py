@@ -21,11 +21,7 @@ def error(vim: Nvim, expr: typing.Any) -> None:
     """
     Prints the error messages to Vim/Nvim's :messages buffer.
     """
-    if hasattr(vim, 'err_write'):
-        string = (expr if isinstance(expr, str) else str(expr))
-        vim.err_write('[defx] ' + string + '\n')
-    else:
-        vim.call('defx#util#print_error', expr)
+    vim.call('defx#util#print_error', expr)
 
 
 def cwd_input(vim: Nvim, cwd: str, prompt: str,
