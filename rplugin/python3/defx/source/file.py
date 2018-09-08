@@ -4,7 +4,7 @@
 # License: MIT license
 # ============================================================================
 
-import os
+from pathlib import Path
 import typing
 
 from defx.base.source import Base
@@ -32,15 +32,16 @@ class Source(Base):
 
     def gather_candidates(self, context: Context, path: str) -> typing.List:
         candidates = []
-        if not os.path.isdir(path):
-            error(self.vim, '"{}" is not directory.'.format(path))
+        directory = Path(path)
+        if not directory.is_dir():
+            error(self.vim, '"{}" is not directory.'.format(str(directory)))
             return []
-        for entry in os.scandir(path):
+        for entry in directory.iterdir():
             candidates.append({
-                'word': entry.path,
+                'word': str(entry),
                 'abbr': entry.name + ('/' if entry.is_dir() else ''),
                 'kind': ('directory' if entry.is_dir() else 'file'),
                 'is_directory': entry.is_dir(),
-                'action__path': entry.path,
+                'action__path': str(entry),
             })
         return candidates
