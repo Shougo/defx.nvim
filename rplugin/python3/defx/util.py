@@ -18,7 +18,7 @@ def error(vim: Nvim, expr: typing.Any) -> None:
 
 
 def cwd_input(vim: Nvim, cwd: str, prompt: str,
-              text: str='', completion: str='') -> str:
+              text: str='', completion: str='') -> typing.Optional[Path]:
     """
     Returns the absolute input path in cwd.
     """
@@ -26,10 +26,11 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     vim.command('silent lcd {}'.format(cwd))
 
     filename: str = vim.call('input', prompt, text, completion)
-    filename = str(Path(cwd).joinpath(filename).resolve())
+    if not filename:
+        return None
 
     vim.command('silent lcd {}'.format(save_cwd))
-    return filename
+    return Path(cwd).joinpath(filename).resolve()
 
 
 def confirm(vim: Nvim, question: str) -> bool:

@@ -6,7 +6,6 @@
 
 from enum import auto, IntFlag
 import importlib
-import os
 from pathlib import Path
 import shutil
 import typing
@@ -51,13 +50,15 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     """
     filename = cwd_input(view._vim, defx._cwd,
                          'Please input a new directory: ', '', 'dir')
-    if os.path.exists(filename):
+    if not filename:
+        return
+    if filename.exists():
         error(view._vim, '{} is already exists'.format(filename))
         return
 
-    os.mkdir(filename)
+    filename.mkdir()
     view.redraw(True)
-    view.search_file(filename, defx._index)
+    view.search_file(str(filename), defx._index)
 
 
 def _new_file(view: View, defx: Defx, context: Context) -> None:
@@ -66,18 +67,19 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     """
     filename = cwd_input(view._vim, defx._cwd,
                          'Please input a new filename: ', '', 'file')
-    if os.path.exists(filename):
-        error(view._vim, '{} is already exists'.format(filename))
+    if not filename:
+        return
+    if filename.exists():
+        error(view._vim, '{} is already exists'.format(str(filename)))
         return
 
-    dirname = os.path.dirname(filename)
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
+    if not filename.parent.exists():
+        filename.parent.mkdir()
 
     Path(filename).touch()
 
     view.redraw(True)
-    view.search_file(filename, defx._index)
+    view.search_file(str(filename), defx._index)
 
 
 def _open(view: View, defx: Defx, context: Context) -> None:
@@ -87,14 +89,14 @@ def _open(view: View, defx: Defx, context: Context) -> None:
     cwd = view._vim.call('getcwd')
     command = context.args[0] if context.args else 'edit'
     for target in context.targets:
-        path = target['action__path']
+        path = Path(target['action__path'])
 
-        if os.path.isdir(path):
-            view.cd(defx, path, context.cursor)
+        if path.is_dir():
+            view.cd(defx, str(path), context.cursor)
         else:
-            if path.startswith(cwd):
-                path = os.path.relpath(path, cwd)
-            view._vim.call('defx#util#execute_path', command, path)
+            if path.match(cwd):
+                path = path.relative_to(cwd)
+            view._vim.call('defx#util#execute_path', command, str(path))
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:
@@ -122,12 +124,12 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
         return
 
     for target in context.targets:
-        path = target['action__path']
+        path = Path(target['action__path'])
 
-        if os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_dir():
+            shutil.rmtree(str(path))
         else:
-            os.remove(path)
+            path.unlink()
     view.redraw(True)
 
 
@@ -157,20 +159,20 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
     Rename the file or directory.
     """
     for target in context.targets:
-        path = target['action__path']
-        filename = cwd_input(
+        old = Path(target['action__path'])
+        new = cwd_input(
             view._vim, defx._cwd,
-            ('New name: {} -> '.format(path)), path, 'file')
-        if not filename or filename == path:
+            ('New name: {} -> '.format(str(old))), str(old), 'file')
+        if not new or new == old:
             continue
-        if os.path.exists(filename):
-            error(view._vim, '{} is already exists'.format(filename))
+        if new.exists():
+            error(view._vim, '{} is already exists'.format(str(new)))
             continue
 
-        os.rename(path, filename)
+        old.rename(new)
 
         view.redraw(True)
-        view.search_file(filename, defx._index)
+        view.search_file(str(new), defx._index)
 
 
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
