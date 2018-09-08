@@ -4,12 +4,12 @@
 # License: MIT license
 # ============================================================================
 
-import os
 import typing
 
 from defx.source.file import Source as File
 from defx.context import Context
 from neovim import Nvim
+from pathlib import Path
 
 
 class Defx(object):
@@ -25,8 +25,7 @@ class Defx(object):
         self._cursor_history: typing.Dict[str, str] = {}
 
     def cd(self, path: str) -> None:
-        path = os.path.normpath(os.path.join(self._cwd, path))
-        self._cwd = path
+        self._cwd = str(Path(self._cwd).joinpath(path).resolve())
 
         if self._context.auto_cd:
             self._vim.command('silent lcd ' + path)
