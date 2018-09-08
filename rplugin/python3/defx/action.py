@@ -7,12 +7,13 @@
 from enum import auto, IntFlag
 import importlib
 import os
-import typing
+from pathlib import Path
 import shutil
+import typing
 
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, cwd_input, expand, confirm
+from defx.util import error, cwd_input, confirm
 from defx.view import View
 
 
@@ -34,13 +35,13 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current directory.
     """
-    path = context.args[0] if context.args else expand('~')
-    path = os.path.normpath(os.path.join(defx._cwd, path))
-    if not os.path.isdir(path):
-        error(view._vim, '{} is not directory'.format(path))
+    path = Path(context.args[0]) if context.args else Path.home()
+    path = path.joinpath(defx._cwd).resolve()
+    if not path.is_dir():
+        error(view._vim, '{} is not directory'.format(str(path)))
         return
 
-    view.cd(defx, path, context.cursor)
+    view.cd(defx, str(path), context.cursor)
     view._selected_candidates = []
 
 
@@ -73,8 +74,8 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
-    with open(filename, 'w') as f:
-        f.write('')
+    Path(filename).touch()
+
     view.redraw(True)
     view.search_file(filename, defx._index)
 

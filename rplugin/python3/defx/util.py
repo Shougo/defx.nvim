@@ -10,13 +10,6 @@ import typing
 from neovim import Nvim
 
 
-def expand(path: str) -> str:
-    """
-    Expands the path.
-    """
-    return os.path.expandvars(os.path.expanduser(path))
-
-
 def error(vim: Nvim, expr: typing.Any) -> None:
     """
     Prints the error messages to Vim/Nvim's :messages buffer.

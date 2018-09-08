@@ -4,7 +4,6 @@
 # License: MIT license
 # ============================================================================
 
-import typing
 from abc import abstractmethod
 
 from defx.context import Context
