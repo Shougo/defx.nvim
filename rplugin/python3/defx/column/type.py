@@ -7,9 +7,9 @@
 from defx.base.column import Base
 from defx.context import Context
 from neovim import Nvim
+from pathlib import Path
 
 import re
-import typing
 
 
 class Column(Base):
@@ -18,21 +18,21 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'mark'
-        types: typing.List[typing.Dict[str, str]] = [
+        types = [
             {
-                'name': 'text', 'pattern': '\.txt$',
+                'name': 'text', 'globs': ['*.txt'],
                 'icon': '[T]', 'highlight': 'Constant'
             },
             {
-                'name': 'image', 'pattern': '\.jpg$',
+                'name': 'image', 'globs': ['*.jpg'],
                 'icon': '[I]', 'highlight': 'Type'
             },
             {
-                'name': 'archive', 'pattern': '\.zip$',
+                'name': 'archive', 'globs': ['*.zip'],
                 'icon': '[A]', 'highlight': 'Special'
             },
             {
-                'name': 'executable', 'pattern': '\.exe$',
+                'name': 'executable', 'globs': ['*.exe'],
                 'icon': '[X]', 'highlight': 'Statement'
             },
         ]
@@ -46,9 +46,11 @@ class Column(Base):
                             for x in self.vars['types']]) + 1
 
     def get(self, context: Context, candidate: dict) -> str:
+        path = Path(candidate['action__path'])
         for t in self.vars['types']:
-            if re.search(t['pattern'], candidate['action__path']):
-                return t['icon'] + ' '  # type: ignore
+            for glob in t['globs']:
+                if path.match(glob):
+                    return t['icon'] + ' '  # type: ignore
         return ' ' * self._length
 
     def length(self, context: Context) -> int:
