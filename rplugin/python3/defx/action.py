@@ -35,7 +35,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     Change the current directory.
     """
     path = Path(context.args[0]) if context.args else Path.home()
-    path = path.joinpath(defx._cwd).resolve()
+    path = Path(defx._cwd).joinpath(path).resolve()
     if not path.is_dir():
         error(view._vim, '{} is not directory'.format(str(path)))
         return
