@@ -91,6 +91,9 @@ cd 						*defx-action-cd*
 		Action args:
 			0. new current directory path
 
+execute_system 					*defx-action-execute_system*
+		Execute the file by system associated command.
+
 new_directory 					*defx-action-new_directory*
 		Create a new directory.
 
@@ -195,6 +198,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('remove')
 	  nnoremap <silent><buffer><expr> r
 	  \ defx#do_action('rename')
+	  nnoremap <silent><buffer><expr> x
+	  \ defx#do_action('execute_system')
 	  nnoremap <silent><buffer><expr> h
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~

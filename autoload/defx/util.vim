@@ -5,6 +5,9 @@
 "=============================================================================
 
 let s:is_windows = has('win32') || has('win64')
+let s:is_mac = !s:is_windows && !has('win32unix')
+      \ && (has('mac') || has('macunix') || has('gui_macvim') ||
+      \   (!isdirectory('/proc') && executable('sw_vers')))
 
 function! defx#util#print_error(string) abort
   echohl Error | echomsg '[defx] '
@@ -180,5 +183,48 @@ function! defx#util#rpcrequest(event, args) abort
     return g:defx#_yarp.request(a:event, a:args)
   else
     return call(a:event, a:args)
+  endif
+endfunction
+
+" Open a file.
+function! defx#util#open(filename) abort
+  let filename = fnamemodify(a:filename, ':p')
+
+  " Detect desktop environment.
+  if s:is_windows
+    " For URI only.
+    " Note:
+    "   # and % required to be escaped (:help cmdline-special)
+    silent execute printf(
+          \ '!start rundll32 url.dll,FileProtocolHandler %s',
+          \ escape(filename, '#%'),
+          \)
+  elseif has('win32unix')
+    " Cygwin.
+    call system(printf('%s %s', 'cygstart',
+          \ shellescape(filename)))
+  elseif executable('xdg-open')
+    " Linux.
+    call system(printf('%s %s &', 'xdg-open',
+          \ shellescape(filename)))
+  elseif exists('$KDE_FULL_SESSION') && $KDE_FULL_SESSION ==# 'true'
+    " KDE.
+    call system(printf('%s %s &', 'kioclient exec',
+          \ shellescape(filename)))
+  elseif exists('$GNOME_DESKTOP_SESSION_ID')
+    " GNOME.
+    call system(printf('%s %s &', 'gnome-open',
+          \ shellescape(filename)))
+  elseif executable('exo-open')
+    " Xfce.
+    call system(printf('%s %s &', 'exo-open',
+          \ shellescape(filename)))
+  elseif s:is_mac && executable('open')
+    " Mac OS.
+    call system(printf('%s %s &', 'open',
+          \ shellescape(filename)))
+  else
+    " Give up.
+    call defx#util#print_error('Not supported.')
   endif
 endfunction

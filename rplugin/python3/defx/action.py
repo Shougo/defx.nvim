@@ -44,6 +44,14 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     view._selected_candidates = []
 
 
+def _execute_system(view: View, defx: Defx, context: Context) -> None:
+    """
+    Execute the file by system associated command.
+    """
+    for target in context.targets:
+        view._vim.call('defx#util#open', target['action__path'])
+
+
 def _new_directory(view: View, defx: Defx, context: Context) -> None:
     """
     Create a new directory.
@@ -207,6 +215,7 @@ class ActionTable(typing.NamedTuple):
 
 DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd),
+    'execute_system': ActionTable(func=_execute_system),
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
