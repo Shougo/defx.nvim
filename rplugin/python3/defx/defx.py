@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import re
 import typing
 
 from defx.source.file import Source as File
@@ -47,9 +48,15 @@ class Defx(object):
 
         candidates = self._source.gather_candidates(self._context, path)
 
+        pattern = re.compile(r'(\d+)')
+        def numeric_key(v):
+            keys = pattern.split(v)
+            keys[1::2] = [int(x) for x in keys[1::2]]
+            return keys
+
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],
-                      key=lambda x: x['abbr'])
+                      key=lambda x: numeric_key(x['abbr']))
         files = sorted([x for x in candidates if not x['is_directory']],
-                       key=lambda x: x['abbr'])
+                       key=lambda x: numeric_key(x['abbr']))
         return dirs + files
