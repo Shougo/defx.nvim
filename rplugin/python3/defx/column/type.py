@@ -17,7 +17,7 @@ class Column(Base):
     def __init__(self, vim: Nvim) -> None:
         super().__init__(vim)
 
-        self.name = 'mark'
+        self.name = 'type'
         types = [
             {
                 'name': 'text', 'globs': ['*.txt'],
