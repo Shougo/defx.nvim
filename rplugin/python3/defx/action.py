@@ -40,8 +40,11 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         error(view._vim, '{} is not directory'.format(str(path)))
         return
 
+    prev_cwd = defx._cwd
     view.cd(defx, str(path), context.cursor)
     view._selected_candidates = []
+    if context.args and context.args[0] == '..':
+        view.search_file(prev_cwd, defx._index)
 
 
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
