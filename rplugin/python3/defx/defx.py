@@ -49,9 +49,10 @@ class Defx(object):
         candidates = self._source.gather_candidates(self._context, path)
 
         pattern = re.compile(r'(\d+)')
-        def numeric_key(v):
+
+        def numeric_key(v: str) -> typing.List[typing.Any]:
             keys = pattern.split(v)
-            keys[1::2] = [int(x) for x in keys[1::2]]
+            keys[1::2] = [int(x) for x in keys[1::2]]  # type: ignore
             return keys
 
         # Sort
