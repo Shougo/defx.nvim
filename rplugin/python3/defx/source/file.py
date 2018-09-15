@@ -35,7 +35,7 @@ class Source(Base):
         candidates = []
         directory = Path(path)
         if not directory.is_dir():
-            error(self.vim, '"{}" is not directory.'.format(str(directory)))
+            error(self.vim, f'"{directory}" is not directory.')
             return []
         for entry in directory.iterdir():
             candidates.append({

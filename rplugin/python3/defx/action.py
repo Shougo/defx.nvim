@@ -37,7 +37,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     path = Path(context.args[0]) if context.args else Path.home()
     path = Path(defx._cwd).joinpath(path).resolve()
     if not path.is_dir():
-        error(view._vim, '{} is not directory'.format(str(path)))
+        error(view._vim, f'{path} is not directory')
         return
 
     prev_cwd = defx._cwd
@@ -64,7 +64,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     if not filename:
         return
     if filename.exists():
-        error(view._vim, '{} is already exists'.format(filename))
+        error(view._vim, f'{filename} is already exists')
         return
 
     filename.mkdir()
@@ -81,7 +81,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     if not filename:
         return
     if filename.exists():
-        error(view._vim, '{} is already exists'.format(str(filename)))
+        error(view._vim, '{filename} is already exists')
         return
 
     if not filename.parent.exists():
@@ -172,12 +172,11 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         old = Path(target['action__path'])
         new = cwd_input(
-            view._vim, defx._cwd,
-            ('New name: {} -> '.format(str(old))), str(old), 'file')
+            view._vim, defx._cwd, f'New name: {old} -> ', str(old), 'file')
         if not new or new == old:
             continue
         if new.exists():
-            error(view._vim, '{} is already exists'.format(str(new)))
+            error(view._vim, f'{new} is already exists')
             continue
 
         old.rename(new)
