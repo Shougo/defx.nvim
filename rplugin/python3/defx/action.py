@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 import typing
 
+from defx.clipboard import Clipboard, ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import error, cwd_input, confirm
@@ -47,12 +48,32 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         view.search_file(prev_cwd, defx._index)
 
 
+def _copy(view: View, defx: Defx, context: Context) -> None:
+    message = 'Copy to the clipboard: {}'.format(
+        context.targets[0]['action__path']
+        if len(context.targets) == 1
+        else str(len(context.targets)) + ' files')
+    view._vim.call('defx#util#print_debug', message)
+    view._clipboard = Clipboard(action=ClipboardAction.COPY,
+                                candidates=context.targets)
+
+
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the file by system associated command.
     """
     for target in context.targets:
         view._vim.call('defx#util#open', target['action__path'])
+
+
+def _move(view: View, defx: Defx, context: Context) -> None:
+    message = 'Move to the clipboard: {}'.format(
+        context.targets[0]['action__path']
+        if len(context.targets) == 1
+        else str(len(context.targets)) + ' files')
+    view._vim.call('defx#util#print_debug', message)
+    view._clipboard = Clipboard(action=ClipboardAction.MOVE,
+                                candidates=context.targets)
 
 
 def _new_directory(view: View, defx: Defx, context: Context) -> None:
@@ -221,7 +242,9 @@ class ActionTable(typing.NamedTuple):
 
 DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd),
+    'copy': ActionTable(func=_copy, attr=ActionAttr.REDRAW),
     'execute_system': ActionTable(func=_execute_system),
+    'move': ActionTable(func=_move, attr=ActionAttr.REDRAW),
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),

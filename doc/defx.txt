@@ -91,8 +91,14 @@ cd 						*defx-action-cd*
 		Action args:
 			0. new current directory path
 
+copy 						*defx-action-copy*
+		Copy the selected files to defx clipboard.
+
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.
+
+move 						*defx-action-move*
+		Move the selected files to defx clipboard.
 
 new_directory 					*defx-action-new_directory*
 		Create a new directory.
@@ -187,6 +193,10 @@ EXAMPLES						*defx-examples*
 	  " Define mappings
 	  nnoremap <silent><buffer><expr> <CR>
 	  \ defx#do_action('open')
+	  nnoremap <silent><buffer><expr> c
+	  \ defx#do_action('copy')
+	  nnoremap <silent><buffer><expr> m
+	  \ defx#do_action('move')
 	  nnoremap <silent><buffer><expr> l
 	  \ defx#do_action('open')
 	  nnoremap <silent><buffer><expr> E

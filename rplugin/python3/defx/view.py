@@ -8,6 +8,7 @@ from neovim import Nvim
 import typing
 
 from defx.base.column import Base as Column
+from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.column.filename import Column as Filename
@@ -23,6 +24,7 @@ class View(object):
         self._vim: Nvim = vim
         self._candidates: typing.List[dict] = []
         self._selected_candidates: typing.List[int] = []
+        self._clipboard = Clipboard()
 
         context['fnamewidth'] = int(context['fnamewidth'])
         self._context = Context(**context)
