@@ -23,6 +23,8 @@ class Defx(object):
         self.cd(cwd)
         self._source: File = File(self._vim)
         self._index = index
+        self._enabled_ignored_files = True
+        self._ignored_files = ['.*']
         self._cursor_history: typing.Dict[str, str] = {}
 
     def cd(self, path: str) -> None:
@@ -47,6 +49,16 @@ class Defx(object):
             path = self._cwd
 
         candidates = self._source.gather_candidates(self._context, path)
+
+        def check_ignored_files(f: Path) -> bool:
+            for glob in self._ignored_files:
+                if f.match(glob):
+                    return False
+            return True
+
+        if self._enabled_ignored_files and self._ignored_files:
+            candidates = [x for x in candidates
+                          if check_ignored_files(Path(x['action__path']))]
 
         pattern = re.compile(r'(\d+)')
 

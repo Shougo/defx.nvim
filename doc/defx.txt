@@ -130,6 +130,9 @@ remove_trash					*defx-action-remove_trash*
 		Note: Send2Trash module is needed for the action.
 		https://pypi.org/project/Send2Trash/
 
+toggle_ignored_files			*defx-action-toggle_ignored_files*
+		Toggle the enable state of ignored files.
+
 toggle_select					*defx-action-toggle_select*
 		Toggle the cursor candidate select.
 
@@ -200,6 +203,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('rename')
 	  nnoremap <silent><buffer><expr> x
 	  \ defx#do_action('execute_system')
+	  nnoremap <silent><buffer><expr> .
+	  \ defx#do_action('toggle_ignored_files')
 	  nnoremap <silent><buffer><expr> h
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~

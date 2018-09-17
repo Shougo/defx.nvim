@@ -181,7 +181,6 @@ class View(object):
             if (candidate['_defx_index'] == index and
                     candidate['action__path'] == path):
                 self._vim.call('cursor', [linenr, 1])
-                self._vim.command('normal! zb')
                 return
             linenr += 1
 

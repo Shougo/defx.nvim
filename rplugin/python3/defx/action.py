@@ -205,6 +205,10 @@ def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
     view.redraw()
 
 
+def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
+    defx._enabled_ignored_files = not defx._enabled_ignored_files
+
+
 class ActionAttr(IntFlag):
     REDRAW = auto()
     NONE = 0
@@ -227,6 +231,8 @@ DEFAULT_ACTIONS = {
     'remove': ActionTable(func=_remove),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
+    'toggle_ignored_files': ActionTable(func=_toggle_ignored_files,
+                                        attr=ActionAttr.REDRAW),
     'toggle_select': ActionTable(func=_toggle_select),
     'toggle_select_all': ActionTable(func=_toggle_select_all),
 }
