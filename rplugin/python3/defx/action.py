@@ -131,6 +131,24 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             view._vim.call('defx#util#execute_path', command, str(path))
 
 
+def _paste(view: View, defx: Defx, context: Context) -> None:
+    action = view._clipboard.action
+    for candidate in view._clipboard.candidates:
+        path = Path(candidate['action__path'])
+        dest = Path(defx._cwd).joinpath(path.name)
+        if dest.exists():
+            error(view._vim, f'{dest} is already exists')
+            continue
+
+        if action == ClipboardAction.COPY:
+            if path.is_dir():
+                shutil.copytree(str(path), dest)
+            else:
+                shutil.copy2(str(path), defx._cwd)
+        elif action == ClipboardAction.MOVE:
+            shutil.move(str(path), defx._cwd)
+
+
 def _print(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         view._vim.call('defx#util#print_debug', target['action__path'])
@@ -248,6 +266,7 @@ DEFAULT_ACTIONS = {
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
+    'paste': ActionTable(func=_paste, attr=ActionAttr.REDRAW),
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),

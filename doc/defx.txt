@@ -112,6 +112,10 @@ open							*defx-action-open*
 		Action args:
 			0. open command(The default is |:edit|)
 
+paste							*defx-action-paste*
+		Fire the clipboard action in the current directory.
+		Note: It is used after |defx-action-copy| or |defx-action-move|.
+
 print 						*defx-action-print*
 		Print the filename.
 
@@ -197,6 +201,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('copy')
 	  nnoremap <silent><buffer><expr> m
 	  \ defx#do_action('move')
+	  nnoremap <silent><buffer><expr> p
+	  \ defx#do_action('paste')
 	  nnoremap <silent><buffer><expr> l
 	  \ defx#do_action('open')
 	  nnoremap <silent><buffer><expr> E
