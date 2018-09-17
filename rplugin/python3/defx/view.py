@@ -61,10 +61,20 @@ class View(object):
                 self.search_file(self._context.search, defx._index)
 
     def init_buffer(self) -> None:
+        if self._context.split == 'tab':
+            self._vim.command('tabnew')
+
         # Create new buffer
         self._vim.call(
             'defx#util#execute_path',
-            'silent keepalt edit', '[defx]')
+            'silent keepalt %s %s ' % (
+                ('vertical'
+                 if self._context.split == 'vertical' else ''),
+                ('edit'
+                 if self._context.split == 'no' or
+                 self._context.split == 'tab' else 'new'),
+            ),
+            '[defx]')
 
         window_options = self._vim.current.window.options
         window_options['list'] = False

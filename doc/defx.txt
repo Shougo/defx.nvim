@@ -177,6 +177,17 @@ OPTIONS							*defx-options*
 		Search the {path}.
 		Default: ''
 
+						*defx-option-split*
+-split={direction}
+		Specify the split direction.
+
+		"vertical": Split buffer vertically
+		"horizontal": Split buffer horizontally
+		"no": No split
+		"tab": Create the new tab
+
+		Default: "no"
+
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*
 

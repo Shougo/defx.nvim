@@ -90,6 +90,7 @@ function! defx#init#_user_options() abort
         \ 'columns': 'mark:filename:type',
         \ 'fnamewidth': 100,
         \ 'search': '',
+        \ 'split': 'no',
         \ }
 endfunction
 function! s:internal_options() abort

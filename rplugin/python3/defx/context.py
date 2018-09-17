@@ -14,4 +14,5 @@ class Context(typing.NamedTuple):
     cursor: int = 0
     fnamewidth: int = 0
     search: str = ''
+    split: str = 'no'
     targets: typing.List[dict] = []
