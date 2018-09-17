@@ -10,7 +10,7 @@ from pathlib import Path
 import shutil
 import typing
 
-from defx.clipboard import Clipboard, ClipboardAction
+from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import error, cwd_input, confirm
@@ -54,8 +54,9 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     view.print_msg(message)
-    view._clipboard = Clipboard(action=ClipboardAction.COPY,
-                                candidates=context.targets)
+
+    view._clipboard.action = ClipboardAction.COPY
+    view._clipboard.candidates = context.targets
 
 
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
@@ -72,8 +73,9 @@ def _move(view: View, defx: Defx, context: Context) -> None:
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     view.print_msg(message)
-    view._clipboard = Clipboard(action=ClipboardAction.MOVE,
-                                candidates=context.targets)
+
+    view._clipboard.action = ClipboardAction.MOVE
+    view._clipboard.candidates = context.targets
 
 
 def _new_directory(view: View, defx: Defx, context: Context) -> None:

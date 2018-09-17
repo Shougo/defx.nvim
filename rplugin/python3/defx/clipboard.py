@@ -13,6 +13,9 @@ class ClipboardAction(Enum):
     COPY = auto()
 
 
-class Clipboard(typing.NamedTuple):
-    action: ClipboardAction = ClipboardAction.COPY
-    candidates: typing.List[dict] = []
+class Clipboard():
+    def __init__(self,
+                 action: ClipboardAction = ClipboardAction.COPY,
+                 candidates: typing.List[dict] = []) -> None:
+        self.action = action
+        self.candidates = candidates

@@ -19,12 +19,17 @@ from defx.util import error
 
 class View(object):
 
-    def __init__(self, vim: Nvim,
-                 paths: typing.List[str], context: dict) -> None:
+    def __init__(self, vim: Nvim) -> None:
         self._vim: Nvim = vim
         self._candidates: typing.List[dict] = []
         self._selected_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
+        self._bufnr = -1
+
+    def init(self, paths: typing.List[str], context: dict,
+             clipboard: Clipboard) -> None:
+        self._candidates = []
+        self._selected_candidates = []
 
         context['fnamewidth'] = int(context['fnamewidth'])
         self._context = Context(**context)
@@ -94,6 +99,7 @@ class View(object):
         self._vim.command('augroup defx | autocmd! | augroup END')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
                           'call defx#_do_action("redraw", [])')
+        self._bufnr = self._vim.current.buffer.number
 
     def init_syntax(self) -> None:
         for column in self._columns:
