@@ -108,6 +108,9 @@ class View(object):
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 
+    def print_msg(self, expr: typing.Any) -> None:
+        self._vim.call('defx#util#print_message', expr)
+
     def quit(self) -> None:
         if self._vim.call('winnr', '$') != 1:
             self._vim.command('close')

@@ -53,7 +53,7 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
         context.targets[0]['action__path']
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
-    view._vim.call('defx#util#print_debug', message)
+    view.print_msg(message)
     view._clipboard = Clipboard(action=ClipboardAction.COPY,
                                 candidates=context.targets)
 
@@ -71,7 +71,7 @@ def _move(view: View, defx: Defx, context: Context) -> None:
         context.targets[0]['action__path']
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
-    view._vim.call('defx#util#print_debug', message)
+    view.print_msg(message)
     view._clipboard = Clipboard(action=ClipboardAction.MOVE,
                                 candidates=context.targets)
 
@@ -133,13 +133,15 @@ def _open(view: View, defx: Defx, context: Context) -> None:
 
 def _paste(view: View, defx: Defx, context: Context) -> None:
     action = view._clipboard.action
-    for candidate in view._clipboard.candidates:
+    for index, candidate in enumerate(view._clipboard.candidates):
         path = Path(candidate['action__path'])
         dest = Path(defx._cwd).joinpath(path.name)
         if dest.exists():
             error(view._vim, f'{dest} is already exists')
             continue
 
+        view.print_msg(
+            f'[{index}/{len(view._clipboard.candidates)}] {path}')
         if action == ClipboardAction.COPY:
             if path.is_dir():
                 shutil.copytree(str(path), dest)
@@ -147,11 +149,13 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                 shutil.copy2(str(path), defx._cwd)
         elif action == ClipboardAction.MOVE:
             shutil.move(str(path), defx._cwd)
+        view._vim.command('redraw')
+    view._vim.command('echo')
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
-        view._vim.call('defx#util#print_debug', target['action__path'])
+        view.print_msg(target['action__path'])
 
 
 def _quit(view: View, defx: Defx, context: Context) -> None:
