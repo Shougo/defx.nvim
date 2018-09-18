@@ -8,6 +8,8 @@ from defx.base.column import Base
 from defx.context import Context
 from neovim import Nvim
 
+import os
+
 
 class Column(Base):
 
@@ -18,6 +20,7 @@ class Column(Base):
         self.vars = {
             'selected_icon': '*',
             'root_icon': '-',
+            'readonly_icon': 'X',
             'directory_icon': '+',
         }
 
@@ -27,6 +30,8 @@ class Column(Base):
             icon = self.vars['selected_icon']
         elif candidate.get('is_root', False):
             icon = self.vars['root_icon']
+        elif not os.access(candidate['action__path'], os.W_OK):
+            icon = self.vars['readonly_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']
         return icon + ' '
@@ -38,6 +43,7 @@ class Column(Base):
         for icon, highlight in {
                 'selected': 'Statement',
                 'root': 'Identifier',
+                'readonly': 'Comment',
                 'directory': 'Special',
         }.items():
             self.vim.command(
