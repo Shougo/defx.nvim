@@ -53,7 +53,7 @@ class Defx(object):
         if self._enabled_ignored_files and self._ignored_files:
             for glob in self._ignored_files:
                 candidates = [x for x in candidates
-                              if not Path(x['action__path']).match(glob)]
+                              if not x['action__path'].match(glob)]
 
         pattern = re.compile(r'(\d+)')
 

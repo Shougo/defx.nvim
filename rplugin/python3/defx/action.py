@@ -50,7 +50,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
 
 def _copy(view: View, defx: Defx, context: Context) -> None:
     message = 'Copy to the clipboard: {}'.format(
-        context.targets[0]['action__path']
+        str(context.targets[0]['action__path'])
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     view.print_msg(message)
@@ -64,12 +64,12 @@ def _execute_system(view: View, defx: Defx, context: Context) -> None:
     Execute the file by system associated command.
     """
     for target in context.targets:
-        view._vim.call('defx#util#open', target['action__path'])
+        view._vim.call('defx#util#open', str(target['action__path']))
 
 
 def _move(view: View, defx: Defx, context: Context) -> None:
     message = 'Move to the clipboard: {}'.format(
-        context.targets[0]['action__path']
+        str(context.targets[0]['action__path'])
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     view.print_msg(message)
@@ -123,7 +123,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
     cwd = view._vim.call('getcwd')
     command = context.args[0] if context.args else 'edit'
     for target in context.targets:
-        path = Path(target['action__path'])
+        path = target['action__path']
 
         if path.is_dir():
             view.cd(defx, str(path), context.cursor)
@@ -136,7 +136,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
 def _paste(view: View, defx: Defx, context: Context) -> None:
     action = view._clipboard.action
     for index, candidate in enumerate(view._clipboard.candidates):
-        path = Path(candidate['action__path'])
+        path = candidate['action__path']
         dest = Path(defx._cwd).joinpath(path.name)
         if dest.exists():
             error(view._vim, f'{dest} is already exists')
@@ -157,7 +157,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
 
 def _print(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
-        view.print_msg(target['action__path'])
+        view.print_msg(str(target['action__path']))
 
 
 def _quit(view: View, defx: Defx, context: Context) -> None:
@@ -173,14 +173,14 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
     Delete the file or directory.
     """
     message = 'Are you sure you want to delete {}?'.format(
-        context.targets[0]['action__path']
+        str(context.targets[0]['action__path'])
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     if not confirm(view._vim, message):
         return
 
     for target in context.targets:
-        path = Path(target['action__path'])
+        path = target['action__path']
 
         if path.is_dir():
             shutil.rmtree(str(path))
@@ -198,7 +198,7 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
         return
 
     message = 'Are you sure you want to delete {}?'.format(
-        context.targets[0]['action__path']
+        str(context.targets[0]['action__path'])
         if len(context.targets) == 1
         else str(len(context.targets)) + ' files')
     if not confirm(view._vim, message):
@@ -206,7 +206,7 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
 
     import send2trash
     for target in context.targets:
-        send2trash.send2trash(target['action__path'])
+        send2trash.send2trash(str(target['action__path']))
     view.redraw(True)
 
 
@@ -215,7 +215,7 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
     Rename the file or directory.
     """
     for target in context.targets:
-        old = Path(target['action__path'])
+        old = target['action__path']
         new = cwd_input(
             view._vim, defx._cwd, f'New name: {old} -> ', str(old), 'file')
         if not new or new == old:

@@ -7,7 +7,6 @@
 from defx.base.column import Base
 from defx.context import Context
 from neovim import Nvim
-from pathlib import Path
 
 import re
 
@@ -46,10 +45,9 @@ class Column(Base):
                             for x in self.vars['types']]) + 1
 
     def get(self, context: Context, candidate: dict) -> str:
-        path = Path(candidate['action__path'])
         for t in self.vars['types']:
             for glob in t['globs']:
-                if path.match(glob):
+                if candidate['action__path'].match(glob):
                     return t['icon'] + ' '  # type: ignore
         return ' ' * self._length
 

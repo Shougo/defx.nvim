@@ -25,7 +25,7 @@ class Source(Base):
             'word': self.vim.call('fnamemodify',
                                   path + ('/' if path != '/' else ''), ':~'),
             'is_directory': True,
-            'action__path': path,
+            'action__path': Path(path),
         }
 
     def gather_candidates(self, context: Context, path: str) -> typing.List:
@@ -38,6 +38,6 @@ class Source(Base):
             candidates.append({
                 'word': entry.name + ('/' if entry.is_dir() else ''),
                 'is_directory': entry.is_dir(),
-                'action__path': str(entry),
+                'action__path': entry,
             })
         return candidates
