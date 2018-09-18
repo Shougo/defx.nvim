@@ -98,6 +98,6 @@ If Defx was installed prior to Python support being added to Neovim,
 
 
 
-## Todo
+## Screenshots
 
-* All features
+![multi root feature](https://user-images.githubusercontent.com/41495/45696476-ac9d0a80-bb9e-11e8-9ee2-120ac7d0f045.png)
