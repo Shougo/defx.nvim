@@ -36,10 +36,8 @@ class View(object):
 
         # Initialize defx
         self._defxs: typing.List[Defx] = []
-        index = 0
-        for path in paths:
+        for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
-            index += 1
 
         self.init_buffer()
 
