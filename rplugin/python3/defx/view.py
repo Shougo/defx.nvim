@@ -5,6 +5,7 @@
 # ============================================================================
 
 from neovim import Nvim
+import time
 import typing
 
 from defx.base.column import Base as Column
@@ -139,6 +140,8 @@ class View(object):
         if buffer_options['filetype'] != 'defx':
             return
 
+        start = time.time()
+
         prev = self.get_cursor_candidate(self._vim.call('line', '.'))
 
         if is_force:
@@ -161,6 +164,9 @@ class View(object):
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
+
+        if self._context.profile:
+            error(self._vim, f'redraw time = {time.time() - start}')
 
     def get_columns_text(self, context: Context, candidate: dict) -> str:
         text = ''

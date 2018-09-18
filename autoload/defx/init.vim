@@ -89,6 +89,7 @@ function! defx#init#_user_options() abort
         \ 'auto_cd': v:false,
         \ 'columns': 'mark:filename:type',
         \ 'fnamewidth': 100,
+        \ 'profile': v:false,
         \ 'search': '',
         \ 'split': 'no',
         \ }

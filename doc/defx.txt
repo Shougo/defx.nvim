@@ -172,6 +172,13 @@ OPTIONS							*defx-options*
 -fnamewidth={filename-width}
 		Specifies the filename width of a defx buffer.
 
+							*defx-option-profile*
+-profile
+		Enable profile feature.
+		Note: It is for debugging.
+
+		Default: false
+
 							*defx-option-search*
 -search={path}
 		Search the {path}.

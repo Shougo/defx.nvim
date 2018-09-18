@@ -13,6 +13,7 @@ class Context(typing.NamedTuple):
     columns: str = ''
     cursor: int = 0
     fnamewidth: int = 0
+    profile: bool = False
     search: str = ''
     split: str = 'no'
     targets: typing.List[dict] = []
