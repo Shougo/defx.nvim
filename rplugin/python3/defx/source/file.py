@@ -22,8 +22,7 @@ class Source(Base):
 
     def get_root_candidate(self, context: Context, path: str) -> dict:
         return {
-            'word': path,
-            'abbr': self.vim.call('fnamemodify',
+            'word': self.vim.call('fnamemodify',
                                   path + ('/' if path != '/' else ''), ':~'),
             'is_directory': True,
             'action__path': path,
@@ -37,8 +36,7 @@ class Source(Base):
             return []
         for entry in directory.iterdir():
             candidates.append({
-                'word': str(entry),
-                'abbr': entry.name + ('/' if entry.is_dir() else ''),
+                'word': entry.name + ('/' if entry.is_dir() else ''),
                 'is_directory': entry.is_dir(),
                 'action__path': str(entry),
             })

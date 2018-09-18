@@ -17,8 +17,8 @@ class Column(Base):
         self.name = 'filename'
 
     def get(self, context: Context, candidate: dict) -> str:
-        spaces_len = context.fnamewidth - len(candidate['abbr'])
-        return candidate['abbr'] + (' ' * spaces_len)  # type: ignore
+        spaces_len = context.fnamewidth - len(candidate['word'])
+        return candidate['word'] + (' ' * spaces_len)  # type: ignore
 
     def length(self, context: Context) -> int:
         return context.fnamewidth

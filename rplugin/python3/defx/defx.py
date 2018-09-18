@@ -69,7 +69,7 @@ class Defx(object):
 
         # Sort
         dirs = sorted([x for x in candidates if x['is_directory']],
-                      key=lambda x: numeric_key(x['abbr']))
+                      key=lambda x: numeric_key(x['word']))
         files = sorted([x for x in candidates if not x['is_directory']],
-                       key=lambda x: numeric_key(x['abbr']))
+                       key=lambda x: numeric_key(x['word']))
         return dirs + files
