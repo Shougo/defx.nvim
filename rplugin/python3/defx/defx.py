@@ -50,15 +50,10 @@ class Defx(object):
 
         candidates = self._source.gather_candidates(self._context, path)
 
-        def check_ignored_files(f: Path) -> bool:
-            for glob in self._ignored_files:
-                if f.match(glob):
-                    return False
-            return True
-
         if self._enabled_ignored_files and self._ignored_files:
-            candidates = [x for x in candidates
-                          if check_ignored_files(Path(x['action__path']))]
+            for glob in self._ignored_files:
+                candidates = [x for x in candidates
+                              if not Path(x['action__path']).match(glob)]
 
         pattern = re.compile(r'(\d+)')
 
