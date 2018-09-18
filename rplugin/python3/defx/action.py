@@ -143,7 +143,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             continue
 
         view.print_msg(
-            f'[{index}/{len(view._clipboard.candidates)}] {path}')
+            f'[{index + 1}/{len(view._clipboard.candidates)}] {path}')
         if action == ClipboardAction.COPY:
             if path.is_dir():
                 shutil.copytree(str(path), dest)
