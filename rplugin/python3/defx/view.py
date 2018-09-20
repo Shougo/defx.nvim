@@ -209,14 +209,15 @@ class View(object):
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
 
-    def search_file(self, path: str, index: int) -> None:
+    def search_file(self, path: str, index: int) -> bool:
         linenr = 1
         for candidate in self._candidates:
             if (candidate['_defx_index'] == index and
                     candidate['action__path'] == path):
                 self._vim.call('cursor', [linenr, 1])
-                return
+                return True
             linenr += 1
+        return False
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str], new_context: dict) -> None:
