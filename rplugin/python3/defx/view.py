@@ -7,6 +7,7 @@
 from neovim import Nvim
 import time
 import typing
+from pathlib import Path
 
 from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
@@ -62,7 +63,8 @@ class View(object):
 
         if self._context.search:
             for defx in self._defxs:
-                self.search_file(self._context.search, defx._index)
+                if self.search_tree(self._context.search, defx._index):
+                    break
 
     def init_buffer(self) -> None:
         if self._context.split == 'tab':
@@ -209,11 +211,21 @@ class View(object):
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
 
+    def search_tree(self, start: str, index: int) -> bool:
+        path = Path(start)
+        while True:
+            if self.search_file(str(path), index):
+                return True
+            if path.parent == path:
+                break
+            path = path.parent
+        return False
+
     def search_file(self, path: str, index: int) -> bool:
         linenr = 1
         for candidate in self._candidates:
             if (candidate['_defx_index'] == index and
-                    candidate['action__path'] == path):
+                    str(candidate['action__path']) == path):
                 self._vim.call('cursor', [linenr, 1])
                 return True
             linenr += 1
