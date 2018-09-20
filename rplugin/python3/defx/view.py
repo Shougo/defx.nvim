@@ -74,7 +74,8 @@ class View(object):
         # Create new buffer
         self._vim.call(
             'defx#util#execute_path',
-            'silent keepalt %s %s ' % (
+            'silent keepalt %s %s %s ' % (
+                self._context.direction,
                 ('vertical'
                  if self._context.split == 'vertical' else ''),
                 ('edit'

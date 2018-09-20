@@ -12,6 +12,7 @@ class Context(typing.NamedTuple):
     auto_cd: bool = False
     columns: str = ''
     cursor: int = 0
+    direction: str = ''
     fnamewidth: int = 0
     profile: bool = False
     search: str = ''

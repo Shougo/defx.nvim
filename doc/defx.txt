@@ -168,6 +168,13 @@ OPTIONS							*defx-options*
 		Specify defx columns.
 		Default: "mark:filename:type"
 
+						*defx-option-direction*
+-direction={direction}
+		Specify the window direction as {direction} if
+		|defx-option-split| is set.
+		You can use "topleft" or "botright".
+		Default: ""
+
 						*defx-option-fnamewidth*
 -fnamewidth={filename-width}
 		Specifies the filename width of a defx buffer.
@@ -273,6 +280,11 @@ Q: I want to explore the folder where the current file is.
 
 A: >
 	Defx `expand('%:p:h')` -search=`expand('%:p')`
+
+Q: I want to open defx window like explorer.
+
+A: >
+	Defx -split=vertical -winwidth=50 -direction=topleft
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
