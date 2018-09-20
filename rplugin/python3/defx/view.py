@@ -148,6 +148,11 @@ class View(object):
             self._selected_candidates = []
             self.init_candidates()
 
+        is_busy = time.time() - start > 0.5
+
+        if is_busy:
+            self.print_msg('Waiting...')
+
         # Set is_selected flag
         for candidate in self._candidates:
             candidate['is_selected'] = False
@@ -164,6 +169,10 @@ class View(object):
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
+
+        if is_busy:
+            self._vim.command('redraw')
+            self.print_msg('Done.')
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
