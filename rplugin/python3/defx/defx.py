@@ -50,7 +50,7 @@ class Defx(object):
 
         candidates = self._source.gather_candidates(self._context, path)
 
-        if self._enabled_ignored_files and self._ignored_files:
+        if self._enabled_ignored_files:
             for glob in self._ignored_files:
                 candidates = [x for x in candidates
                               if not x['action__path'].match(glob)]
