@@ -93,6 +93,7 @@ function! defx#init#_user_options() abort
         \ 'profile': v:false,
         \ 'search': '',
         \ 'split': 'no',
+        \ 'toggle': v:false,
         \ 'winwidth': 0,
         \ }
 endfunction

@@ -27,6 +27,7 @@ class View(object):
         self._selected_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
+        self._bufname = '[defx]'
 
     def init(self, paths: typing.List[str], context: dict,
              clipboard: Clipboard) -> None:
@@ -42,7 +43,8 @@ class View(object):
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
-        self.init_buffer()
+        if not self.init_buffer():
+            return
 
         # Initialize columns
         self._columns: typing.List[Column] = []
@@ -67,9 +69,14 @@ class View(object):
                 if self.search_tree(self._context.search, defx._index):
                     break
 
-    def init_buffer(self) -> None:
+    def init_buffer(self) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
+
+        if (self._context.toggle and
+                self._vim.call('bufwinnr', self._bufname) > 0):
+            self.quit()
+            return False
 
         # Create new buffer
         self._vim.call(
@@ -82,7 +89,7 @@ class View(object):
                  if self._context.split == 'no' or
                  self._context.split == 'tab' else 'new'),
             ),
-            '[defx]')
+            self._bufname)
 
         if self._context.split == 'vertical' and self._context.winwidth > 0:
             self._vim.command(
@@ -107,6 +114,8 @@ class View(object):
         self._vim.command('autocmd defx FocusGained <buffer> ' +
                           'call defx#_do_action("redraw", [])')
         self._bufnr = self._vim.current.buffer.number
+
+        return True
 
     def init_syntax(self) -> None:
         for column in self._columns:

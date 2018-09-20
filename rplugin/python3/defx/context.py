@@ -17,5 +17,6 @@ class Context(typing.NamedTuple):
     profile: bool = False
     search: str = ''
     split: str = 'no'
+    toggle: bool = False
     targets: typing.List[dict] = []
     winwidth: int = 0

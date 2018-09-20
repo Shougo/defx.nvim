@@ -189,7 +189,7 @@ OPTIONS							*defx-options*
 							*defx-option-search*
 -search={path}
 		Search the {path}.
-		Default: ''
+		Default: ""
 
 						*defx-option-split*
 -split={direction}
@@ -201,6 +201,11 @@ OPTIONS							*defx-options*
 		"tab": Create the new tab
 
 		Default: "no"
+
+							*defx-option-toggle*
+-toggle
+		Close defx buffer window if this defx window exists.
+		Default: false
 
 						*defx-option-winwidth*
 -winwidth={window-width}
