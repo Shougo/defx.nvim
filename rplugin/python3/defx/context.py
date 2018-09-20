@@ -17,3 +17,4 @@ class Context(typing.NamedTuple):
     search: str = ''
     split: str = 'no'
     targets: typing.List[dict] = []
+    winwidth: int = 0

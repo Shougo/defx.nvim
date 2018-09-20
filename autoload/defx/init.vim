@@ -92,6 +92,7 @@ function! defx#init#_user_options() abort
         \ 'profile': v:false,
         \ 'search': '',
         \ 'split': 'no',
+        \ 'winwidth': 0,
         \ }
 endfunction
 function! s:internal_options() abort

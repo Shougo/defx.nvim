@@ -34,6 +34,7 @@ class View(object):
         self._selected_candidates = []
 
         context['fnamewidth'] = int(context['fnamewidth'])
+        context['winwidth'] = int(context['winwidth'])
         self._context = Context(**context)
 
         # Initialize defx
@@ -81,6 +82,10 @@ class View(object):
                  self._context.split == 'tab' else 'new'),
             ),
             '[defx]')
+
+        if self._context.split == 'vertical' and self._context.winwidth > 0:
+            self._vim.command(
+                f'vertical resize {self._context.winwidth}')
 
         window_options = self._vim.current.window.options
         window_options['list'] = False

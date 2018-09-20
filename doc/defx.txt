@@ -195,6 +195,13 @@ OPTIONS							*defx-options*
 
 		Default: "no"
 
+						*defx-option-winwidth*
+-winwidth={window-width}
+		Set the width of the window if |defx-option-split| is
+		"vertical".
+
+		Default: 0
+
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*
 
