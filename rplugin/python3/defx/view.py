@@ -5,6 +5,7 @@
 # ============================================================================
 
 from neovim import Nvim
+from pathlib import Path
 import time
 import typing
 
@@ -62,7 +63,7 @@ class View(object):
 
         if self._context.search:
             for defx in self._defxs:
-                self.search_file(self._context.search, defx._index)
+                self.search_file(Path(self._context.search), defx._index)
 
     def init_buffer(self) -> None:
         if self._context.split == 'tab':
