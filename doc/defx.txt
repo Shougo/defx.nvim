@@ -291,6 +291,12 @@ Q: I want to open defx window like explorer.
 A: >
 	Defx -split=vertical -winwidth=50 -direction=topleft
 
+Q: I want to open file like vimfiler explorer mode.
+
+A: >
+	  nnoremap <silent><buffer><expr> <CR>
+	  \ defx#do_action('open', 'wincmd w \| edit')
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
