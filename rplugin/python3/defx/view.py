@@ -106,8 +106,10 @@ class View(object):
         buffer_options['filetype'] = 'defx'
         buffer_options['modifiable'] = False
         buffer_options['modified'] = False
-        buffer_options['buflisted'] = False
-        buffer_options['bufhidden'] = 'wipe'
+
+        if not self._context.listed:
+            buffer_options['buflisted'] = False
+            buffer_options['bufhidden'] = 'wipe'
 
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('augroup defx | autocmd! | augroup END')

@@ -14,6 +14,7 @@ class Context(typing.NamedTuple):
     cursor: int = 0
     direction: str = ''
     fnamewidth: int = 0
+    listed: bool = False
     profile: bool = False
     search: str = ''
     split: str = 'no'

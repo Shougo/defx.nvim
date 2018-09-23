@@ -179,6 +179,12 @@ OPTIONS							*defx-options*
 -fnamewidth={filename-width}
 		Specifies the filename width of a defx buffer.
 
+							*defx-option-listed*
+-listed
+		Enable 'buflisted' option in defx buffer.
+
+		Default: false
+
 							*defx-option-profile*
 -profile
 		Enable profile feature.
