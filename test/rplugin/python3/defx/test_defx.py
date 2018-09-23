@@ -14,4 +14,4 @@ def test_view():
     vim.current = MagicMock()
 
     context = {'fnamewidth': 0}
-    defx = View(vim)
+    defx = View(vim, 0)

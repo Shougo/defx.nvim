@@ -10,11 +10,13 @@ import typing
 class Context(typing.NamedTuple):
     args: typing.List[str] = []
     auto_cd: bool = False
+    buffer_name: str = 'default'
     columns: str = ''
     cursor: int = 0
     direction: str = ''
     fnamewidth: int = 0
     listed: bool = False
+    new: bool = False
     profile: bool = False
     search: str = ''
     split: str = 'no'

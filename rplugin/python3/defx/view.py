@@ -21,22 +21,26 @@ from defx.util import error
 
 class View(object):
 
-    def __init__(self, vim: Nvim) -> None:
+    def __init__(self, vim: Nvim, index: int) -> None:
         self._vim: Nvim = vim
         self._candidates: typing.List[dict] = []
         self._selected_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
+        self._index = index
         self._bufname = '[defx]'
 
     def init(self, paths: typing.List[str], context: dict,
              clipboard: Clipboard) -> None:
         self._candidates = []
         self._selected_candidates = []
+        self._context = Context(**context)
+        self._clipboard = clipboard
 
         context['fnamewidth'] = int(context['fnamewidth'])
         context['winwidth'] = int(context['winwidth'])
         self._context = Context(**context)
+        self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
         # Initialize defx
         self._defxs: typing.List[Defx] = []

@@ -23,10 +23,14 @@ class Rplugin:
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
     def start(self, args: typing.List) -> None:
-        if not self._views:
-            view = View(self._vim)
+        [paths, context] = args
+        views = [x for x in self._views
+                 if context['buffer_name'] == x._context.buffer_name]
+        if not views or context['new']:
+            view = View(self._vim, len(self._views))
+            views = [view]
             self._views.append(view)
-        self._views[0].init(args[0], args[1], self._clipboard)
+        views[0].init(paths, context, self._clipboard)
 
     def do_action(self, args: typing.List) -> None:
         for view in [x for x in self._views

@@ -163,6 +163,11 @@ OPTIONS							*defx-options*
 		Change the working directory while navigating with defx.
 		Default: false
 
+						*defx-option-buffer-name*
+-buffer-name={buffer-name}
+		Specify defx buffer name.
+		Default: "default"
+
 							*defx-option-columns*
 -columns={columns1:columns2,...}
 		Specify defx columns.
@@ -182,6 +187,12 @@ OPTIONS							*defx-options*
 							*defx-option-listed*
 -listed
 		Enable 'buflisted' option in defx buffer.
+
+		Default: false
+
+							*defx-option-new*
+-new
+		Create new defx buffer.
 
 		Default: false
 
