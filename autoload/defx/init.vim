@@ -5,6 +5,10 @@
 "=============================================================================
 
 function! defx#init#_initialize() abort
+  if exists('g:defx#_channel_id')
+    return
+  endif
+
   call defx#init#_channel()
 
   augroup defx

@@ -20,4 +20,4 @@ class Source(Base):
         return [{
             'word': x,
             'action__command': f"call defx#_do_action('cd', ['{x}'])"
-        } for x in self.vim.vars['defx#_histories']]
+        } for x in reversed(self.vim.vars['defx#_histories'])]
