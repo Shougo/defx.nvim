@@ -77,8 +77,9 @@ class View(object):
         if self._context.split == 'tab':
             self._vim.command('tabnew')
 
-        if (self._context.toggle and
-                self._vim.call('bufwinnr', self._bufname) > 0):
+        winnr = self._vim.call('bufwinnr', self._bufname)
+        if (self._context.toggle and winnr > 0):
+            self._vim.command(f'{winnr}wincmd w')
             self.quit()
             return False
 
