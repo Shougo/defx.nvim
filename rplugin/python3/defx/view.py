@@ -52,10 +52,14 @@ class View(object):
 
         # Initialize columns
         self._columns: typing.List[Column] = []
-        self._all_columns: typing.List[Column] = [
-            Mark(self._vim), Filename(self._vim), Type(self._vim)]
-        columns = self._context.columns.split(':')
-        self._columns = [x for x in self._all_columns if x.name in columns]
+        self._all_columns: typing.List[str, Column] = {
+            'mark': Mark(self._vim),
+            'filename': Filename(self._vim),
+            'type': Type(self._vim),
+        }
+        self._columns = [self._all_columns[x]
+                         for x in self._context.columns.split(':')
+                         if x in self._all_columns]
         start = 1
         for column in self._columns:
             column.on_init()
