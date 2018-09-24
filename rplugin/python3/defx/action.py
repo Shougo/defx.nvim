@@ -145,7 +145,6 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                 continue
             dest = Path(defx._cwd).joinpath(overwrite.name)
 
-        error(view._vim, str(dest))
         if path == dest:
             continue
 
