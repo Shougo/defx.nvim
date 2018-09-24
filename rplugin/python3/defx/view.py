@@ -227,6 +227,10 @@ class View(object):
         history = defx._cursor_history
         history[defx._cwd] = self.get_cursor_candidate(cursor)['action__path']
 
+        global_histories = self._vim.vars['defx#_histories']
+        global_histories.append(defx._cwd)
+        self._vim.vars['defx#_histories'] = global_histories
+
         defx.cd(path)
         self.redraw(True)
         if path in history:

@@ -244,6 +244,12 @@ mark		File selected mark.
 type		File type.
 
 ==============================================================================
+DENITE SOURCES						*defx-denite-sources*
+
+						*denite-source-defx/history*
+defx/history	Gather defx histories.
+
+==============================================================================
 EXAMPLES						*defx-examples*
 >
 	autocmd FileType defx call s:defx_my_settings()

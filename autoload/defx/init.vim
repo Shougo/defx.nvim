@@ -10,6 +10,8 @@ function! defx#init#_initialize() abort
   augroup defx
     autocmd!
   augroup END
+
+  let g:defx#_histories = []
 endfunction
 function! defx#init#_channel() abort
   if !has('python3')

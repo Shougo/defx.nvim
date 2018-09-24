@@ -29,6 +29,10 @@ function! defx#do_action(action, ...) abort
         \ string(a:action), string(args))
 endfunction
 function! defx#_do_action(action, args) abort
+  if &l:filetype !=# 'defx'
+    return
+  endif
+
   let context = defx#init#_context({})
   call defx#util#rpcrequest('_defx_do_action', [a:action, a:args, context])
 endfunction
