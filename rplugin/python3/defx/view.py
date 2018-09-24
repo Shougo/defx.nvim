@@ -52,7 +52,7 @@ class View(object):
 
         # Initialize columns
         self._columns: typing.List[Column] = []
-        self._all_columns: typing.List[str, Column] = {
+        self._all_columns: typing.Dict[str, Column] = {
             'mark': Mark(self._vim),
             'filename': Filename(self._vim),
             'type': Type(self._vim),
