@@ -6,6 +6,7 @@
 
 from enum import auto, IntFlag
 import importlib
+from neovim import Nvim
 from pathlib import Path
 import shutil
 import typing
@@ -139,7 +140,13 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         path = candidate['action__path']
         dest = Path(defx._cwd).joinpath(path.name)
         if dest.exists():
-            error(view._vim, f'{dest} is already exists')
+            overwrite = check_overwrite(view._vim, dest, path)
+            if overwrite == Path(''):
+                continue
+            dest = Path(defx._cwd).joinpath(overwrite.name)
+
+        error(view._vim, str(dest))
+        if path == dest:
             continue
 
         view.print_msg(
@@ -148,7 +155,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             if path.is_dir():
                 shutil.copytree(str(path), dest)
             else:
-                shutil.copy2(str(path), defx._cwd)
+                shutil.copy2(str(path), dest)
         elif action == ClipboardAction.MOVE:
             shutil.move(str(path), defx._cwd)
         view._vim.command('redraw')
@@ -252,6 +259,25 @@ def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
 
 def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
     defx._enabled_ignored_files = not defx._enabled_ignored_files
+
+
+def check_overwrite(vim: Nvim, dest: Path, src: Path) -> Path:
+    choice: int = vim.call('confirm',
+                           f'{dest} is already exists.  Overwrite?',
+                           '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
+    ret: Path = Path('')
+    if choice == 1:
+        ret = src
+    elif choice == 2:
+        ret = Path('')
+    elif choice == 3:
+        ret = Path(vim.call('input', f'{src} -> ', str(src),
+                            ('dir' if src.is_dir() else 'file')))
+    elif choice == 4 and dest.stat().st_mtime < src.stat().st_mtime:
+        ret = src
+    elif choice == 5:
+        ret = Path(str(src) + '_')
+    return ret
 
 
 class ActionAttr(IntFlag):
