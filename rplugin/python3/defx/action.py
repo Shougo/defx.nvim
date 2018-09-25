@@ -88,7 +88,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     if not filename:
         return
     if filename.exists():
-        error(view._vim, f'{filename} is already exists')
+        error(view._vim, f'{filename} already exists')
         return
 
     filename.mkdir()
@@ -105,7 +105,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     if not filename:
         return
     if filename.exists():
-        error(view._vim, '{filename} is already exists')
+        error(view._vim, '{filename} already exists')
         return
 
     if not filename.parent.exists():
@@ -227,7 +227,7 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         if not new or new == old:
             continue
         if new.exists():
-            error(view._vim, f'{new} is already exists')
+            error(view._vim, f'{new} already exists')
             continue
 
         old.rename(new)
@@ -262,7 +262,7 @@ def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
 
 def check_overwrite(vim: Nvim, dest: Path, src: Path) -> Path:
     choice: int = vim.call('confirm',
-                           f'{dest} is already exists.  Overwrite?',
+                           f'{dest} already exists.  Overwrite?',
                            '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
     ret: Path = Path('')
     if choice == 1:
