@@ -125,7 +125,7 @@ class View(object):
             buffer_options['bufhidden'] = 'wipe'
 
         self._vim.command('silent doautocmd FileType defx')
-        self._vim.command('augroup defx | autocmd! | augroup END')
+        self._vim.command('autocmd! FocusGained <buffer>')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
                           'call defx#_do_action("redraw", [])')
         self._bufnr = self._vim.current.buffer.number
