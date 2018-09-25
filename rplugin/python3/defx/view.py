@@ -116,6 +116,10 @@ class View(object):
         buffer_options['modifiable'] = False
         buffer_options['modified'] = False
 
+        self._vim.current.buffer.vars['defx'] = {
+            'context': self._context._asdict(),
+        }
+
         if not self._context.listed:
             buffer_options['buflisted'] = False
             buffer_options['bufhidden'] = 'wipe'
