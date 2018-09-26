@@ -100,13 +100,14 @@ class View(object):
             ),
             self._bufname)
 
-        if self._context.split == 'vertical' and self._context.winwidth > 0:
-            self._vim.command(
-                f'vertical resize {self._context.winwidth}')
-
         window_options = self._vim.current.window.options
         window_options['list'] = False
         window_options['wrap'] = False
+
+        if self._context.split == 'vertical' and self._context.winwidth > 0:
+            window_options['winfixwidth'] = True
+            self._vim.command(
+                f'vertical resize {self._context.winwidth}')
 
         buffer_options = self._vim.current.buffer.options
         buffer_options['buftype'] = 'nofile'
