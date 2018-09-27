@@ -22,4 +22,5 @@ class Context(typing.NamedTuple):
     split: str = 'no'
     toggle: bool = False
     targets: typing.List[dict] = []
+    winheight: int = 0
     winwidth: int = 0

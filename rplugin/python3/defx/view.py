@@ -38,6 +38,7 @@ class View(object):
         self._clipboard = clipboard
 
         context['fnamewidth'] = int(context['fnamewidth'])
+        context['winheight'] = int(context['winheight'])
         context['winwidth'] = int(context['winwidth'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
@@ -104,10 +105,14 @@ class View(object):
         window_options['list'] = False
         window_options['wrap'] = False
 
-        if self._context.split == 'vertical' and self._context.winwidth > 0:
+        if (self._context.split == 'vertical'
+                and self._context.winwidth > 0):
             window_options['winfixwidth'] = True
-            self._vim.command(
-                f'vertical resize {self._context.winwidth}')
+            self._vim.command(f'vertical resize {self._context.winwidth}')
+        elif (self._context.split == 'horizontal' and
+              self._context.winheight > 0):
+            window_options['winfixheight'] = True
+            self._vim.command(f'resize {self._context.winheight}')
 
         buffer_options = self._vim.current.buffer.options
         buffer_options['buftype'] = 'nofile'
