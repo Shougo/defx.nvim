@@ -6,9 +6,9 @@
 
 from enum import auto, IntFlag
 import importlib
-from neovim import Nvim
 from pathlib import Path
 import shutil
+import time
 import typing
 
 from defx.clipboard import ClipboardAction
@@ -140,7 +140,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         path = candidate['action__path']
         dest = Path(defx._cwd).joinpath(path.name)
         if dest.exists():
-            overwrite = check_overwrite(view._vim, dest, path)
+            overwrite = check_overwrite(view, dest, path)
             if overwrite == Path(''):
                 continue
             dest = Path(defx._cwd).joinpath(overwrite.name)
@@ -260,19 +260,28 @@ def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
     defx._enabled_ignored_files = not defx._enabled_ignored_files
 
 
-def check_overwrite(vim: Nvim, dest: Path, src: Path) -> Path:
-    choice: int = vim.call('confirm',
-                           f'{dest} already exists.  Overwrite?',
-                           '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
+def check_overwrite(view: View, dest: Path, src: Path) -> Path:
+    s_stat = src.stat()
+    s_mtime = s_stat.st_mtime
+    view.print_msg(f' src: {src} {s_stat.st_size} bytes')
+    view.print_msg(f'      {time.strftime("%c", time.localtime(s_mtime))}')
+    d_stat = dest.stat()
+    d_mtime = d_stat.st_mtime
+    view.print_msg(f'dest: {dest} {d_stat.st_size} bytes')
+    view.print_msg(f'      {time.strftime("%c", time.localtime(d_mtime))}')
+
+    choice: int = view._vim.call('confirm',
+                                 f'{dest} already exists.  Overwrite?',
+                                 '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
     ret: Path = Path('')
     if choice == 1:
         ret = src
     elif choice == 2:
         ret = Path('')
     elif choice == 3:
-        ret = Path(vim.call('input', f'{src} -> ', str(src),
-                            ('dir' if src.is_dir() else 'file')))
-    elif choice == 4 and dest.stat().st_mtime < src.stat().st_mtime:
+        ret = Path(view._vim.call('input', f'{src} -> ', str(src),
+                                  ('dir' if src.is_dir() else 'file')))
+    elif choice == 4 and d_mtime < s_mtime:
         ret = src
     elif choice == 5:
         ret = Path(str(src) + '_')
