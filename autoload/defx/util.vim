@@ -38,6 +38,7 @@ endfunction
 function! defx#util#execute_path(command, path) abort
   let save_wildignore = &wildignore
   try
+    let &wildignore = ''
     execute a:command '`=s:expand(a:path)`'
     if &l:filetype ==# ''
       filetype detect
