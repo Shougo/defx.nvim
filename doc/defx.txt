@@ -149,6 +149,9 @@ toggle_select					*defx-action-toggle_select*
 toggle_select_all				*defx-action-toggle_select_all*
 		Toggle the all candidates select.
 
+yank_path					*defx-action-yank_path*
+		Yank the all candidates path.
+
 ------------------------------------------------------------------------------
 OPTIONS							*defx-options*
 
@@ -286,6 +289,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('rename')
 	  nnoremap <silent><buffer><expr> x
 	  \ defx#do_action('execute_system')
+	  nnoremap <silent><buffer><expr> yy
+	  \ defx#do_action('yank_path')
 	  nnoremap <silent><buffer><expr> .
 	  \ defx#do_action('toggle_ignored_files')
 	  nnoremap <silent><buffer><expr> h

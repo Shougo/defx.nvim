@@ -192,7 +192,6 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
             shutil.rmtree(str(path))
         else:
             path.unlink()
-    view.redraw(True)
 
 
 def _remove_trash(view: View, defx: Defx, context: Context) -> None:
@@ -260,6 +259,15 @@ def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
     defx._enabled_ignored_files = not defx._enabled_ignored_files
 
 
+def _yank_path(view: View, defx: Defx, context: Context) -> None:
+    yank = '\n'.join([str(x['action__path']) for x in context.targets])
+    view._vim.call('setreg', '"', yank)
+    if (view._vim.call('has', 'clipboard') or
+            view._vim.call('has', 'xterm_clipboard')):
+        view._vim.call('setreg', '+', yank)
+    view.print_msg('Yanked:\n' + yank)
+
+
 def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     s_stat = src.stat()
     s_mtime = s_stat.st_mtime
@@ -310,11 +318,12 @@ DEFAULT_ACTIONS = {
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
-    'remove': ActionTable(func=_remove),
+    'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
     'toggle_ignored_files': ActionTable(func=_toggle_ignored_files,
                                         attr=ActionAttr.REDRAW),
     'toggle_select': ActionTable(func=_toggle_select),
     'toggle_select_all': ActionTable(func=_toggle_select_all),
+    'yank_path': ActionTable(func=_yank_path, attr=ActionAttr.REDRAW),
 }
