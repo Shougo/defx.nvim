@@ -91,7 +91,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
         error(view._vim, f'{filename} already exists')
         return
 
-    filename.mkdir()
+    filename.mkdir(parents=True)
     view.redraw(True)
     view.search_file(str(filename), defx._index)
 
@@ -109,7 +109,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         return
 
     if not filename.parent.exists():
-        filename.parent.mkdir()
+        filename.parent.mkdir(parents=True)
 
     Path(filename).touch()
 
