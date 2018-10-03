@@ -281,9 +281,13 @@ class View(object):
 
         cursor = new_context['cursor']
 
+        defx_targets = {
+            x._index: self.get_selected_candidates(cursor, x._index)
+            for x in self._defxs}
+
         import defx.action as action
         for defx in self._defxs:
-            targets = self.get_selected_candidates(cursor, defx._index)
+            targets = defx_targets[defx._index]
             if not targets:
                 continue
             context = self._context._replace(

@@ -25,9 +25,21 @@ def do_action(view: View, defx: Defx,
     """
     if action_name not in DEFAULT_ACTIONS:
         return True
+
     action = DEFAULT_ACTIONS[action_name]
+
+    if ActionAttr.MARK not in action.attr and view._selected_candidates:
+        # Clear marks
+        view._selected_candidates = []
+        view.redraw()
+
     action.func(view, defx, context)
-    if ActionAttr.REDRAW in action.attr:
+
+    if ActionAttr.MARK in action.attr:
+        # Update marks
+        view.redraw()
+    elif ActionAttr.REDRAW in action.attr:
+        # Redraw
         view.redraw(True)
     return False
 
@@ -248,7 +260,6 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
         view._selected_candidates.remove(index)
     else:
         view._selected_candidates.append(index)
-    view.redraw()
 
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
@@ -259,7 +270,6 @@ def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
                 view._selected_candidates.remove(index)
             else:
                 view._selected_candidates.append(index)
-    view.redraw()
 
 
 def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
@@ -305,6 +315,7 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
 
 class ActionAttr(IntFlag):
     REDRAW = auto()
+    MARK = auto()
     NONE = 0
 
 
@@ -316,9 +327,9 @@ class ActionTable(typing.NamedTuple):
 DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd),
     'change_vim_cwd': ActionTable(func=_change_vim_cwd),
-    'copy': ActionTable(func=_copy, attr=ActionAttr.REDRAW),
+    'copy': ActionTable(func=_copy),
     'execute_system': ActionTable(func=_execute_system),
-    'move': ActionTable(func=_move, attr=ActionAttr.REDRAW),
+    'move': ActionTable(func=_move),
     'open': ActionTable(func=_open),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
@@ -331,7 +342,9 @@ DEFAULT_ACTIONS = {
     'rename': ActionTable(func=_rename),
     'toggle_ignored_files': ActionTable(func=_toggle_ignored_files,
                                         attr=ActionAttr.REDRAW),
-    'toggle_select': ActionTable(func=_toggle_select),
-    'toggle_select_all': ActionTable(func=_toggle_select_all),
-    'yank_path': ActionTable(func=_yank_path, attr=ActionAttr.REDRAW),
+    'toggle_select': ActionTable(func=_toggle_select,
+                                 attr=ActionAttr.MARK),
+    'toggle_select_all': ActionTable(func=_toggle_select_all,
+                                     attr=ActionAttr.MARK),
+    'yank_path': ActionTable(func=_yank_path),
 }
