@@ -90,7 +90,7 @@ class View(object):
 
         if (self._context.reuse and winnr > 0):
             self._vim.command(f'{winnr}wincmd w')
-            self.quit()
+            return True
 
         # Create new buffer
         self._vim.call(
