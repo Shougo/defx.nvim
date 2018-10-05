@@ -88,6 +88,10 @@ class View(object):
             self.quit()
             return False
 
+        if (self._context.reuse and winnr > 0):
+            self._vim.command(f'{winnr}wincmd w')
+            self.quit()
+
         # Create new buffer
         self._vim.call(
             'defx#util#execute_path',

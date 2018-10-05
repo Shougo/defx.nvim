@@ -103,6 +103,7 @@ function! defx#init#_user_options() abort
         \ 'search': '',
         \ 'split': 'no',
         \ 'toggle': v:false,
+        \ 'reuse': v:false,
         \ 'winheight': 0,
         \ 'winwidth': 0,
         \ }
