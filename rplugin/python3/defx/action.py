@@ -49,6 +49,13 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         view.search_file(prev_cwd, defx._index)
 
 
+def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
+    """
+    Change the current working directory.
+    """
+    view._vim.command(f'silent lcd {defx._cwd}')
+
+
 def _copy(view: View, defx: Defx, context: Context) -> None:
     message = 'Copy to the clipboard: {}'.format(
         str(context.targets[0]['action__path'])
@@ -308,6 +315,7 @@ class ActionTable(typing.NamedTuple):
 
 DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd),
+    'change_vim_cwd': ActionTable(func=_change_vim_cwd),
     'copy': ActionTable(func=_copy, attr=ActionAttr.REDRAW),
     'execute_system': ActionTable(func=_execute_system),
     'move': ActionTable(func=_move, attr=ActionAttr.REDRAW),
