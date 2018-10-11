@@ -156,15 +156,13 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
     " Add "-no-" option names completion.
     let _ += map(copy(bool_options), "'-no-' . tr(v:val, '_', '-')")
   else
-    let arglead = expand(a:arglead)
+    let arglead = s:expand(a:arglead)
     " Path names completion.
     let files = filter(glob(a:arglead . '*', v:true, v:true),
           \ 'stridx(tolower(v:val), tolower(arglead)) == 0')
-    let files = filter(files, 'isdirectory(v:val)')
-    call map(files, 's:substitute_path_separator(expand(v:val))')
+    let files = map(filter(files, 'isdirectory(v:val)'), 's:expand(v:val)')
     if a:arglead =~# '^\~'
-      let home_pattern = '^'.
-            \ s:substitute_path_separator(expand('~')).'/'
+      let home_pattern = '^'. s:expand('~')
       call map(files, "substitute(v:val, home_pattern, '~/', '')")
     endif
     call map(files, "escape(v:val.'/', ' \\')")
