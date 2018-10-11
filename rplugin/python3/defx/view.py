@@ -83,10 +83,12 @@ class View(object):
             self._vim.command('tabnew')
 
         winnr = self._vim.call('bufwinnr', self._bufname)
-        if (self._context.toggle and winnr > 0):
+        if winnr > 0:
             self._vim.command(f'{winnr}wincmd w')
-            self.quit()
-            return False
+            if self._context.toggle:
+                self.quit()
+                return False
+            return True
 
         # Create new buffer
         self._vim.call(
