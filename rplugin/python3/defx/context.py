@@ -21,6 +21,7 @@ class Context(typing.NamedTuple):
     search: str = ''
     split: str = 'no'
     toggle: bool = False
+    reuse: bool = False
     targets: typing.List[dict] = []
     winheight: int = 0
     winwidth: int = 0
