@@ -5,8 +5,10 @@
 # ============================================================================
 
 from neovim import Nvim
+import os
 import time
 import typing
+import glob
 from pathlib import Path
 
 from defx.base.column import Base as Column
@@ -16,7 +18,7 @@ from defx.defx import Defx
 from defx.column.filename import Column as Filename
 from defx.column.mark import Column as Mark
 from defx.column.type import Column as Type
-from defx.util import error
+from defx.util import error, import_plugin
 
 
 class View(object):
@@ -58,6 +60,16 @@ class View(object):
             'filename': Filename(self._vim),
             'type': Type(self._vim),
         }
+
+        for custom_column in self.load_custom_columns():
+            column = import_plugin(custom_column, 'column', 'Column')
+            if not column:
+                continue
+
+            column = column(self._vim)
+            if column.name not in self._all_columns:
+                self._all_columns[column.name] = column
+
         self._columns = [self._all_columns[x]
                          for x in self._context.columns.split(':')
                          if x in self._all_columns]
@@ -301,3 +313,15 @@ class View(object):
             if ret:
                 error(self._vim, 'Invalid action_name:' + action_name)
                 return
+
+    def load_custom_columns(self) -> typing.List[str]:
+        rtp_list = self._vim.options['runtimepath'].split(',')
+        source = os.path.join('rplugin', 'python3', 'defx', 'column', '*.py')
+        result: typing.List[str] = []
+
+        for path in rtp_list:
+            globpath = glob.glob(os.path.join(path, source))
+            if globpath:
+                result += globpath
+
+        return result
