@@ -45,7 +45,8 @@ def confirm(vim: Nvim, question: str) -> bool:
     return option is 1
 
 
-def import_plugin(path, source, classname):
+def import_plugin(path: str, source: str,
+                  classname: str) -> typing.Any:
     """Import defx plugin source class.
 
     If the class exists, add its directory to sys.path.
@@ -53,7 +54,7 @@ def import_plugin(path, source, classname):
     name = os.path.splitext(os.path.basename(path))[0]
     module_name = 'defx.%s.%s' % (source, name)
 
-    module = SourceFileLoader(module_name, path).load_module()
+    module = SourceFileLoader(module_name, path).load_module()  # type: ignore
     cls = getattr(module, classname, None)
     if not cls:
         return None
