@@ -36,10 +36,8 @@ function! defx#util#has_yarp() abort
 endfunction
 
 function! defx#util#execute_path(command, path) abort
-  let save_wildignore = &wildignore
   try
-    let &wildignore = ''
-    execute a:command '`=s:expand(a:path)`'
+    execute a:command s:expand(a:path)
     if &l:filetype ==# ''
       filetype detect
     endif
@@ -48,8 +46,6 @@ function! defx#util#execute_path(command, path) abort
   catch
     call defx#util#print_error(v:throwpoint)
     call defx#util#print_error(v:exception)
-  finally
-    let &wildignore = save_wildignore
   endtry
 endfunction
 function! s:expand(path) abort
