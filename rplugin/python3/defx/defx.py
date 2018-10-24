@@ -41,7 +41,7 @@ class Defx(object):
         root['is_root'] = True
         return root
 
-    def gather_candidates(self, path: str='') -> typing.List:
+    def gather_candidates(self, path: str = '') -> typing.List:
         """
         Returns file candidates
         """

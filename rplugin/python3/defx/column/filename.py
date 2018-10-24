@@ -25,10 +25,10 @@ class Column(Base):
 
     def highlight(self) -> None:
         self.vim.command(
-            'syntax match {0}_{1} /.*\// contained containedin={0}'.format(
+            r'syntax match {0}_{1} /.*\// contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         self.vim.command(
-            ('syntax match {0}_{1} /\%{2}c\..*/' +
+            (r'syntax match {0}_{1} /\%{2}c\..*/' +
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
         self.vim.command(

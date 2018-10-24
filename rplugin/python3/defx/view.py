@@ -146,7 +146,7 @@ class View(object):
                 'silent! syntax clear ' + column.syntax_name)
             self._vim.command(
                 'syntax region ' + column.syntax_name +
-                ' start=/\%' + str(column.start) + 'v/ end=/\%' +
+                r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
             column.highlight()
 
