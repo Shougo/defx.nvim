@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import importlib.util
 import typing
 
 from neovim import Nvim
@@ -39,3 +40,18 @@ def confirm(vim: Nvim, question: str) -> bool:
     """
     option: int = vim.call('confirm', question, '&Yes\n&No\n&Cancel')
     return option is 1
+
+
+def import_plugin(path: Path, source: str,
+                  classname: str) -> typing.Any:
+    """Import defx plugin source class.
+
+    If the class exists, add its directory to sys.path.
+    """
+    module_name = 'defx.%s.%s' % (source, path.stem)
+
+    spec = importlib.util.spec_from_file_location(module_name, str(path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)  # type: ignore
+    cls = getattr(module, classname, None)
+    return cls
