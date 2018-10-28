@@ -91,17 +91,31 @@ class View(object):
             return True
 
         # Create new buffer
-        self._vim.call(
-            'defx#util#execute_path',
-            'silent keepalt %s %s %s ' % (
-                self._context.direction,
-                ('vertical'
-                 if self._context.split == 'vertical' else ''),
-                ('edit'
-                 if self._context.split == 'no' or
-                 self._context.split == 'tab' else 'new'),
-            ),
-            self._bufname)
+        vertical = 'vertical' if self._context.split == 'vertical' else ''
+        if self._vim.call('bufexists', self._bufnr):
+            command = ('buffer'
+                       if self._context.split == 'no' or
+                       self._context.split == 'tab' else 'sbuffer')
+            self._vim.command(
+                'silent keepalt %s %s %s %s' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                    self._bufnr,
+                )
+            )
+        else:
+            command = ('edit'
+                       if self._context.split == 'no' or
+                       self._context.split == 'tab' else 'new')
+            self._vim.call(
+                'defx#util#execute_path',
+                'silent keepalt %s %s %s ' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                ),
+                self._bufname)
 
         window_options = self._vim.current.window.options
         window_options['list'] = False
