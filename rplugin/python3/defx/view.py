@@ -5,19 +5,14 @@
 # ============================================================================
 
 from neovim import Nvim
-import os
 import time
 import typing
-import glob
 from pathlib import Path
 
 from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
-from defx.column.filename import Column as Filename
-from defx.column.mark import Column as Mark
-from defx.column.type import Column as Type
 from defx.util import error, import_plugin
 
 
@@ -53,16 +48,22 @@ class View(object):
         if not self.init_buffer():
             return
 
+        self.init_columns()
+        self.init_syntax()
+        self.redraw(True)
+
+        if self._context.search:
+            for defx in self._defxs:
+                if self.search_tree(self._context.search, defx._index):
+                    break
+
+    def init_columns(self) -> None:
         # Initialize columns
         self._columns: typing.List[Column] = []
-        self._all_columns: typing.Dict[str, Column] = {
-            'mark': Mark(self._vim),
-            'filename': Filename(self._vim),
-            'type': Type(self._vim),
-        }
+        self._all_columns: typing.Dict[str, Column] = {}
 
-        for custom_column in self.load_custom_columns():
-            column = import_plugin(custom_column, 'column', 'Column')
+        for path_column in self.load_custom_columns():
+            column = import_plugin(path_column, 'column', 'Column')
             if not column:
                 continue
 
@@ -81,14 +82,6 @@ class View(object):
             column.end = start + length - 1
             column.syntax_name = 'Defx_' + column.name
             start += length
-
-        self.init_syntax()
-        self.redraw(True)
-
-        if self._context.search:
-            for defx in self._defxs:
-                if self.search_tree(self._context.search, defx._index):
-                    break
 
     def init_buffer(self) -> bool:
         if self._context.split == 'tab':
@@ -328,14 +321,12 @@ class View(object):
                 error(self._vim, 'Invalid action_name:' + action_name)
                 return
 
-    def load_custom_columns(self) -> typing.List[str]:
+    def load_custom_columns(self) -> typing.List[Path]:
         rtp_list = self._vim.options['runtimepath'].split(',')
-        source = os.path.join('rplugin', 'python3', 'defx', 'column', '*.py')
-        result: typing.List[str] = []
+        result: typing.List[Path] = []
 
         for path in rtp_list:
-            globpath = glob.glob(os.path.join(path, source))
-            if globpath:
-                result += globpath
+            result += Path(path).joinpath(
+                'rplugin', 'python3', 'defx', 'column').glob('*.py')
 
         return result

@@ -4,14 +4,11 @@
 # License: MIT license
 # ============================================================================
 
-import os
-import sys
+import importlib.util
 import typing
 
 from neovim import Nvim
 from pathlib import Path
-
-from importlib.machinery import SourceFileLoader
 
 
 def error(vim: Nvim, expr: typing.Any) -> None:
@@ -45,21 +42,16 @@ def confirm(vim: Nvim, question: str) -> bool:
     return option is 1
 
 
-def import_plugin(path: str, source: str,
+def import_plugin(path: Path, source: str,
                   classname: str) -> typing.Any:
     """Import defx plugin source class.
 
     If the class exists, add its directory to sys.path.
     """
-    name = os.path.splitext(os.path.basename(path))[0]
-    module_name = 'defx.%s.%s' % (source, name)
+    module_name = 'defx.%s.%s' % (source, path.stem)
 
-    module = SourceFileLoader(module_name, path).load_module()  # type: ignore
+    spec = importlib.util.spec_from_file_location(module_name, str(path))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)  # type: ignore
     cls = getattr(module, classname, None)
-    if not cls:
-        return None
-
-    dirname = os.path.dirname(path)
-    if dirname not in sys.path:
-        sys.path.insert(0, dirname)
     return cls
