@@ -15,6 +15,7 @@ Interface		|defx-interface|
   Actions		  |defx-actions|
   Options		  |defx-options|
 Columns			|defx-columns|
+  External columns	  |defx-external-columns|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -258,6 +259,11 @@ mark		File selected mark.
 
 							*defx-column-type*
 type		File type.
+
+EXTERNAL COLUMNS					*defx-external-columns*
+
+git 		Git status.
+		https://github.com/kristijanhusak/defx-git
 
 ==============================================================================
 DENITE SOURCES						*defx-denite-sources*
