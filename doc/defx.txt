@@ -97,6 +97,9 @@ change_vim_cwd					*change_vim_cwd*
 copy 						*defx-action-copy*
 		Copy the selected files to defx clipboard.
 
+drop							*defx-action-drop*
+		Open the file like |:drop| command.
+
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.
 
@@ -334,8 +337,7 @@ A: >
 Q: I want to open file like vimfiler explorer mode.
 
 A: >
-	  nnoremap <silent><buffer><expr> <CR>
-	  \ defx#do_action('open', 'wincmd w \| drop')
+	  nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
