@@ -76,7 +76,7 @@ class View(object):
                          if x in self._all_columns]
         start = 1
         for column in self._columns:
-            column.on_init()
+            column.on_init(self._context)
             column.start = start
             length = column.length(self._context)
             column.end = start + length - 1
@@ -217,6 +217,9 @@ class View(object):
             candidate['is_selected'] = False
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
+
+        for column in self._columns:
+            column.on_redraw(self._context)
 
         buffer_options['modifiable'] = True
         self._vim.current.buffer[:] = [

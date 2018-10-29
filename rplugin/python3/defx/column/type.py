@@ -40,7 +40,7 @@ class Column(Base):
         }
         self._length: int = 0
 
-    def on_init(self) -> None:
+    def on_init(self, context: Context) -> None:
         self._length = max([self.vim.call('strwidth', x['icon'])
                             for x in self.vars['types']]) + 1
 

@@ -20,7 +20,10 @@ class Base:
         self.end: int = -1
         self.vars: dict = {}
 
-    def on_init(self) -> None:
+    def on_init(self, context: Context) -> None:
+        pass
+
+    def on_redraw(self, context: Context) -> None:
         pass
 
     @abstractmethod
