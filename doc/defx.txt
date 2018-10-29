@@ -101,6 +101,9 @@ copy 						*defx-action-copy*
 drop							*defx-action-drop*
 		Open the file like |:drop| command.
 
+		Action args:
+			0. open command(The default is |:edit|)
+
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.
 
