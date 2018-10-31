@@ -65,7 +65,19 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current working directory.
     """
-    view._vim.command(f'silent lcd {defx._cwd}')
+    local = True
+    if context.args:
+        if context.args[0] == 'local':
+            local = True
+        elif context.args[0] == 'global':
+            local = False
+        else:
+            err_msg = ('expected local or global as an argument, got ' +
+                       str(context.args[0]))
+            error(view._vim, err_msg)
+
+    command = 'lcd' if local else 'cd'
+    view._vim.command(f'silent {command} {defx._cwd}')
 
 
 def _copy(view: View, defx: Defx, context: Context) -> None:
