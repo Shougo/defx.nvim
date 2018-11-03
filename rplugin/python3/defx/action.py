@@ -65,7 +65,8 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current working directory.
     """
-    view._vim.command(f'silent lcd {defx._cwd}')
+    command = context.args[0] if context.args else 'lcd'
+    view._vim.command(f'silent {command} {defx._cwd}')
 
 
 def _copy(view: View, defx: Defx, context: Context) -> None:
