@@ -219,6 +219,13 @@ OPTIONS							*defx-options*
 
 		Default: false
 
+							*defx-option-resume*
+-resume
+		Resume existing defx buffer.
+		Note: |defx-option-listed| is needed to resume.
+
+		Default: false
+
 							*defx-option-search*
 -search={path}
 		Search the {path}.

@@ -29,24 +29,24 @@ class View(object):
 
     def init(self, paths: typing.List[str], context: dict,
              clipboard: Clipboard) -> None:
-        self._candidates = []
-        self._selected_candidates = []
-        self._context = Context(**context)
-        self._clipboard = clipboard
-
         context['fnamewidth'] = int(context['fnamewidth'])
         context['winheight'] = int(context['winheight'])
         context['winwidth'] = int(context['winwidth'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
+        if not self.init_buffer():
+            return
+
+        self._candidates = []
+        self._selected_candidates = []
+        self._context = Context(**context)
+        self._clipboard = clipboard
+
         # Initialize defx
         self._defxs: typing.List[Defx] = []
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
-
-        if not self.init_buffer():
-            return
 
         self.init_columns()
         self.init_syntax()
@@ -109,6 +109,8 @@ class View(object):
                     self._bufnr,
                 )
             )
+            if self._context.resume:
+                return False
         else:
             command = ('edit'
                        if self._context.split == 'no' or

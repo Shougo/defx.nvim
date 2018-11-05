@@ -100,6 +100,7 @@ function! defx#init#_user_options() abort
         \ 'listed': v:false,
         \ 'new': v:false,
         \ 'profile': v:false,
+        \ 'resume': v:false,
         \ 'search': '',
         \ 'split': 'no',
         \ 'toggle': v:false,

@@ -18,6 +18,7 @@ class Context(typing.NamedTuple):
     listed: bool = False
     new: bool = False
     profile: bool = False
+    resume: bool = False
     search: str = ''
     split: str = 'no'
     toggle: bool = False
