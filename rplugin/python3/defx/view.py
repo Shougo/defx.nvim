@@ -32,6 +32,7 @@ class View(object):
         context['fnamewidth'] = int(context['fnamewidth'])
         context['winheight'] = int(context['winheight'])
         context['winwidth'] = int(context['winwidth'])
+        context['prev_bufnr'] = int(context['prev_bufnr'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
@@ -98,9 +99,8 @@ class View(object):
         # Create new buffer
         vertical = 'vertical' if self._context.split == 'vertical' else ''
         if self._vim.call('bufexists', self._bufnr):
-            command = ('buffer'
-                       if self._context.split == 'no' or
-                       self._context.split == 'tab' else 'sbuffer')
+            command = ('buffer' if self._context.split in ['no', 'tab']
+                       else 'sbuffer')
             self._vim.command(
                 'silent keepalt %s %s %s %s' % (
                     self._context.direction,
@@ -112,9 +112,8 @@ class View(object):
             if self._context.resume:
                 return False
         else:
-            command = ('edit'
-                       if self._context.split == 'no' or
-                       self._context.split == 'tab' else 'new')
+            command = ('edit' if self._context.split in ['no', 'tab']
+                       else 'new')
             self._vim.call(
                 'defx#util#execute_path',
                 'silent keepalt %s %s %s ' % (
@@ -178,10 +177,16 @@ class View(object):
         self._vim.call('defx#util#print_message', expr)
 
     def quit(self) -> None:
-        if self._vim.call('winnr', '$') != 1:
-            self._vim.command('close')
+        if self._context.split in ['no', 'tab']:
+            if self._vim.call('bufexists', self._context.prev_bufnr):
+                self._vim.command('buffer ' + str(self._context.prev_bufnr))
+            else:
+                self._vim.command('enew')
         else:
-            self._vim.command('enew')
+            if self._vim.call('winnr', '$') != 1:
+                self._vim.command('close')
+            else:
+                self._vim.command('enew')
 
     def init_candidates(self) -> None:
         self._candidates = []

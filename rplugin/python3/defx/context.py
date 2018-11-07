@@ -17,6 +17,7 @@ class Context(typing.NamedTuple):
     fnamewidth: int = 0
     listed: bool = False
     new: bool = False
+    prev_bufnr: int = 0
     profile: bool = False
     resume: bool = False
     search: str = ''

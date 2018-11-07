@@ -111,6 +111,7 @@ endfunction
 function! s:internal_options() abort
   return {
         \ 'cursor': line('.'),
+        \ 'prev_bufnr': bufnr('%'),
         \ }
 endfunction
 function! defx#init#_context(user_context) abort
