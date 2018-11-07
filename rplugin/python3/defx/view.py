@@ -331,7 +331,9 @@ class View(object):
         result: typing.List[Path] = []
 
         for path in rtp_list:
-            result += Path(path).joinpath(
-                'rplugin', 'python3', 'defx', 'column').glob('*.py')
+            column_path = Path(path).joinpath(
+                'rplugin', 'python3', 'defx', 'column')
+            if column_path.is_dir():
+                result += column_path.glob('*.py')
 
         return result
