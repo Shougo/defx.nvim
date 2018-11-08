@@ -181,6 +181,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
 
 def _paste(view: View, defx: Defx, context: Context) -> None:
     action = view._clipboard.action
+    dest = None
     for index, candidate in enumerate(view._clipboard.candidates):
         path = candidate['action__path']
         dest = Path(defx._cwd).joinpath(path.name)
@@ -204,6 +205,10 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             shutil.move(str(path), defx._cwd)
         view._vim.command('redraw')
     view._vim.command('echo')
+
+    view.redraw(True)
+    if dest:
+        view.search_file(str(dest), defx._index)
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:
@@ -360,7 +365,7 @@ DEFAULT_ACTIONS = {
     'drop': ActionTable(func=_drop),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
-    'paste': ActionTable(func=_paste, attr=ActionAttr.REDRAW),
+    'paste': ActionTable(func=_paste),
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
