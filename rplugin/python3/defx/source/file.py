@@ -9,7 +9,7 @@ import typing
 
 from defx.base.source import Base
 from defx.context import Context
-from defx.util import error, readable
+from defx.util import error, readable, safe_call
 from neovim import Nvim
 
 
@@ -35,8 +35,9 @@ class Source(Base):
             return []
         for entry in path.iterdir():
             candidates.append({
-                'word': entry.name + ('/' if entry.is_dir() else ''),
-                'is_directory': entry.is_dir(),
+                'word': entry.name + ('/' if safe_call(entry.is_dir, False)
+                                      else ''),
+                'is_directory': safe_call(entry.is_dir, False),
                 'action__path': entry,
             })
         return candidates

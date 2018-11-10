@@ -59,4 +59,17 @@ def import_plugin(path: Path, source: str,
 
 
 def readable(path: Path) -> bool:
+    """
+    Check {path} is readable.
+    """
     return os.access(str(path), os.R_OK)
+
+
+def safe_call(fn: typing.Callable, fallback: typing.Any = None) -> typing.Any:
+    """
+    Ignore OSError when calling {fn}
+    """
+    try:
+        return fn()
+    except OSError:
+        return fallback

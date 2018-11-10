@@ -13,7 +13,7 @@ from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, import_plugin
+from defx.util import error, import_plugin, safe_call
 
 
 class View(object):
@@ -338,7 +338,7 @@ class View(object):
         for path in rtp_list:
             column_path = Path(path).joinpath(
                 'rplugin', 'python3', 'defx', 'column')
-            if column_path.is_dir():
+            if safe_call(column_path.is_dir):
                 result += column_path.glob('*.py')
 
         return result
