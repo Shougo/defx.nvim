@@ -9,6 +9,7 @@ import typing
 from abc import abstractmethod
 from defx.context import Context
 from neovim import Nvim
+from pathlib import Path
 
 
 class Base:
@@ -18,5 +19,5 @@ class Base:
         self.name = 'base'
 
     @abstractmethod
-    def gather_candidates(self, context: Context, path: str) -> typing.List:
+    def gather_candidates(self, context: Context, path: Path) -> typing.List:
         pass

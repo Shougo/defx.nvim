@@ -9,7 +9,7 @@ import typing
 
 from defx.base.source import Base
 from defx.context import Context
-from defx.util import error
+from defx.util import error, readable
 from neovim import Nvim
 
 
@@ -28,13 +28,12 @@ class Source(Base):
             'action__path': Path(path),
         }
 
-    def gather_candidates(self, context: Context, path: str) -> typing.List:
+    def gather_candidates(self, context: Context, path: Path) -> typing.List:
         candidates = []
-        directory = Path(path)
-        if not directory.is_dir():
-            error(self.vim, f'"{directory}" is not directory.')
+        if not readable(path) or not path.is_dir():
+            error(self.vim, f'"{path}" is not readable directory.')
             return []
-        for entry in directory.iterdir():
+        for entry in path.iterdir():
             candidates.append({
                 'word': entry.name + ('/' if entry.is_dir() else ''),
                 'is_directory': entry.is_dir(),

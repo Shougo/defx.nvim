@@ -14,7 +14,7 @@ import typing
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, cwd_input, confirm
+from defx.util import error, cwd_input, confirm, readable
 from defx.view import View
 
 
@@ -50,8 +50,8 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     path = Path(context.args[0]) if context.args else Path.home()
     path = Path(defx._cwd).joinpath(path).resolve()
-    if not path.is_dir():
-        error(view._vim, f'{path} is not directory')
+    if not readable(path) or not path.is_dir():
+        error(view._vim, f'{path} is not readable directory')
         return
 
     prev_cwd = defx._cwd

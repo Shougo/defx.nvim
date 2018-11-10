@@ -48,7 +48,8 @@ class Defx(object):
         if not path:
             path = self._cwd
 
-        candidates = self._source.gather_candidates(self._context, path)
+        candidates = self._source.gather_candidates(
+            self._context, Path(path))
 
         if self._enabled_ignored_files:
             for glob in self._ignored_files:

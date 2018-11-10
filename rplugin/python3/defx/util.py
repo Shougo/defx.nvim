@@ -5,6 +5,7 @@
 # ============================================================================
 
 import importlib.util
+import os
 import typing
 
 from neovim import Nvim
@@ -55,3 +56,7 @@ def import_plugin(path: Path, source: str,
     spec.loader.exec_module(module)  # type: ignore
     cls = getattr(module, classname, None)
     return cls
+
+
+def readable(path: Path) -> bool:
+    return os.access(str(path), os.R_OK)
