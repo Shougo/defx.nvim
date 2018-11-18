@@ -37,7 +37,7 @@ endfunction
 
 function! defx#util#execute_path(command, path) abort
   try
-    execute a:command s:expand(a:path)
+    execute a:command escape(s:expand(a:path), '$')
     if &l:filetype ==# ''
       filetype detect
     endif
@@ -49,6 +49,11 @@ function! defx#util#execute_path(command, path) abort
   endtry
 endfunction
 function! s:expand(path) abort
+  return s:substitute_path_separator(
+        \ (a:path =~# '^\~') ? fnamemodify(a:path, ':p') :
+        \ a:path)
+endfunction
+function! s:expand_complete(path) abort
   return s:substitute_path_separator(
         \ (a:path =~# '^\~') ? fnamemodify(a:path, ':p') :
         \ (a:path =~# '^\$\h\w*') ? substitute(a:path,
@@ -152,14 +157,15 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
     " Add "-no-" option names completion.
     let _ += map(copy(bool_options), "'-no-' . tr(v:val, '_', '-')")
   else
-    let arglead = s:expand(a:arglead)
+    let arglead = s:expand_complete(a:arglead)
     " Path names completion.
     let files = filter(map(glob(a:arglead . '*', v:true, v:true),
           \                's:substitute_path_separator(v:val)'),
           \            'stridx(tolower(v:val), tolower(arglead)) == 0')
-    let files = map(filter(files, 'isdirectory(v:val)'), 's:expand(v:val)')
+    let files = map(filter(files, 'isdirectory(v:val)'),
+          \ 's:expand_complete(v:val)')
     if a:arglead =~# '^\~'
-      let home_pattern = '^'. s:expand('~')
+      let home_pattern = '^'. s:expand_complete('~')
       call map(files, "substitute(v:val, home_pattern, '~/', '')")
     endif
     call map(files, "escape(v:val.'/', ' \\')")
