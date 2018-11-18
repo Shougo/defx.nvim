@@ -76,7 +76,7 @@ see below.
 
 You can enable Python3 interface with pip:
 
-    pip3 install neovim
+    pip3 --user install pynvim
 
 Please install nvim-yarp plugin for Vim8.
 https://github.com/roxma/nvim-yarp

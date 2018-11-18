@@ -44,12 +44,11 @@ If ":echo has('python3')" returns `1`, then you're done; otherwise, see below.
 
 You can enable Python3 interface with pip: >
 
-    pip3 install neovim
+    pip3 --user install pynvim
 
-Note: defx needs neovim-python ver.0.1.8+.
-You need update neovim-python module.
+Note: defx needs pynvim ver.0.1.8+.  You need update pynvim module.
 >
-    pip3 install --upgrade neovim
+    pip3 --user install --upgrade pynvim
 <
 If you want to read for Neovim-python/python3 interface install documentation,
 you should read |provider-python| and the Wiki.
