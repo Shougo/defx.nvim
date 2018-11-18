@@ -12,29 +12,31 @@ from defx.rplugin import Rplugin
 
 if find_loader('yarp'):
     import vim
+elif find_loader('pynvim'):
+    import pynvim
+    vim = pynvim
 else:
     import neovim
     vim = neovim
 
-if 'neovim' in locals() and hasattr(neovim, 'plugin'):
-    from neovim import Nvim
+if hasattr(vim, 'plugin'):
     # Neovim only
 
-    @neovim.plugin
+    @vim.plugin
     class DefxHandlers:
 
-        def __init__(self, vim: Nvim) -> None:
+        def __init__(self, vim: vim.Nvim) -> None:
             self._rplugin = Rplugin(vim)
 
-        @neovim.function('_defx_init', sync=True)  # type: ignore
+        @vim.function('_defx_init', sync=True)  # type: ignore
         def init_channel(self, args: typing.List) -> None:
             self._rplugin.init_channel()
 
-        @neovim.function('_defx_start', sync=True)  # type: ignore
+        @vim.function('_defx_start', sync=True)  # type: ignore
         def start(self, args: typing.List) -> None:
             self._rplugin.start(args)
 
-        @neovim.function('_defx_do_action', sync=True)  # type: ignore
+        @vim.function('_defx_do_action', sync=True)  # type: ignore
         def do_action(self, args: typing.List) -> None:
             self._rplugin.do_action(args)
 
