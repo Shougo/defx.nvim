@@ -75,14 +75,9 @@ class View(object):
         self._columns = [self._all_columns[x]
                          for x in self._context.columns.split(':')
                          if x in self._all_columns]
-        start = 1
         for column in self._columns:
             column.on_init(self._context)
-            column.start = start
-            length = column.length(self._context)
-            column.end = start + length - 1
             column.syntax_name = 'Defx_' + column.name
-            start += length
 
     def init_buffer(self) -> bool:
         if self._context.split == 'tab':
@@ -161,7 +156,12 @@ class View(object):
         return True
 
     def init_syntax(self) -> None:
+        start = 1
         for column in self._columns:
+            column.start = start
+            length = column.length(self._context)
+            column.end = start + length - 1
+
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
             self._vim.command(
@@ -169,6 +169,8 @@ class View(object):
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
             column.highlight()
+
+            start += length
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
