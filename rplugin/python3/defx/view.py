@@ -51,7 +51,6 @@ class View(object):
 
         self.init_columns()
         self.init_syntax()
-        self.redraw(True)
 
         if self._context.search:
             for defx in self._defxs:
@@ -262,6 +261,8 @@ class View(object):
 
     def get_selected_candidates(
             self, cursor: int, index: int) -> typing.List[dict]:
+        if not self._candidates:
+            return []
         if not self._selected_candidates:
             candidates = [self.get_cursor_candidate(cursor)]
         else:
@@ -309,9 +310,6 @@ class View(object):
         """
         Do "action" action.
         """
-        if not self._candidates:
-            return
-
         cursor = new_context['cursor']
 
         defx_targets = {
@@ -320,11 +318,8 @@ class View(object):
 
         import defx.action as action
         for defx in self._defxs:
-            targets = defx_targets[defx._index]
-            if not targets:
-                continue
             context = self._context._replace(
-                targets=targets,
+                targets=defx_targets[defx._index],
                 args=action_args,
                 cursor=cursor
             )

@@ -16,7 +16,8 @@ function! defx#start(paths, user_context) abort
     let paths = [getcwd()]
   endif
   let paths = map(paths, "fnamemodify(v:val, ':p')")
-  return defx#util#rpcrequest('_defx_start', [paths, context])
+  call defx#util#rpcrequest('_defx_start', [paths, context])
+  call defx#_do_action('redraw', [context['search']])
 endfunction
 
 function! defx#do_action(action, ...) abort

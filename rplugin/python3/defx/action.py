@@ -70,6 +70,9 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
 
 
 def _copy(view: View, defx: Defx, context: Context) -> None:
+    if not context.targets:
+        return
+
     message = 'Copy to the clipboard: {}'.format(
         str(context.targets[0]['action__path'])
         if len(context.targets) == 1
@@ -89,6 +92,9 @@ def _execute_system(view: View, defx: Defx, context: Context) -> None:
 
 
 def _move(view: View, defx: Defx, context: Context) -> None:
+    if not context.targets:
+        return
+
     message = 'Move to the clipboard: {}'.format(
         str(context.targets[0]['action__path'])
         if len(context.targets) == 1
@@ -221,13 +227,18 @@ def _quit(view: View, defx: Defx, context: Context) -> None:
 
 
 def _redraw(view: View, defx: Defx, context: Context) -> None:
-    pass
+    view.redraw(True)
+    if context.args and context.args[0]:
+        view.search_tree(context.args[0], defx._index)
 
 
 def _remove(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
     """
+    if not context.targets:
+        return
+
     message = 'Are you sure you want to delete {}?'.format(
         str(context.targets[0]['action__path'])
         if len(context.targets) == 1
@@ -248,6 +259,9 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
     """
+    if not context.targets:
+        return
+
     if not importlib.util.find_spec('send2trash'):
         error(view._vim, '"Send2Trash" is not installed')
         return
@@ -368,7 +382,7 @@ DEFAULT_ACTIONS = {
     'paste': ActionTable(func=_paste),
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
-    'redraw': ActionTable(func=_redraw, attr=ActionAttr.REDRAW),
+    'redraw': ActionTable(func=_redraw),
     'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
