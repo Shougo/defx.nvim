@@ -6,13 +6,13 @@
 
 import typing
 
-from importlib import find_loader
+from importlib.util import find_spec
 from defx.rplugin import Rplugin
 
 
-if find_loader('yarp'):
+if find_spec('yarp'):
     import vim
-elif find_loader('pynvim'):
+elif find_spec('pynvim'):
     import pynvim
     vim = pynvim
 else:
@@ -40,7 +40,7 @@ if hasattr(vim, 'plugin'):
         def do_action(self, args: typing.List) -> None:
             self._rplugin.do_action(args)
 
-if find_loader('yarp'):
+if find_spec('yarp'):
 
     global_defx = Rplugin(vim)
 

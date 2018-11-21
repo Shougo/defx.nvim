@@ -248,7 +248,7 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
     """
-    if not importlib.find_loader('send2trash'):
+    if not importlib.util.find_spec('send2trash'):
         error(view._vim, '"Send2Trash" is not installed')
         return
 
