@@ -25,7 +25,8 @@ class View(object):
         self._bufnr = -1
         self._index = index
         self._bufname = '[defx]'
-        self._buffer = None
+        self._buffer: Nvim.buffer = None
+        self._prev_action = ''
 
     def init(self, paths: typing.List[str], context: dict,
              clipboard: Clipboard) -> None:
@@ -206,6 +207,8 @@ class View(object):
 
         if self._buffer != self._vim.current.buffer:
             return
+
+        start = time.time()
 
         prev = self.get_cursor_candidate(self._vim.call('line', '.'))
 

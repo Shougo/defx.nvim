@@ -150,6 +150,9 @@ quit							*defx-action-quit*
 redraw						      *defx-action-redraw*
 		Redraw the buffer.
 
+repeat						      *defx-action-repeat*
+		Redraw the previous action.
+
 rename						      *defx-action-rename*
 		Rename the file/directory under cursor or from selected list.
 
@@ -330,6 +333,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('yank_path')
 	  nnoremap <silent><buffer><expr> .
 	  \ defx#do_action('toggle_ignored_files')
+	  nnoremap <silent><buffer><expr> ;
+	  \ defx#do_action('repeat')
 	  nnoremap <silent><buffer><expr> h
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~

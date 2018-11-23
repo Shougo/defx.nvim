@@ -23,10 +23,12 @@ def do_action(view: View, defx: Defx,
     """
     Do "action_name" action.
     """
-    if action_name not in DEFAULT_ACTIONS:
+    actions = DEFAULT_ACTIONS
+
+    if action_name not in actions:
         return True
 
-    action = DEFAULT_ACTIONS[action_name]
+    action = actions[action_name]
 
     if ActionAttr.MARK not in action.attr and view._selected_candidates:
         # Clear marks
@@ -34,6 +36,9 @@ def do_action(view: View, defx: Defx,
         view.redraw()
 
     action.func(view, defx, context)
+
+    if action_name != 'repeat':
+        view._prev_action = action_name
 
     if ActionAttr.MARK in action.attr:
         # Update marks
@@ -234,6 +239,10 @@ def _print(view: View, defx: Defx, context: Context) -> None:
         view.print_msg(str(target['action__path']))
 
 
+def _repeat(view: View, defx: Defx, context: Context) -> None:
+    do_action(view, defx, view._prev_action, context)
+
+
 def _quit(view: View, defx: Defx, context: Context) -> None:
     view.quit()
 
@@ -396,6 +405,7 @@ DEFAULT_ACTIONS = {
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),
     'redraw': ActionTable(func=_redraw),
+    'repeat': ActionTable(func=_repeat, attr=ActionAttr.MARK),
     'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
