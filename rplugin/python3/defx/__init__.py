@@ -40,6 +40,10 @@ if hasattr(vim, 'plugin'):
         def do_action(self, args: typing.List) -> None:
             self._rplugin.do_action(args)
 
+        @vim.function('_defx_async_action', sync=False)  # type: ignore
+        def async_action(self, args: typing.List) -> None:
+            self._rplugin.do_action(args)
+
 if find_spec('yarp'):
 
     global_defx = Rplugin(vim)
@@ -51,4 +55,7 @@ if find_spec('yarp'):
         global_defx.start(args)
 
     def _defx_do_action(args: typing.List) -> None:
+        global_defx.do_action(args)
+
+    def _defx_async_action(args: typing.List) -> None:
         global_defx.do_action(args)

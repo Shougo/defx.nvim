@@ -68,11 +68,21 @@ COMMANDS 						*defx-commands*
 ------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*
 
+defx#async_action({action}[, {args}])			*defx#async_action()*
+		Fire {action} action with {args} asynchronously.  You can find
+		the actions list in |defx-actions|.
+		{args} behavior depends on {action}.
+		Note: It is used to define mappings.
+		Note: You cannot fire the next action until the previous
+		action is finished.
+
 defx#do_action({action}[, {args}])			*defx#do_action()*
 		Fire {action} action with {args}.  You can find the actions
 		list in |defx-actions|.
 		{args} behavior depends on {action}.
-		Note: It is used to define mappings. >
+		Note: It is used to define mappings.
+		Note: You cannot fire the next action until the previous
+		action is finished.
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 						*defx-key-mappings*

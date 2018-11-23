@@ -25,6 +25,7 @@ class View(object):
         self._bufnr = -1
         self._index = index
         self._bufname = '[defx]'
+        self._buffer = None
 
     def init(self, paths: typing.List[str], context: dict,
              clipboard: Clipboard) -> None:
@@ -148,8 +149,9 @@ class View(object):
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('autocmd! FocusGained <buffer>')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
-                          'call defx#_do_action("redraw", [])')
+                          'call defx#_async_action("redraw", [])')
         self._bufnr = self._vim.current.buffer.number
+        self._buffer = self._vim.current.buffer
 
         return True
 
@@ -202,22 +204,14 @@ class View(object):
         Redraw defx buffer.
         """
 
-        buffer_options = self._vim.current.buffer.options
-        if buffer_options['filetype'] != 'defx':
+        if self._buffer != self._vim.current.buffer:
             return
-
-        start = time.time()
 
         prev = self.get_cursor_candidate(self._vim.call('line', '.'))
 
         if is_force:
             self._selected_candidates = []
             self.init_candidates()
-
-        is_busy = time.time() - start > 0.5
-
-        if is_busy:
-            self.print_msg('Waiting...')
 
         # Set is_selected flag
         for candidate in self._candidates:
@@ -228,20 +222,19 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self._context)
 
-        buffer_options['modifiable'] = True
-        self._vim.current.buffer[:] = [
+        if self._buffer != self._vim.current.buffer:
+            return
+
+        self._buffer.options['modifiable'] = True
+        self._buffer[:] = [
             self.get_columns_text(self._context, x)
             for x in self._candidates
         ]
-        buffer_options['modifiable'] = False
-        buffer_options['modified'] = False
+        self._buffer.options['modifiable'] = False
+        self._buffer.options['modified'] = False
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
-
-        if is_busy:
-            self._vim.command('redraw')
-            self.print_msg('Done.')
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
