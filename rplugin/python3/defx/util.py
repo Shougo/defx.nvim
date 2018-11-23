@@ -7,9 +7,13 @@
 import importlib.util
 import os
 import typing
-
-from neovim import Nvim
 from pathlib import Path
+
+from importlib import find_loader
+if find_loader('pynvim'):
+    from pynvim import Nvim
+else:
+    from neovim import Nvim
 
 
 def error(vim: Nvim, expr: typing.Any) -> None:

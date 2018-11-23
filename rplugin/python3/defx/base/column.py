@@ -7,7 +7,7 @@
 from abc import abstractmethod
 
 from defx.context import Context
-from neovim import Nvim
+from defx.util import Nvim
 
 
 class Base:

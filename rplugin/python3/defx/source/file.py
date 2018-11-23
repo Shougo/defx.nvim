@@ -9,8 +9,7 @@ import typing
 
 from defx.base.source import Base
 from defx.context import Context
-from defx.util import error, readable, safe_call
-from neovim import Nvim
+from defx.util import error, readable, safe_call, Nvim
 
 
 class Source(Base):
