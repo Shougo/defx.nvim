@@ -118,6 +118,9 @@ class View(object):
                 ),
                 self._bufname)
 
+        self._buffer = self._vim.current.buffer
+        self._bufnr = self._buffer.number
+
         window_options = self._vim.current.window.options
         window_options['list'] = False
         window_options['wrap'] = False
@@ -131,7 +134,7 @@ class View(object):
             window_options['winfixheight'] = True
             self._vim.command(f'resize {self._context.winheight}')
 
-        buffer_options = self._vim.current.buffer.options
+        buffer_options = self._buffer.options
         buffer_options['buftype'] = 'nofile'
         buffer_options['swapfile'] = False
         buffer_options['modeline'] = False
@@ -139,7 +142,7 @@ class View(object):
         buffer_options['modifiable'] = False
         buffer_options['modified'] = False
 
-        self._vim.current.buffer.vars['defx'] = {
+        self._buffer.vars['defx'] = {
             'context': self._context._asdict(),
         }
 
@@ -151,8 +154,6 @@ class View(object):
         self._vim.command('autocmd! FocusGained <buffer>')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
                           'call defx#_async_action("redraw", [])')
-        self._bufnr = self._vim.current.buffer.number
-        self._buffer = self._vim.current.buffer
 
         return True
 
