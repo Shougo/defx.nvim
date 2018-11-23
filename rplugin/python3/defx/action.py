@@ -154,10 +154,22 @@ def _open(view: View, defx: Defx, context: Context) -> None:
 
         if path.is_dir():
             view.cd(defx, str(path), context.cursor)
-        else:
-            if path.match(cwd):
-                path = path.relative_to(cwd)
-            view._vim.call('defx#util#execute_path', command, str(path))
+            continue
+
+        if path.match(cwd):
+            path = path.relative_to(cwd)
+        view._vim.call('defx#util#execute_path', command, str(path))
+
+
+def _open_directory(view: View, defx: Defx, context: Context) -> None:
+    """
+    Open the directory.
+    """
+    for target in context.targets:
+        path = target['action__path']
+
+        if path.is_dir():
+            view.cd(defx, str(path), context.cursor)
 
 
 def _drop(view: View, defx: Defx, context: Context) -> None:
@@ -376,6 +388,7 @@ DEFAULT_ACTIONS = {
     'execute_system': ActionTable(func=_execute_system),
     'move': ActionTable(func=_move),
     'open': ActionTable(func=_open),
+    'open_directory': ActionTable(func=_open),
     'drop': ActionTable(func=_drop),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),

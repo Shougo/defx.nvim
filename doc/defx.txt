@@ -124,6 +124,9 @@ open							*defx-action-open*
 		Action args:
 			0. open command(The default is |:edit|)
 
+open_directory					*defx-action-open_directory*
+		Open the directory.
+
 paste							*defx-action-paste*
 		Fire the clipboard action in the current directory.
 		Note: It is used after |defx-action-copy| or |defx-action-move|.
