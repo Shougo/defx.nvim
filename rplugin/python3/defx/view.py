@@ -4,7 +4,6 @@
 # License: MIT license
 # ============================================================================
 
-from neovim import Nvim
 import time
 import typing
 from pathlib import Path
@@ -13,7 +12,7 @@ from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import error, import_plugin, safe_call
+from defx.util import error, import_plugin, safe_call, Nvim
 
 
 class View(object):

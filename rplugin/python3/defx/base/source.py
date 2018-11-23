@@ -8,7 +8,7 @@ import typing
 
 from abc import abstractmethod
 from defx.context import Context
-from neovim import Nvim
+from defx.util import Nvim
 from pathlib import Path
 
 
