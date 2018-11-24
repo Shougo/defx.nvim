@@ -52,7 +52,7 @@ Note: defx needs pynvim ver.0.1.8+.  You need update pynvim module.
 <
 If you want to read for Neovim-python/python3 interface install documentation,
 you should read |provider-python| and the Wiki.
-https://github.com/zchee/defx-jedi/wiki/Setting-up-Python-for-Neovim
+https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim
 
 You can check the Python3 installation by |:checkhealth| command in neovim.
 
