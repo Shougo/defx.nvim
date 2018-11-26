@@ -18,7 +18,7 @@ class Column(Base):
 
     def get(self, context: Context, candidate: dict) -> str:
         spaces_len = context.fnamewidth - len(candidate['word'])
-        return candidate['word'] + (' ' * spaces_len)  # type: ignore
+        return str(candidate['word'] + (' ' * spaces_len))
 
     def length(self, context: Context) -> int:
         return context.fnamewidth

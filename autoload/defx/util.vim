@@ -30,6 +30,9 @@ endfunction
 function! defx#util#string(expr) abort
   return type(a:expr) ==# type('') ? a:expr : string(a:expr)
 endfunction
+function! defx#util#split(string) abort
+  return split(a:string, '\s*,\s*')
+endfunction
 
 function! defx#util#has_yarp() abort
   return !has('nvim') || get(g:, 'defx#enable_yarp', 0)
