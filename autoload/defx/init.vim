@@ -94,7 +94,7 @@ function! defx#init#_user_options() abort
   return {
         \ 'auto_cd': v:false,
         \ 'buffer_name': 'default',
-        \ 'columns': 'mark:filename:type',
+        \ 'columns': 'mark:filename:type:size',
         \ 'direction': '',
         \ 'fnamewidth': 100,
         \ 'listed': v:false,
