@@ -88,6 +88,23 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
     view._clipboard.candidates = context.targets
 
 
+def _execute_command(view: View, defx: Defx, context: Context) -> None:
+    """
+    Execute the command.
+    """
+    save_cwd = view._vim.call('getcwd')
+    view._vim.command(f'silent lcd {defx._cwd}')
+
+    command = context.args[0] if context.args else view._vim.call(
+        'input', 'Command: ', '', 'shellcmd')
+
+    output = view._vim.call('system', command)
+    if output:
+        view.print_msg(output)
+
+    view._vim.command(f'silent lcd {save_cwd}')
+
+
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the file by system associated command.
@@ -394,6 +411,7 @@ DEFAULT_ACTIONS = {
     'cd': ActionTable(func=_cd),
     'change_vim_cwd': ActionTable(func=_change_vim_cwd),
     'copy': ActionTable(func=_copy),
+    'execute_command': ActionTable(func=_execute_command),
     'execute_system': ActionTable(func=_execute_system),
     'move': ActionTable(func=_move),
     'open': ActionTable(func=_open),

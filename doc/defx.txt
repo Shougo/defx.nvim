@@ -116,6 +116,12 @@ drop							*defx-action-drop*
 		Action args:
 			0. open command(The default is |:edit|)
 
+execute_system 					*defx-action-execute_command*
+		Execute the command.
+
+		Action args:
+			0. command(The default is your input)
+
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.
 
@@ -327,6 +333,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('remove')
 	  nnoremap <silent><buffer><expr> r
 	  \ defx#do_action('rename')
+	  nnoremap <silent><buffer><expr> !
+	  \ defx#do_action('execute_command')
 	  nnoremap <silent><buffer><expr> x
 	  \ defx#do_action('execute_system')
 	  nnoremap <silent><buffer><expr> yy
