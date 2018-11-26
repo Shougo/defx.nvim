@@ -42,13 +42,13 @@ class Column(Base):
 
     def on_init(self, context: Context) -> None:
         self._length = max([self.vim.call('strwidth', x['icon'])
-                            for x in self.vars['types']]) + 1
+                            for x in self.vars['types']])
 
     def get(self, context: Context, candidate: dict) -> str:
         for t in self.vars['types']:
             for glob in t['globs']:
                 if candidate['action__path'].match(glob):
-                    return t['icon'] + ' '  # type: ignore
+                    return str(t['icon'])
         return ' ' * self._length
 
     def length(self, context: Context) -> int:

@@ -34,10 +34,10 @@ class Column(Base):
             icon = self.vars['readonly_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']
-        return icon + ' '
+        return icon
 
     def length(self, context: Context) -> int:
-        return 2
+        return 1
 
     def highlight(self) -> None:
         for icon, highlight in {

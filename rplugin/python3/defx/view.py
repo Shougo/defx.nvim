@@ -162,7 +162,7 @@ class View(object):
         for column in self._columns:
             column.start = start
             length = column.length(self._context)
-            column.end = start + length - 1
+            column.end = start + length
 
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
@@ -172,7 +172,7 @@ class View(object):
                 str(column.end) + 'v/ keepend oneline')
             column.highlight()
 
-            start += length
+            start += length + 1
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
@@ -246,6 +246,8 @@ class View(object):
     def get_columns_text(self, context: Context, candidate: dict) -> str:
         text = ''
         for column in self._columns:
+            if text:
+                text += ' '
             text += column.get(context, candidate)
         return text
 

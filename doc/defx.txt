@@ -208,7 +208,7 @@ OPTIONS							*defx-options*
 							*defx-option-columns*
 -columns={columns1:columns2,...}
 		Specify defx columns.
-		Default: "mark:filename:type:size"
+		Default: "mark:filename:type"
 
 						*defx-option-direction*
 -direction={direction}
@@ -293,6 +293,9 @@ mark		File selected mark.
 
 							*defx-column-size*
 size		File size.
+
+							*defx-column-time*
+time		File modified time.
 
 							*defx-column-type*
 type		File type.
