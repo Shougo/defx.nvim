@@ -19,7 +19,7 @@ class Column(Base):
         self.name = 'time'
         self._length = 0
         self.vars = {
-            'format': '%y:%m:%d %H:%M',
+            'format': '%y.%m.%d %H:%M',
         }
 
     def on_init(self, context: Context) -> None:
