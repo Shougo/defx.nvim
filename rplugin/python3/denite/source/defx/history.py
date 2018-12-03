@@ -4,7 +4,7 @@
 # License: MIT license
 # ============================================================================
 
-from neovim import Nvim
+from defx.util import Nvim
 from ..base import Base
 
 
