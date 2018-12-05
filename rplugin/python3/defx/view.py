@@ -153,7 +153,7 @@ class View(object):
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('autocmd! FocusGained <buffer>')
         self._vim.command('autocmd defx FocusGained <buffer> ' +
-                          'call defx#_async_action("redraw", [])')
+                          'call defx#call_async_action("redraw")')
 
         return True
 

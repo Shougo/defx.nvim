@@ -27,5 +27,5 @@ class Source(Base):
         return [{
             'word': x,
             'abbr': x + '/',
-            'action__command': f"call defx#_do_action('cd', ['{x}'])"
+            'action__command': f"call defx#call_action('cd', ['{x}'])"
         } for x in self._histories]

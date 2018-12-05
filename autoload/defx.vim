@@ -17,7 +17,7 @@ function! defx#start(paths, user_context) abort
   endif
   let paths = map(paths, "fnamemodify(v:val, ':p')")
   call defx#util#rpcrequest('_defx_start', [paths, context], v:false)
-  call defx#_async_action('redraw', [context['search']])
+  call defx#call_async_action('redraw', [context['search']])
 endfunction
 
 function! defx#do_action(action, ...) abort
@@ -26,7 +26,7 @@ function! defx#do_action(action, ...) abort
   endif
 
   let args = defx#util#convert2list(get(a:000, 0, []))
-  return printf(":\<C-u>call defx#_do_action(%s, %s)\<CR>",
+  return printf(":\<C-u>call defx#call_action(%s, %s)\<CR>",
         \ string(a:action), string(args))
 endfunction
 function! defx#async_action(action, ...) abort
@@ -35,24 +35,26 @@ function! defx#async_action(action, ...) abort
   endif
 
   let args = defx#util#convert2list(get(a:000, 0, []))
-  return printf(":\<C-u>call defx#_async_action(%s, %s)\<CR>",
+  return printf(":\<C-u>call defx#call_async_action(%s, %s)\<CR>",
         \ string(a:action), string(args))
 endfunction
-function! defx#_do_action(action, args) abort
+function! defx#call_action(action, ...) abort
   if &l:filetype !=# 'defx'
     return
   endif
 
   let context = defx#init#_context({})
+  let args = defx#util#convert2list(get(a:000, 0, []))
   call defx#util#rpcrequest(
-        \ '_defx_do_action', [a:action, a:args, context], v:false)
+        \ '_defx_do_action', [a:action, args, context], v:false)
 endfunction
-function! defx#_async_action(action, args) abort
+function! defx#call_async_action(action, ...) abort
   if &l:filetype !=# 'defx'
     return
   endif
 
   let context = defx#init#_context({})
+  let args = defx#util#convert2list(get(a:000, 0, []))
   call defx#util#rpcrequest(
-        \ '_defx_do_action', [a:action, a:args, context], v:true)
+        \ '_defx_do_action', [a:action, args, context], v:true)
 endfunction
