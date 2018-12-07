@@ -4,7 +4,12 @@
 # License: MIT license
 # ============================================================================
 
-from defx.util import Nvim
+from importlib import find_loader
+if find_loader('pynvim'):
+    from pynvim import Nvim
+else:
+    from neovim import Nvim
+
 from ..base import Base
 
 
@@ -18,7 +23,8 @@ class Source(Base):
         self._histories = []
 
     def on_init(self, context: dict):
-        if self.vim.current.buffer.options.get('filetype', '') != 'defx':
+        options = self.vim.current.buffer.options
+        if 'filetype' not in options or options['filetype'] != 'defx':
             return
 
         self._histories = reversed(self.vim.vars['defx#_histories'])
