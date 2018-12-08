@@ -128,7 +128,7 @@ drop							*defx-action-drop*
 		Action args:
 			0. open command(The default is |:edit|)
 
-execute_system 					*defx-action-execute_command*
+execute_command 					*defx-action-execute_command*
 		Execute the command.
 
 		Action args:
