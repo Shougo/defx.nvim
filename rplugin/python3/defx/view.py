@@ -19,7 +19,7 @@ class View(object):
 
     def __init__(self, vim: Nvim, index: int) -> None:
         self._vim: Nvim = vim
-        self._candidates: typing.List[dict] = []
+        self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._selected_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
@@ -28,7 +28,8 @@ class View(object):
         self._buffer: Nvim.buffer = None
         self._prev_action = ''
 
-    def init(self, paths: typing.List[str], context: dict,
+    def init(self, paths: typing.List[str],
+             context: typing.Dict[str, typing.Any],
              clipboard: Clipboard) -> None:
         context['fnamewidth'] = int(context['fnamewidth'])
         context['winheight'] = int(context['winheight'])
@@ -243,7 +244,8 @@ class View(object):
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
 
-    def get_columns_text(self, context: Context, candidate: dict) -> str:
+    def get_columns_text(self, context: Context,
+                         candidate: typing.Dict[str, typing.Any]) -> str:
         text = ''
         for column in self._columns:
             if text:
@@ -251,14 +253,16 @@ class View(object):
             text += column.get(context, candidate)
         return text
 
-    def get_cursor_candidate(self, cursor: int) -> dict:
+    def get_cursor_candidate(
+            self, cursor: int) -> typing.Dict[str, typing.Any]:
         if len(self._candidates) < cursor:
             return {}
         else:
             return self._candidates[cursor - 1]
 
     def get_selected_candidates(
-            self, cursor: int, index: int) -> typing.List[dict]:
+            self, cursor: int, index: int
+    ) -> typing.List[typing.Dict[str, typing.Any]]:
         if not self._candidates:
             return []
         if not self._selected_candidates:
@@ -304,7 +308,8 @@ class View(object):
         return False
 
     def do_action(self, action_name: str,
-                  action_args: typing.List[str], new_context: dict) -> None:
+                  action_args: typing.List[str],
+                  new_context: typing.Dict[str, typing.Any]) -> None:
         """
         Do "action" action.
         """

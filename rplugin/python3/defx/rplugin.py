@@ -21,7 +21,7 @@ class Rplugin:
     def init_channel(self) -> None:
         self._vim.vars['defx#_channel_id'] = self._vim.channel_id
 
-    def start(self, args: typing.List) -> None:
+    def start(self, args: typing.List[typing.Any]) -> None:
         [paths, context] = args
         views = [x for x in self._views
                  if context['buffer_name'] == x._context.buffer_name]
@@ -31,7 +31,7 @@ class Rplugin:
             self._views.append(view)
         views[0].init(paths, context, self._clipboard)
 
-    def do_action(self, args: typing.List) -> None:
+    def do_action(self, args: typing.List[typing.Any]) -> None:
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:
             view.do_action(args[0], args[1], args[2])

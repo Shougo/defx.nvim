@@ -29,19 +29,19 @@ if hasattr(vim, 'plugin'):
             self._rplugin = Rplugin(vim)
 
         @vim.function('_defx_init', sync=True)  # type: ignore
-        def init_channel(self, args: typing.List) -> None:
+        def init_channel(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.init_channel()
 
         @vim.function('_defx_start', sync=True)  # type: ignore
-        def start(self, args: typing.List) -> None:
+        def start(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.start(args)
 
         @vim.function('_defx_do_action', sync=True)  # type: ignore
-        def do_action(self, args: typing.List) -> None:
+        def do_action(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.do_action(args)
 
         @vim.function('_defx_async_action', sync=False)  # type: ignore
-        def async_action(self, args: typing.List) -> None:
+        def async_action(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.do_action(args)
 
 if find_spec('yarp'):
@@ -51,11 +51,11 @@ if find_spec('yarp'):
     def _defx_init() -> None:
         pass
 
-    def _defx_start(args: typing.List) -> None:
+    def _defx_start(args: typing.List[typing.Any]) -> None:
         global_defx.start(args)
 
-    def _defx_do_action(args: typing.List) -> None:
+    def _defx_do_action(args: typing.List[typing.Any]) -> None:
         global_defx.do_action(args)
 
-    def _defx_async_action(args: typing.List) -> None:
+    def _defx_async_action(args: typing.List[typing.Any]) -> None:
         global_defx.do_action(args)

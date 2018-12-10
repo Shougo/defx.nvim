@@ -33,7 +33,7 @@ class Defx(object):
         if self._context.auto_cd:
             self._vim.command('silent lcd ' + path)
 
-    def get_root_candidate(self) -> dict:
+    def get_root_candidate(self) -> typing.Dict[str, typing.Any]:
         """
         Returns root candidate
         """
@@ -41,7 +41,9 @@ class Defx(object):
         root['is_root'] = True
         return root
 
-    def gather_candidates(self, path: str = '') -> typing.List:
+    def gather_candidates(
+            self, path: str = ''
+    ) -> typing.List[typing.Dict[str, typing.Any]]:
         """
         Returns file candidates
         """
