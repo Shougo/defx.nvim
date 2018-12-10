@@ -4,6 +4,8 @@
 # License: MIT license
 # ============================================================================
 
+import typing
+
 from abc import abstractmethod
 
 from defx.context import Context
@@ -18,7 +20,7 @@ class Base:
         self.syntax_name: str = ''
         self.start: int = -1
         self.end: int = -1
-        self.vars: dict = {}
+        self.vars: typing.Dict[str, typing.Any] = {}
 
     def on_init(self, context: Context) -> None:
         pass
@@ -27,7 +29,8 @@ class Base:
         pass
 
     @abstractmethod
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         pass
 
     @abstractmethod

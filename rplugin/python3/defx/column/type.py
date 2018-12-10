@@ -9,6 +9,7 @@ from defx.context import Context
 from defx.util import Nvim
 
 import re
+import typing
 
 
 class Column(Base):
@@ -44,7 +45,8 @@ class Column(Base):
         self._length = max([self.vim.call('strwidth', x['icon'])
                             for x in self.vars['types']])
 
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         for t in self.vars['types']:
             for glob in t['globs']:
                 if candidate['action__path'].match(glob):

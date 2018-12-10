@@ -19,7 +19,9 @@ class Source(Base):
 
         self.name = 'file'
 
-    def get_root_candidate(self, context: Context, path: str) -> dict:
+    def get_root_candidate(
+            self, context: Context, path: str
+    ) -> typing.Dict[str, typing.Any]:
         return {
             'word': self.vim.call('fnamemodify',
                                   path + ('/' if path != '/' else ''), ':~'),
@@ -27,7 +29,9 @@ class Source(Base):
             'action__path': Path(path),
         }
 
-    def gather_candidates(self, context: Context, path: Path) -> typing.List:
+    def gather_candidates(
+            self, context: Context, path: Path
+    ) -> typing.List[typing.Dict[str, typing.Any]]:
         candidates = []
         if not readable(path) or not path.is_dir():
             error(self.vim, f'"{path}" is not readable directory.')

@@ -9,6 +9,7 @@ from defx.context import Context
 from defx.util import Nvim, readable
 
 import time
+import typing
 
 
 class Column(Base):
@@ -26,7 +27,8 @@ class Column(Base):
         self._length = self.vim.call('strwidth',
                                      time.strftime(self.vars['format']))
 
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
             return str(' ' * self._length)

@@ -8,6 +8,8 @@ from defx.base.column import Base
 from defx.context import Context
 from defx.util import Nvim
 
+import typing
+
 
 class Column(Base):
 
@@ -16,7 +18,8 @@ class Column(Base):
 
         self.name = 'filename'
 
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         spaces_len = context.fnamewidth - len(candidate['word'])
         return str(candidate['word'] + (' ' * spaces_len))
 

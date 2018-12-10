@@ -18,7 +18,8 @@ class Column(Base):
 
         self.name = 'size'
 
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
             return ' ' * 8

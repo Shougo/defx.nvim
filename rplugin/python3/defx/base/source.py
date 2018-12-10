@@ -19,5 +19,7 @@ class Base:
         self.name = 'base'
 
     @abstractmethod
-    def gather_candidates(self, context: Context, path: Path) -> typing.List:
+    def gather_candidates(
+            self, context: Context, path: Path
+    ) -> typing.List[typing.Dict[str, typing.Any]]:
         pass

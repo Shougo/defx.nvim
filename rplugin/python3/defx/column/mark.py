@@ -9,6 +9,7 @@ from defx.context import Context
 from defx.util import Nvim
 
 import os
+import typing
 
 
 class Column(Base):
@@ -24,7 +25,8 @@ class Column(Base):
             'directory_icon': '+',
         }
 
-    def get(self, context: Context, candidate: dict) -> str:
+    def get(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> str:
         icon: str = ' '
         if candidate.get('is_selected', False):
             icon = self.vars['selected_icon']
