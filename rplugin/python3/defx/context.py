@@ -23,6 +23,6 @@ class Context(typing.NamedTuple):
     search: str = ''
     split: str = 'no'
     toggle: bool = False
-    targets: typing.List[dict] = []
+    targets: typing.List[typing.Dict[str, typing.Any]] = []
     winheight: int = 0
     winwidth: int = 0

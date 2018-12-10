@@ -69,7 +69,8 @@ def readable(path: Path) -> bool:
     return os.access(str(path), os.R_OK)
 
 
-def safe_call(fn: typing.Callable, fallback: typing.Any = None) -> typing.Any:
+def safe_call(fn: typing.Callable[..., typing.Any],
+              fallback: typing.Optional[bool] = None) -> typing.Any:
     """
     Ignore OSError when calling {fn}
     """

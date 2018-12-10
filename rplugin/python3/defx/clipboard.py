@@ -16,6 +16,7 @@ class ClipboardAction(Enum):
 class Clipboard():
     def __init__(self,
                  action: ClipboardAction = ClipboardAction.COPY,
-                 candidates: typing.List[dict] = []) -> None:
+                 candidates:
+                 typing.List[typing.Dict[str, typing.Any]] = []) -> None:
         self.action = action
         self.candidates = candidates
