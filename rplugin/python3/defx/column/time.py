@@ -30,7 +30,7 @@ class Column(Base):
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
         path = candidate['action__path']
-        if not readable(path) or path.is_dir():
+        if not readable(path):
             return str(' ' * self._length)
         return time.strftime(self.vars['format'],
                              time.localtime(path.stat().st_mtime))
