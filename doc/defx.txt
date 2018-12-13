@@ -259,6 +259,13 @@ OPTIONS							*defx-options*
 
 		Default: false
 
+							*defx-option-save*
+-save
+		Save when opning defx on unsaved files.
+		This option can be used to prevent discarding unsaved changes
+		by mistake.
+		Default: false
+
 							*defx-option-search*
 -search={path}
 		Search the {path}.

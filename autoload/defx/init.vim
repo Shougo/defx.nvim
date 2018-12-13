@@ -106,6 +106,7 @@ function! defx#init#_user_options() abort
         \ 'toggle': v:false,
         \ 'winheight': 0,
         \ 'winwidth': 0,
+        \ 'save': v:false,
         \ }
 endfunction
 function! s:internal_options() abort
@@ -118,5 +119,9 @@ function! defx#init#_context(user_context) abort
   let context = s:internal_options()
   call extend(context, defx#init#_user_options())
   call extend(context, a:user_context)
+  if context['save']==v:true
+    write
+  endif
+  unlet context.save
   return context
 endfunction
