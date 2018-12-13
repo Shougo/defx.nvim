@@ -21,6 +21,7 @@ class Context(typing.NamedTuple):
     profile: bool = False
     resume: bool = False
     search: str = ''
+    show_ignored_files: bool = False
     split: str = 'no'
     toggle: bool = False
     targets: typing.List[typing.Dict[str, typing.Any]] = []

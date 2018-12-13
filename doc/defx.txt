@@ -264,6 +264,11 @@ OPTIONS							*defx-options*
 		Search the {path}.
 		Default: ""
 
+							*defx-option-show-ignored-files*
+-show-ignored-files
+		Show ignored files by default.
+		Default: false
+
 						*defx-option-split*
 -split={direction}
 		Specify the split direction.

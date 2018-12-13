@@ -23,7 +23,8 @@ class Defx(object):
         self.cd(cwd)
         self._source: File = File(self._vim)
         self._index = index
-        self._enabled_ignored_files = True
+        self._enabled_ignored_files = \
+            False if context.show_ignored_files else True
         self._ignored_files = ['.*']
         self._cursor_history: typing.Dict[str, str] = {}
 

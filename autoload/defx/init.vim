@@ -102,6 +102,7 @@ function! defx#init#_user_options() abort
         \ 'profile': v:false,
         \ 'resume': v:false,
         \ 'search': '',
+        \ 'show_ignored_files': v:false,
         \ 'split': 'no',
         \ 'toggle': v:false,
         \ 'winheight': 0,
