@@ -92,6 +92,11 @@ class View(object):
                 return False
             return True
 
+        if (self._vim.current.buffer.options['modified'] and
+                not self._vim.options['hidden'] and
+                self._context.split == 'no'):
+            self._context = self._context.replace(split='vertical')
+
         # Create new buffer
         vertical = 'vertical' if self._context.split == 'vertical' else ''
         if self._vim.call('bufexists', self._bufnr):
