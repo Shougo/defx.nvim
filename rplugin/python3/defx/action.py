@@ -63,7 +63,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     view.cd(defx, str(path), context.cursor)
     view._selected_candidates = []
     if context.args and context.args[0] == '..':
-        view.search_file(prev_cwd, defx._index)
+        view.search_file(Path(prev_cwd), defx._index)
 
 
 def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
@@ -141,7 +141,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
 
     filename.mkdir(parents=True)
     view.redraw(True)
-    view.search_file(str(filename), defx._index)
+    view.search_file(filename, defx._index)
 
 
 def _new_file(view: View, defx: Defx, context: Context) -> None:
@@ -153,16 +153,50 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     if not filename:
         return
     if filename.exists():
-        error(view._vim, '{filename} already exists')
+        error(view._vim, f'{filename} already exists')
         return
 
     if not filename.parent.exists():
         filename.parent.mkdir(parents=True)
 
-    Path(filename).touch()
+    filename.touch()
 
     view.redraw(True)
-    view.search_file(str(filename), defx._index)
+    view.search_file(filename, defx._index)
+
+
+def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
+    """
+    Create multiple files.
+    """
+
+    save_cwd = view._vim.call('getcwd')
+    view._vim.command(f'silent lcd {defx._cwd}')
+
+    str_filenames: str = view._vim.call(
+        'input', 'Please input new filenames: ', '', 'file')
+    view._vim.command(f'silent lcd {save_cwd}')
+
+    if not str_filenames:
+        return None
+
+    for name in str_filenames.split():
+        is_dir = name[-1] is '/'
+
+        filename = Path(defx._cwd).joinpath(name).resolve()
+        if filename.exists():
+            error(view._vim, f'{filename} already exists')
+            continue
+
+        if is_dir:
+            filename.mkdir(parents=True)
+        else:
+            if not filename.parent.exists():
+                filename.parent.mkdir(parents=True)
+            filename.touch()
+
+    view.redraw(True)
+    view.search_file(filename, defx._index)
 
 
 def _open(view: View, defx: Defx, context: Context) -> None:
@@ -248,7 +282,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
 
     view.redraw(True)
     if dest:
-        view.search_file(str(dest), defx._index)
+        view.search_file(dest, defx._index)
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:
@@ -334,7 +368,7 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         old.rename(new)
 
         view.redraw(True)
-        view.search_file(str(new), defx._index)
+        view.search_file(new, defx._index)
 
 
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
@@ -419,6 +453,7 @@ DEFAULT_ACTIONS = {
     'drop': ActionTable(func=_drop),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
+    'new_multiple_files': ActionTable(func=_new_multiple_files),
     'paste': ActionTable(func=_paste),
     'print': ActionTable(func=_print),
     'quit': ActionTable(func=_quit),

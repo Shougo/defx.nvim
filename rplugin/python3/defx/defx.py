@@ -25,7 +25,7 @@ class Defx(object):
         self._index = index
         self._enabled_ignored_files = context.show_ignored_files
         self._ignored_files = ['.*']
-        self._cursor_history: typing.Dict[str, str] = {}
+        self._cursor_history: typing.Dict[str, Path] = {}
 
     def cd(self, path: str) -> None:
         self._cwd = str(Path(self._cwd).joinpath(path).resolve())

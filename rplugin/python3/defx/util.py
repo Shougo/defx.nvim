@@ -32,10 +32,12 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     vim.command(f'silent lcd {cwd}')
 
     filename: str = vim.call('input', prompt, text, completion)
+
+    vim.command(f'silent lcd {save_cwd}')
+
     if not filename:
         return None
 
-    vim.command(f'silent lcd {save_cwd}')
     return Path(cwd).joinpath(filename).resolve()
 
 

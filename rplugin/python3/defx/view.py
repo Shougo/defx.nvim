@@ -295,18 +295,21 @@ class View(object):
     def search_tree(self, start: str, index: int) -> bool:
         path = Path(start)
         while True:
-            if self.search_file(str(path), index):
+            if self.search_file(path, index):
                 return True
             if path.parent == path:
                 break
             path = path.parent
         return False
 
-    def search_file(self, path: str, index: int) -> bool:
+    def search_file(self, path: Path, index: int) -> bool:
         linenr = 1
+        target = str(path)
+        if target and target[-1] is '/':
+            target = target[:-1]
         for candidate in self._candidates:
             if (candidate['_defx_index'] == index and
-                    str(candidate['action__path']) == path):
+                    str(candidate['action__path']) == target):
                 self._vim.call('cursor', [linenr, 1])
                 return True
             linenr += 1
