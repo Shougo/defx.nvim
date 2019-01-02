@@ -233,10 +233,6 @@ OPTIONS							*defx-options*
 		You can use "topleft" or "botright".
 		Default: ""
 
-						*defx-option-fnamewidth*
--fnamewidth={filename-width}
-		Specifies the filename width of a defx buffer.
-
 							*defx-option-listed*
 -listed
 		Enable 'buflisted' option in defx buffer.
@@ -308,6 +304,10 @@ COLUMNS							*defx-columns*
 
 							*defx-column-filename*
 filename	File name.
+
+		variables:
+		fnamewidth	  the filename width of a defx buffer
+				  (default is '100')
 
 							*defx-column-mark*
 mark		File selected mark.
@@ -414,6 +414,9 @@ A: >
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
+
+2019-01-02
+* Remove "fnamewidth" option.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:

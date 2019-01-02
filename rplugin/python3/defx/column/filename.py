@@ -17,14 +17,17 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'filename'
+        self.vars = {
+            'fnamewidth': 100,
+        }
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        spaces_len = context.fnamewidth - len(candidate['word'])
+        spaces_len = self.vars['fnamewidth'] - len(candidate['word'])
         return str(candidate['word'] + (' ' * spaces_len))
 
     def length(self, context: Context) -> int:
-        return context.fnamewidth
+        return int(self.vars['fnamewidth'])
 
     def highlight(self) -> None:
         self.vim.command(

@@ -31,7 +31,6 @@ class View(object):
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
              clipboard: Clipboard) -> None:
-        context['fnamewidth'] = int(context['fnamewidth'])
         context['winheight'] = int(context['winheight'])
         context['winwidth'] = int(context['winwidth'])
         context['prev_bufnr'] = int(context['prev_bufnr'])
@@ -52,7 +51,6 @@ class View(object):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
         self.init_columns()
-        self.init_syntax()
 
         if self._context.search:
             for defx in self._defxs:
@@ -167,7 +165,8 @@ class View(object):
         start = 1
         for column in self._columns:
             column.start = start
-            length = column.length(self._context)
+            length = column.length(
+                self._context._replace(targets=self._candidates))
             column.end = start + length
 
             self._vim.command(
@@ -222,6 +221,7 @@ class View(object):
         if is_force:
             self._selected_candidates = []
             self.init_candidates()
+            self.init_syntax()
 
         # Set is_selected flag
         for candidate in self._candidates:

@@ -14,7 +14,6 @@ class Context(typing.NamedTuple):
     columns: str = ''
     cursor: int = 0
     direction: str = ''
-    fnamewidth: int = 0
     listed: bool = False
     new: bool = False
     prev_bufnr: int = 0
