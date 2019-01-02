@@ -154,8 +154,8 @@ class View(object):
             buffer_options['bufhidden'] = 'wipe'
 
         self._vim.command('silent doautocmd FileType defx')
-        self._vim.command('autocmd! FocusGained <buffer>')
-        self._vim.command('autocmd defx FocusGained <buffer> ' +
+        self._vim.command('autocmd! defx * <buffer>')
+        self._vim.command('autocmd defx WinEnter,FocusGained <buffer> ' +
                           'call defx#call_async_action("redraw")')
 
         return True
