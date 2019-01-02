@@ -50,14 +50,14 @@ class View(object):
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
-        self.init_columns()
+        self.init_columns(self._context.columns.split(':'))
 
         if self._context.search:
             for defx in self._defxs:
                 if self.search_tree(self._context.search, defx._index):
                     break
 
-    def init_columns(self) -> None:
+    def init_columns(self, columns: typing.List[str]) -> None:
         # Initialize columns
         self._columns: typing.List[Column] = []
         self._all_columns: typing.Dict[str, Column] = {}
@@ -72,8 +72,7 @@ class View(object):
                 self._all_columns[column.name] = column
 
         self._columns = [self._all_columns[x]
-                         for x in self._context.columns.split(':')
-                         if x in self._all_columns]
+                         for x in columns if x in self._all_columns]
         for column in self._columns:
             column.on_init(self._context)
             column.syntax_name = 'Defx_' + column.name

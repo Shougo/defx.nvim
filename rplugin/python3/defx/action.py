@@ -371,6 +371,20 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         view.search_file(new, defx._index)
 
 
+def _toggle_columns(view: View, defx: Defx, context: Context) -> None:
+    """
+    Toggle the current columns.
+    """
+    columns = (context.args[0] if context.args else '').split(':')
+    if not columns:
+        return
+    current_columns = [x.name for x in view._columns]
+    if columns == current_columns:
+        # Use default columns
+        columns = context.columns.split(':')
+    view.init_columns(columns)
+
+
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     index = context.cursor - 1
     if index in view._selected_candidates:
@@ -464,6 +478,8 @@ DEFAULT_ACTIONS = {
     'rename': ActionTable(func=_rename),
     'toggle_ignored_files': ActionTable(func=_toggle_ignored_files,
                                         attr=ActionAttr.REDRAW),
+    'toggle_columns': ActionTable(func=_toggle_columns,
+                                  attr=ActionAttr.REDRAW),
     'toggle_select': ActionTable(func=_toggle_select,
                                  attr=ActionAttr.MARK),
     'toggle_select_all': ActionTable(func=_toggle_select_all,
