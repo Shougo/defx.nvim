@@ -57,9 +57,10 @@ def _call(view: View, defx: Defx, context: Context) -> None:
     if not function:
         return
 
-    view._vim.call(function, context._replace(
-        targets=[str(x['action__path']) for x in context.targets]
-    )._asdict())
+    dict_context = context._asdict()
+    dict_context['targets'] = [
+        str(x['action__path']) for x in context.targets]
+    view._vim.call(function, dict_context)
 
 
 def _cd(view: View, defx: Defx, context: Context) -> None:
