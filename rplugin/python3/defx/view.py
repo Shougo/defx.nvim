@@ -71,9 +71,12 @@ class View(object):
             if column.name not in self._all_columns:
                 self._all_columns[column.name] = column
 
+        custom = self._vim.call('defx#custom#_get')['column']
         self._columns = [self._all_columns[x]
                          for x in columns if x in self._all_columns]
         for column in self._columns:
+            if column.name in custom:
+                column.vars.update(custom[column.name])
             column.on_init(self._context)
             column.syntax_name = 'Defx_' + column.name
 

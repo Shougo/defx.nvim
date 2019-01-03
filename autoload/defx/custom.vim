@@ -18,14 +18,14 @@ function! defx#custom#_init() abort
   let s:custom.option = {}
 endfunction
 
-function! defx#custom#column(column_name, option_name, value) abort
+function! defx#custom#column(column_name, name_or_dict, ...) abort
   let custom = defx#custom#_get().column
 
   for key in defx#util#split(a:column_name)
     if !has_key(custom, key)
       let custom[key] = {}
     endif
-    let custom[key][a:option_name] = a:value
+    call s:set_custom(custom[key], a:name_or_dict, get(a:000, 0, ''))
   endfor
 endfunction
 

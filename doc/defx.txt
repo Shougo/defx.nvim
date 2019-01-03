@@ -82,6 +82,18 @@ defx#call_action({action}[, {args}])
 		list in |defx-actions|.
 		{args} behavior depends on {action}.
 
+						*defx#custom#column()*
+denite#custom#source({column-name}, {option-name}, {value})
+denite#custom#source({column-name}, {dict})
+		Set {column-name} column specialized variable {variable-name}
+		to {value}.  You may specify multiple sources with the
+		separator "," in {column-name}.
+
+
+	call defx#custom#option('_', {
+	      \ 'columns': 'mark:filename:type:size:time',
+	      \ })
+
 						*defx#custom#option()*
 defx#custom#option({buffer-name}, {option-name}, {value})
 defx#custom#option({buffer-name}, {dict})
@@ -93,8 +105,16 @@ defx#custom#option({buffer-name}, {dict})
 		Note: The all options are in |defx-options|.  However, "-" is
 		substituted to "_", and "-" prefix is removed. >
 
-	call defx#custom#option('_', {
-	      \ 'columns': 'mark:filename:type:size:time',
+	call defx#custom#column('filename', {
+	      \ 'min_width': 40,
+	      \ 'max_width': 40,
+	      \ })
+
+	" Like Textmate icons.
+	call defx#custom#column('mark', {
+	      \ 'directory_icon': '▾',
+	      \ 'readonly_icon': '✗',
+	      \ 'selected_icon': '✓',
 	      \ })
 
 defx#do_action({action}[, {args}])			*defx#do_action()*
@@ -344,11 +364,23 @@ COLUMNS							*defx-columns*
 filename	File name.
 
 		variables:
-		fnamewidth	  the filename width of a defx buffer
+		min_width	  the minimum width of a defx buffer
+				  (default is '40')
+		max_width	  the maximum width of a defx buffer
 				  (default is '100')
 
 							*defx-column-mark*
 mark		File selected mark.
+
+		variables:
+		directory_icon	  the directory icon
+				  (default is '+')
+		readonly_icon	  the readonly file icon
+				  (default is 'X')
+		root_icon	  the root directory icon
+				  (default is '-')
+		selected_icon	  the selected file icon
+				  (default is '*')
 
 							*defx-column-size*
 size		File size.
@@ -356,8 +388,16 @@ size		File size.
 							*defx-column-time*
 time		File modified time.
 
+		variables:
+		format		  the time format
+				  (default is '%y.%m.%d %H:%M')
+
 							*defx-column-type*
 type		File type.
+
+		variables:
+		types		  the types definition
+				  (default is complicated)
 
 EXTERNAL COLUMNS					*defx-external-columns*
 

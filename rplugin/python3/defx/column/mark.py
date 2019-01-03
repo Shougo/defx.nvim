@@ -19,10 +19,10 @@ class Column(Base):
 
         self.name = 'mark'
         self.vars = {
-            'selected_icon': '*',
-            'root_icon': '-',
-            'readonly_icon': 'X',
             'directory_icon': '+',
+            'selected_icon': '*',
+            'readonly_icon': 'X',
+            'root_icon': '-',
         }
 
     def get(self, context: Context,
