@@ -49,6 +49,19 @@ def do_action(view: View, defx: Defx,
     return False
 
 
+def _call(view: View, defx: Defx, context: Context) -> None:
+    """
+    Call the function.
+    """
+    function = context.args[0] if context.args else None
+    if not function:
+        return
+
+    view._vim.call(function, context._replace(
+        targets=[str(x['action__path']) for x in context.targets]
+    )._asdict())
+
+
 def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current directory.
@@ -456,6 +469,7 @@ class ActionTable(typing.NamedTuple):
 
 
 DEFAULT_ACTIONS = {
+    'call': ActionTable(func=_call, attr=ActionAttr.REDRAW),
     'cd': ActionTable(func=_cd),
     'change_vim_cwd': ActionTable(func=_change_vim_cwd),
     'copy': ActionTable(func=_copy),
@@ -476,13 +490,13 @@ DEFAULT_ACTIONS = {
     'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
-    'toggle_ignored_files': ActionTable(func=_toggle_ignored_files,
-                                        attr=ActionAttr.REDRAW),
-    'toggle_columns': ActionTable(func=_toggle_columns,
-                                  attr=ActionAttr.REDRAW),
-    'toggle_select': ActionTable(func=_toggle_select,
-                                 attr=ActionAttr.MARK),
-    'toggle_select_all': ActionTable(func=_toggle_select_all,
-                                     attr=ActionAttr.MARK),
+    'toggle_ignored_files': ActionTable(
+        func=_toggle_ignored_files, attr=ActionAttr.REDRAW),
+    'toggle_columns': ActionTable(
+        func=_toggle_columns, attr=ActionAttr.REDRAW),
+    'toggle_select': ActionTable(
+        func=_toggle_select, attr=ActionAttr.MARK),
+    'toggle_select_all': ActionTable(
+        func=_toggle_select_all, attr=ActionAttr.MARK),
     'yank_path': ActionTable(func=_yank_path),
 }

@@ -105,6 +105,23 @@ You need to define original key mappings by |defx#do_action()|.
 ------------------------------------------------------------------------------
 ACTIONS 						*defx-actions*
 
+call 						*defx-action-call*
+		Call the function.
+		You can get the files path as "a:context.targets".
+
+		Action args:
+			0. function name
+			Note: It must be string.  You cannot use |funcref| or
+			|lambda|.
+
+		Example: >
+
+		function! Test(context) abort
+		  echomsg string(a:context.targets)
+		endfunction
+		nnoremap <silent><buffer><expr> f
+		\ defx#do_action('call', 'Test')
+
 cd 						*defx-action-cd*
 		Change the current directory.
 		Note: If the action args is empty, it means the home
