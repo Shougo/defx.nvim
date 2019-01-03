@@ -115,8 +115,15 @@ function! s:internal_options() abort
         \ }
 endfunction
 function! defx#init#_context(user_context) abort
+  let buffer_name = get(a:user_context, 'buffer_name', 'default')
   let context = s:internal_options()
   call extend(context, defx#init#_user_options())
-  call extend(context, a:user_context)
+  let custom = defx#custom#_get()
+  if has_key(custom.option, '_')
+    call extend(context, custom.option['_'])
+  endif
+  if has_key(custom.option, buffer_name)
+    call extend(context, custom.option[buffer_name])
+  endif
   return context
 endfunction

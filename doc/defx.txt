@@ -82,6 +82,21 @@ defx#call_action({action}[, {args}])
 		list in |defx-actions|.
 		{args} behavior depends on {action}.
 
+						*defx#custom#option()*
+defx#custom#option({buffer-name}, {option-name}, {value})
+defx#custom#option({buffer-name}, {dict})
+		Set {option-name} option to {value} in {buffer-name}
+		buffer.
+		If {buffer-name} is "_", the options are used for all buffers.
+		If {dict} is available, the key is {option-name} and the value
+		is {value}.
+		Note: The all options are in |defx-options|.  However, "-" is
+		substituted to "_", and "-" prefix is removed. >
+
+	call defx#custom#option('_', {
+	      \ 'columns': 'mark:filename:type:size:time',
+	      \ })
+
 defx#do_action({action}[, {args}])			*defx#do_action()*
 		Fire {action} action with {args}.  You can find the actions
 		list in |defx-actions|.
