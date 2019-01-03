@@ -30,7 +30,10 @@ class Column(Base):
         return str(candidate['word'] + (' ' * spaces_len))
 
     def length(self, context: Context) -> int:
-        max_fnamewidth = max([len(x['word']) for x in context.targets])
+        def strwidth(word):
+            return (self.vim.call('strwidth', word)
+                    if len(word) != len(bytes(word, 'utf-8')) else len(word))
+        max_fnamewidth = max([strwidth(x['word']) for x in context.targets])
         self._current_length = max(
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))
