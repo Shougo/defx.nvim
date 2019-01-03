@@ -26,14 +26,11 @@ class Column(Base):
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        spaces_len = self._current_length - len(candidate['word'])
-        return str(candidate['word'] + (' ' * spaces_len))
+        return self._truncate(candidate['word'])
 
     def length(self, context: Context) -> int:
-        def strwidth(word):
-            return (self.vim.call('strwidth', word)
-                    if len(word) != len(bytes(word, 'utf-8')) else len(word))
-        max_fnamewidth = max([strwidth(x['word']) for x in context.targets])
+        max_fnamewidth = max([self._strwidth(x['word'])
+                              for x in context.targets])
         self._current_length = max(
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))
@@ -53,3 +50,18 @@ class Column(Base):
         self.vim.command(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'hidden', 'Comment'))
+
+    def _strwidth(self, word: str) -> int:
+        return (int(self.vim.call('strwidth', word))
+                if len(word) != len(bytes(word, 'utf-8')) else len(word))
+
+    def _truncate(self, word: str) -> str:
+        width = self._strwidth(word)
+        if (width > self._current_length or
+                len(word) != len(bytes(word, 'utf-8'))):
+            return str(self.vim.call(
+                'defx#util#truncate_skipping',
+                word, self._current_length,
+                int(self._current_length / 3), '...'))
+
+        return word + ' ' * (self._current_length - width)
