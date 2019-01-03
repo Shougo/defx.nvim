@@ -18,16 +18,23 @@ class Column(Base):
 
         self.name = 'filename'
         self.vars = {
-            'fnamewidth': 100,
+            'min_width': 40,
+            'max_width': 100,
         }
+
+        self._current_length = 0
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        spaces_len = self.vars['fnamewidth'] - len(candidate['word'])
+        spaces_len = self._current_length - len(candidate['word'])
         return str(candidate['word'] + (' ' * spaces_len))
 
     def length(self, context: Context) -> int:
-        return int(self.vars['fnamewidth'])
+        max_fnamewidth = max([len(x['word']) for x in context.targets])
+        self._current_length = max(
+            min(max_fnamewidth, int(self.vars['max_width'])),
+            int(self.vars['min_width']))
+        return self._current_length
 
     def highlight(self) -> None:
         self.vim.command(
