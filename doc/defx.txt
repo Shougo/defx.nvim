@@ -248,6 +248,12 @@ toggle_columns			*defx-action-toggle_columns*
 		Action args:
 			0. ":" separated defx columns.
 
+toggle_sort			*defx-action-toggle_sort*
+		Toggle the sort method.
+
+		Action args:
+			0. sort method.
+
 toggle_ignored_files			*defx-action-toggle_ignored_files*
 		Toggle the enable state of ignored files.
 
@@ -326,6 +332,18 @@ OPTIONS							*defx-options*
 -show-ignored-files
 		Show ignored files by default.
 		Default: false
+
+							*defx-options-sort*
+-sort={method}
+		Sort method.
+		If the method is upper case, the order will be reversed.
+
+		"extension": file extension sort
+		"filename": file name sort
+		"size": file size sort
+		"time": file modified time sort
+
+		Default: "filename"
 
 						*defx-option-split*
 -split={direction}
@@ -457,6 +475,8 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('cd', ['..'])
 	  nnoremap <silent><buffer><expr> ~
 	  \ defx#do_action('cd')
+	  nnoremap <silent><buffer><expr> S
+	  \ defx#do_action('toggle_sort', 'Time')
 	  nnoremap <silent><buffer><expr> q
 	  \ defx#do_action('quit')
 	  nnoremap <silent><buffer><expr> <Space>

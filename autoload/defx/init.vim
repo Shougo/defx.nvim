@@ -103,6 +103,7 @@ function! defx#init#_user_options() abort
         \ 'search': '',
         \ 'show_ignored_files': v:false,
         \ 'split': 'no',
+        \ 'sort': 'filename',
         \ 'toggle': v:false,
         \ 'winheight': 0,
         \ 'winwidth': 0,

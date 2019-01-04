@@ -399,6 +399,10 @@ def _toggle_columns(view: View, defx: Defx, context: Context) -> None:
     view.init_columns(columns)
 
 
+def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
+    defx._enabled_ignored_files = not defx._enabled_ignored_files
+
+
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
     index = context.cursor - 1
     if index in view._selected_candidates:
@@ -417,8 +421,16 @@ def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
                 view._selected_candidates.append(index)
 
 
-def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
-    defx._enabled_ignored_files = not defx._enabled_ignored_files
+def _toggle_sort(view: View, defx: Defx, context: Context) -> None:
+    """
+    Toggle the current sort method.
+    """
+    sort = context.args[0] if context.args else ''
+    if sort == defx._sort_method:
+        # Use default sort method
+        defx._sort_method = context.sort
+    else:
+        defx._sort_method = sort
 
 
 def _yank_path(view: View, defx: Defx, context: Context) -> None:
@@ -491,13 +503,15 @@ DEFAULT_ACTIONS = {
     'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
     'remove_trash': ActionTable(func=_remove_trash),
     'rename': ActionTable(func=_rename),
-    'toggle_ignored_files': ActionTable(
-        func=_toggle_ignored_files, attr=ActionAttr.REDRAW),
     'toggle_columns': ActionTable(
         func=_toggle_columns, attr=ActionAttr.REDRAW),
+    'toggle_ignored_files': ActionTable(
+        func=_toggle_ignored_files, attr=ActionAttr.REDRAW),
     'toggle_select': ActionTable(
         func=_toggle_select, attr=ActionAttr.MARK),
     'toggle_select_all': ActionTable(
         func=_toggle_select_all, attr=ActionAttr.MARK),
+    'toggle_sort': ActionTable(
+        func=_toggle_sort, attr=ActionAttr.REDRAW),
     'yank_path': ActionTable(func=_yank_path),
 }

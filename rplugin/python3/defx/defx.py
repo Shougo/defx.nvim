@@ -4,11 +4,11 @@
 # License: MIT license
 # ============================================================================
 
-import re
 import typing
 
 from defx.source.file import Source as File
 from defx.context import Context
+from defx.sort import sort
 from defx.util import Nvim
 from pathlib import Path
 
@@ -26,6 +26,7 @@ class Defx(object):
         self._enabled_ignored_files = not context.show_ignored_files
         self._ignored_files = ['.*']
         self._cursor_history: typing.Dict[str, Path] = {}
+        self._sort_method: str = self._context.sort
 
     def cd(self, path: str) -> None:
         self._cwd = str(Path(self._cwd).joinpath(path).resolve())
@@ -58,16 +59,4 @@ class Defx(object):
                 candidates = [x for x in candidates
                               if not x['action__path'].match(glob)]
 
-        pattern = re.compile(r'(\d+)')
-
-        def numeric_key(v: str) -> typing.List[typing.Any]:
-            keys = pattern.split(v)
-            keys[1::2] = [int(x) for x in keys[1::2]]  # type: ignore
-            return keys
-
-        # Sort
-        dirs = sorted([x for x in candidates if x['is_directory']],
-                      key=lambda x: numeric_key(x['word']))
-        files = sorted([x for x in candidates if not x['is_directory']],
-                       key=lambda x: numeric_key(x['word']))
-        return dirs + files
+        return sort(self._sort_method, candidates)
