@@ -125,5 +125,6 @@ function! defx#init#_context(user_context) abort
   if has_key(custom.option, buffer_name)
     call extend(context, custom.option[buffer_name])
   endif
+  call extend(context, a:user_context)
   return context
 endfunction
