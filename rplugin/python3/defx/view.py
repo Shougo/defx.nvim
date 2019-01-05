@@ -37,7 +37,7 @@ class View(object):
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
-        if not self.init_buffer():
+        if not self.init_buffer(paths):
             return
 
         self._candidates = []
@@ -47,6 +47,7 @@ class View(object):
 
         # Initialize defx
         self._defxs: typing.List[Defx] = []
+        self._buffer.vars['defx']['paths'] = paths
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
@@ -80,7 +81,7 @@ class View(object):
             column.on_init(self._context)
             column.syntax_name = 'Defx_' + column.name
 
-    def init_buffer(self) -> bool:
+    def init_buffer(self, paths: typing.List[str]) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
 
@@ -150,6 +151,7 @@ class View(object):
 
         self._buffer.vars['defx'] = {
             'context': self._context._asdict(),
+            'paths': paths,
         }
 
         if not self._context.listed:
@@ -293,6 +295,13 @@ class View(object):
         if path in history:
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
+
+        self.update_paths(defx._index, path)
+
+    def update_paths(self, index: int, path: str) -> None:
+        var_defx = self._buffer.vars['defx']
+        var_defx['paths'][index] = path
+        self._buffer.vars['defx'] = var_defx
 
     def search_tree(self, start: str, index: int) -> bool:
         path = Path(start)
