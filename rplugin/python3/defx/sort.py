@@ -48,7 +48,7 @@ def _filename(
         keys[1::2] = [int(x) for x in keys[1::2]]  # type: ignore
         return keys
 
-    return sorted(candidates, key=lambda x: numeric_key(x['word']))
+    return sorted(candidates, key=lambda x: numeric_key(x['word'].lower()))
 
 
 def _size(
