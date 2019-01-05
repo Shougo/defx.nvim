@@ -220,7 +220,8 @@ class View(object):
 
         start = time.time()
 
-        prev = self.get_cursor_candidate(self._vim.call('line', '.'))
+        prev_linenr = self._vim.call('line', '.')
+        prev = self.get_cursor_candidate(prev_linenr)
 
         if is_force:
             self._selected_candidates = []
@@ -246,6 +247,8 @@ class View(object):
         ]
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
+
+        self._vim.call('cursor', [prev_linenr, 0])
 
         if prev:
             self.search_file(prev['action__path'], prev['_defx_index'])
