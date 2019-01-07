@@ -34,6 +34,7 @@ class View(object):
         context['winheight'] = int(context['winheight'])
         context['winwidth'] = int(context['winwidth'])
         context['prev_bufnr'] = int(context['prev_bufnr'])
+        context['prev_winid'] = int(context['prev_winid'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
@@ -190,6 +191,12 @@ class View(object):
         self._vim.call('defx#util#print_message', expr)
 
     def quit(self) -> None:
+        winnr = self._vim.call('bufwinnr', self._bufname)
+        if winnr < 0:
+            return
+
+        self._vim.command(f'{winnr}wincmd w')
+
         if self._context.split in ['no', 'tab']:
             if self._vim.call('bufexists', self._context.prev_bufnr):
                 self._vim.command('buffer ' + str(self._context.prev_bufnr))
@@ -198,6 +205,7 @@ class View(object):
         else:
             if self._vim.call('winnr', '$') != 1:
                 self._vim.command('close')
+                self._vim.call('win_gotoid', self._context.prev_winid)
             else:
                 self._vim.command('enew')
 
