@@ -102,6 +102,31 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
     view._clipboard.candidates = context.targets
 
 
+def _drop(view: View, defx: Defx, context: Context) -> None:
+    """
+    Open like :drop.
+    """
+    cwd = view._vim.call('getcwd')
+    command = context.args[0] if context.args else 'edit'
+    for target in context.targets:
+        path = target['action__path']
+
+        if path.is_dir():
+            view.cd(defx, str(path), context.cursor)
+            continue
+
+        bufnr = view._vim.call('bufnr', str(path))
+        winids = view._vim.call('win_findbuf', bufnr)
+
+        if winids:
+            view._vim.call('win_gotoid', winids[0])
+        else:
+            view._vim.command('wincmd p')
+            if path.match(cwd):
+                path = path.relative_to(cwd)
+            view._vim.call('defx#util#execute_path', command, str(path))
+
+
 def _execute_command(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the command.
@@ -240,31 +265,6 @@ def _open_directory(view: View, defx: Defx, context: Context) -> None:
 
         if path.is_dir():
             view.cd(defx, str(path), context.cursor)
-
-
-def _drop(view: View, defx: Defx, context: Context) -> None:
-    """
-    Open like :drop.
-    """
-    cwd = view._vim.call('getcwd')
-    command = context.args[0] if context.args else 'edit'
-    for target in context.targets:
-        path = target['action__path']
-
-        if path.is_dir():
-            view.cd(defx, str(path), context.cursor)
-            continue
-
-        bufnr = view._vim.call('bufnr', str(path))
-        winids = view._vim.call('win_findbuf', bufnr)
-
-        if winids:
-            view._vim.call('win_gotoid', winids[0])
-        else:
-            view._vim.command('wincmd p')
-            if path.match(cwd):
-                path = path.relative_to(cwd)
-            view._vim.call('defx#util#execute_path', command, str(path))
 
 
 def _paste(view: View, defx: Defx, context: Context) -> None:

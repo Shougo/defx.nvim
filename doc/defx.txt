@@ -112,7 +112,7 @@ defx#custom#option({buffer-name}, {dict})
 
 	" Like Textmate icons.
 	call defx#custom#column('mark', {
-	      \ 'directory_icon': '▾',
+	      \ 'directory_icon': '▸',
 	      \ 'readonly_icon': '✗',
 	      \ 'selected_icon': '✓',
 	      \ })
