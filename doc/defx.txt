@@ -83,8 +83,8 @@ defx#call_action({action}[, {args}])
 		{args} behavior depends on {action}.
 
 						*defx#custom#column()*
-denite#custom#source({column-name}, {option-name}, {value})
-denite#custom#source({column-name}, {dict})
+defx#custom#column({column-name}, {option-name}, {value})
+defx#custom#column({column-name}, {dict})
 		Set {column-name} column specialized variable {variable-name}
 		to {value}.  You may specify multiple sources with the
 		separator "," in {column-name}.
