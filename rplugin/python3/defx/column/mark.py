@@ -23,11 +23,12 @@ class Column(Base):
             'selected_icon': '*',
             'readonly_icon': 'X',
             'root_icon': '-',
+            'length': 1,
         }
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        icon: str = ' '
+        icon: str = ' ' * self.vars['length']
         if candidate.get('is_selected', False):
             icon = self.vars['selected_icon']
         elif candidate.get('is_root', False):
@@ -39,7 +40,7 @@ class Column(Base):
         return icon
 
     def length(self, context: Context) -> int:
-        return 1
+        return self.vars['length']
 
     def highlight(self) -> None:
         for icon, highlight in {
