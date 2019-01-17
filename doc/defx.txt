@@ -458,7 +458,7 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('toggle_columns',
 	  \                'mark:filename:type:size:time')
 	  nnoremap <silent><buffer><expr> S
-	  \ defx#do_action('toggle_sort', 'Time')
+	  \ defx#do_action('toggle_sort', 'time')
 	  nnoremap <silent><buffer><expr> d
 	  \ defx#do_action('remove')
 	  nnoremap <silent><buffer><expr> r
