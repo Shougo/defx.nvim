@@ -40,7 +40,7 @@ class Column(Base):
         return icon
 
     def length(self, context: Context) -> int:
-        return self.vars['length']
+        return typing.cast(int, self.vars['length'])
 
     def highlight(self) -> None:
         for icon, highlight in {
