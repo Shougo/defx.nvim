@@ -87,11 +87,18 @@ defx#custom#column({column-name}, {option-name}, {value})
 defx#custom#column({column-name}, {dict})
 		Set {column-name} column specialized variable {variable-name}
 		to {value}.  You may specify multiple sources with the
-		separator "," in {column-name}.
+		separator "," in {column-name}. >
 
+	call defx#custom#column('filename', {
+	      \ 'min_width': 40,
+	      \ 'max_width': 40,
+	      \ })
 
-	call defx#custom#option('_', {
-	      \ 'columns': 'mark:filename:type:size:time',
+	" Like Textmate icons.
+	call defx#custom#column('mark', {
+	      \ 'directory_icon': '▸',
+	      \ 'readonly_icon': '✗',
+	      \ 'selected_icon': '✓',
 	      \ })
 
 						*defx#custom#option()*
@@ -105,17 +112,10 @@ defx#custom#option({buffer-name}, {dict})
 		Note: The all options are in |defx-options|.  However, "-" is
 		substituted to "_", and "-" prefix is removed. >
 
-	call defx#custom#column('filename', {
-	      \ 'min_width': 40,
-	      \ 'max_width': 40,
+	call defx#custom#option('_', {
+	      \ 'columns': 'mark:filename:type:size:time',
 	      \ })
 
-	" Like Textmate icons.
-	call defx#custom#column('mark', {
-	      \ 'directory_icon': '▸',
-	      \ 'readonly_icon': '✗',
-	      \ 'selected_icon': '✓',
-	      \ })
 
 defx#do_action({action}[, {args}])			*defx#do_action()*
 		Fire {action} action with {args}.  You can find the actions
