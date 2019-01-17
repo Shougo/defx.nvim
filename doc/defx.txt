@@ -399,6 +399,8 @@ mark		File selected mark.
 				  (default is '-')
 		selected_icon	  the selected file icon
 				  (default is '*')
+		length		  the column length
+				  (default is 1)
 
 							*defx-column-size*
 size		File size.
