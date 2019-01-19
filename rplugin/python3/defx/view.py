@@ -54,10 +54,11 @@ class View(object):
 
         self.init_columns(self._context.columns.split(':'))
 
-        if self._context.search:
-            for defx in self._defxs:
-                if self.search_tree(self._context.search, defx._index):
-                    break
+        for defx in self._defxs:
+            if self._context.search:
+                self.search_tree(self._context.search, defx._index)
+            else:
+                self.init_cursor(defx)
 
     def init_columns(self, columns: typing.List[str]) -> None:
         # Initialize columns
@@ -303,6 +304,7 @@ class View(object):
 
         defx.cd(path)
         self.redraw(True)
+        self.init_cursor(defx)
         if path in history:
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
@@ -337,6 +339,12 @@ class View(object):
             linenr += 1
         return False
 
+    def init_cursor(self, defx: Defx) -> bool:
+        self.search_file(Path(defx._cwd), defx._index)
+
+        # Move to next
+        self._vim.call('cursor', [self._vim.call('line', '.') + 1, 1])
+
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
                   new_context: typing.Dict[str, typing.Any]) -> None:
@@ -348,9 +356,13 @@ class View(object):
         defx_targets = {
             x._index: self.get_selected_candidates(cursor, x._index)
             for x in self._defxs}
+        all_targets = []
+        for targets in defx_targets.values():
+            all_targets += targets
 
         import defx.action as action
-        for defx in self._defxs:
+        for defx in [x for x in self._defxs
+                     if not all_targets or defx_targets[x._index]]:
             context = self._context._replace(
                 targets=defx_targets[defx._index],
                 args=action_args,
