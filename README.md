@@ -3,12 +3,12 @@
 [![Join the chat at https://gitter.im/Shougo/defx.nvim](https://badges.gitter.im/Shougo/defx.nvim.svg)](https://gitter.im/Shougo/defx.nvim?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Defx is a dark powered plugin for Neovim/Vim to browse files.
-It can replace deprecated vimfiler plugin.
+It replaces the deprecated vimfiler plugin.
 
 
 ## Concept
 
-* Not depends on denite.nvim
+* Doesn't depends on denite.nvim
 
 * Vim8/neovim compatible(nvim-yarp is needed for Vim8)
 
