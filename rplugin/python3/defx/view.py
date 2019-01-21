@@ -339,7 +339,7 @@ class View(object):
             linenr += 1
         return False
 
-    def init_cursor(self, defx: Defx) -> bool:
+    def init_cursor(self, defx: Defx) -> None:
         self.search_file(Path(defx._cwd), defx._index)
 
         # Move to next
@@ -356,7 +356,7 @@ class View(object):
         defx_targets = {
             x._index: self.get_selected_candidates(cursor, x._index)
             for x in self._defxs}
-        all_targets = []
+        all_targets: typing.List[typing.Dict[str, typing.Any]] = []
         for targets in defx_targets.values():
             all_targets += targets
 
