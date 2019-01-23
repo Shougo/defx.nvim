@@ -35,6 +35,4 @@ class Rplugin:
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:
             view.do_action(args[0], args[1], args[2])
-            return
-
-        error(self._vim, 'Invalid defx buffer is detected!')
+            break
