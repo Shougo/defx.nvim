@@ -46,7 +46,7 @@ def confirm(vim: Nvim, question: str) -> bool:
     Confirm action
     """
     option: int = vim.call('confirm', question, '&Yes\n&No\n&Cancel')
-    return option is 1
+    return option == 1
 
 
 def import_plugin(path: Path, source: str,

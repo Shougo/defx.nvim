@@ -4,13 +4,13 @@
 # License: MIT license
 # ============================================================================
 
+from denite.source.base import Base
+
 from importlib import find_loader
 if find_loader('pynvim'):
     from pynvim import Nvim
 else:
     from neovim import Nvim
-
-from ..base import Base
 
 
 class Source(Base):

@@ -220,7 +220,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
         return None
 
     for name in str_filenames.split():
-        is_dir = name[-1] is '/'
+        is_dir = name[-1] == '/'
 
         filename = Path(defx._cwd).joinpath(name).resolve()
         if filename.exists():

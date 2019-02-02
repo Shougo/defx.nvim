@@ -329,7 +329,7 @@ class View(object):
     def search_file(self, path: Path, index: int) -> bool:
         linenr = 1
         target = str(path)
-        if target and target[-1] is '/':
+        if target and target[-1] == '/':
             target = target[:-1]
         for candidate in self._candidates:
             if (candidate['_defx_index'] == index and
