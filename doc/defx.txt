@@ -229,6 +229,8 @@ repeat						      *defx-action-repeat*
 
 rename						      *defx-action-rename*
 		Rename the file/directory under cursor or from selected list.
+		Note: If you select multiple files, it will be buffer-rename
+		mode.
 
 remove							*defx-action-remove*
 		Delete the file/directory under cursor or from selected list

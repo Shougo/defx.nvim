@@ -369,6 +369,15 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
     """
     Rename the file or directory.
     """
+
+    if len(context.targets) > 1:
+        # ex rename
+        view._vim.call('defx#exrename#create_buffer',
+                      [{'action__path': str(x['action__path'])}
+                       for x in context.targets],
+                      {'buffer_name': 'defx'})
+        return
+
     for target in context.targets:
         old = target['action__path']
         new = cwd_input(
