@@ -8,7 +8,7 @@ import typing
 
 from defx.clipboard import Clipboard
 from defx.view import View
-from defx.util import error, Nvim
+from defx.util import Nvim
 
 
 class Rplugin:
