@@ -181,7 +181,7 @@ endfunction
 function! defx#util#has_yarp() abort
   return !has('nvim')
 endfunction
-function! defx#util#rpcrequest(event, args, is_async) abort
+function! defx#util#rpcrequest(method, args, is_async) abort
   if !defx#init#_check_channel()
     return ''
   endif
@@ -191,12 +191,12 @@ function! defx#util#rpcrequest(event, args, is_async) abort
       return
     endif
     if a:is_async
-      return g:defx#_yarp.notify(a:event, a:args)
+      return g:defx#_yarp.notify(a:method, a:args)
     else
-      return g:defx#_yarp.request(a:event, a:args)
+      return g:defx#_yarp.request(a:method, a:args)
     endif
   else
-    return call(a:event, a:args)
+    return call(a:method, a:args)
   endif
 endfunction
 
