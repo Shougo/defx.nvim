@@ -183,12 +183,12 @@ function! defx#util#has_yarp() abort
 endfunction
 function! defx#util#rpcrequest(method, args, is_async) abort
   if !defx#init#_check_channel()
-    return ''
+    return -1
   endif
 
   if defx#util#has_yarp()
     if g:defx#_yarp.job_is_dead
-      return
+      return -1
     endif
     if a:is_async
       return g:defx#_yarp.notify(a:method, a:args)
