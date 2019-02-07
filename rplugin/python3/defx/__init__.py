@@ -32,15 +32,15 @@ if hasattr(vim, 'plugin'):
         def init_channel(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.init_channel()
 
-        @vim.function('_defx_start', sync=True)  # type: ignore
+        @vim.rpc_export('_defx_start', sync=True)  # type: ignore
         def start(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.start(args)
 
-        @vim.function('_defx_do_action', sync=True)  # type: ignore
+        @vim.rpc_export('_defx_do_action', sync=True)  # type: ignore
         def do_action(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.do_action(args)
 
-        @vim.function('_defx_async_action', sync=False)  # type: ignore
+        @vim.rpc_export('_defx_async_action', sync=False)  # type: ignore
         def async_action(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.do_action(args)
 

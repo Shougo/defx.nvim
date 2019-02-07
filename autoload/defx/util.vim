@@ -196,7 +196,11 @@ function! defx#util#rpcrequest(method, args, is_async) abort
       return g:defx#_yarp.request(a:method, a:args)
     endif
   else
-    return call(a:method, a:args)
+    if a:is_async
+      return rpcnotify(g:defx#_channel_id, a:method, a:args)
+    else
+      return rpcrequest(g:defx#_channel_id, a:method, a:args)
+    endif
   endif
 endfunction
 
