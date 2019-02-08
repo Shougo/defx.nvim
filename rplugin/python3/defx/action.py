@@ -88,6 +88,13 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     view._vim.command(f'silent {command} {defx._cwd}')
 
 
+def _check_redraw(view: View, defx: Defx, context: Context) -> None:
+    root = defx.get_root_candidate()
+    mtime = root['action__path'].stat().st_mtime
+    if mtime != defx._mtime:
+        view.redraw(True)
+
+
 def _copy(view: View, defx: Defx, context: Context) -> None:
     if not context.targets:
         return
@@ -304,10 +311,6 @@ def _print(view: View, defx: Defx, context: Context) -> None:
         view.print_msg(str(target['action__path']))
 
 
-def _repeat(view: View, defx: Defx, context: Context) -> None:
-    do_action(view, defx, view._prev_action, context)
-
-
 def _quit(view: View, defx: Defx, context: Context) -> None:
     view.quit()
 
@@ -316,6 +319,10 @@ def _redraw(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
     if context.args and context.args[0]:
         view.search_tree(context.args[0], defx._index)
+
+
+def _repeat(view: View, defx: Defx, context: Context) -> None:
+    do_action(view, defx, view._prev_action, context)
 
 
 def _remove(view: View, defx: Defx, context: Context) -> None:
@@ -494,6 +501,7 @@ DEFAULT_ACTIONS = {
     'call': ActionTable(func=_call, attr=ActionAttr.REDRAW),
     'cd': ActionTable(func=_cd),
     'change_vim_cwd': ActionTable(func=_change_vim_cwd),
+    'check_redraw': ActionTable(func=_check_redraw),
     'copy': ActionTable(func=_copy),
     'execute_command': ActionTable(func=_execute_command),
     'execute_system': ActionTable(func=_execute_system),

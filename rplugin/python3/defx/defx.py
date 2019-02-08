@@ -27,6 +27,7 @@ class Defx(object):
         self._ignored_files = ['.*']
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
+        self._mtime: int = -1
 
     def cd(self, path: str) -> None:
         self._cwd = str(Path(self._cwd).joinpath(path).resolve())
@@ -40,6 +41,7 @@ class Defx(object):
         """
         root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
+
         return root
 
     def gather_candidates(

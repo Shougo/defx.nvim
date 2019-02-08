@@ -162,8 +162,9 @@ class View(object):
 
         self._vim.command('silent doautocmd FileType defx')
         self._vim.command('autocmd! defx * <buffer>')
-        self._vim.command('autocmd defx WinEnter,FocusGained <buffer> ' +
-                          'call defx#call_async_action("redraw")')
+        self._vim.command('autocmd defx '
+                          'CursorHold,WinEnter,FocusGained <buffer> '
+                          'call defx#call_async_action("check_redraw")')
 
         return True
 
@@ -213,7 +214,10 @@ class View(object):
     def init_candidates(self) -> None:
         self._candidates = []
         for defx in self._defxs:
-            candidates = [defx.get_root_candidate()]
+            root = defx.get_root_candidate()
+            defx._mtime = root['action__path'].stat().st_mtime
+
+            candidates = [root]
             candidates += defx.gather_candidates()
             for candidate in candidates:
                 candidate['_defx_index'] = defx._index
