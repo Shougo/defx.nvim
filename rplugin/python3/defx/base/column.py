@@ -37,5 +37,8 @@ class Base:
     def length(self, context: Context) -> int:
         pass
 
+    def syntaxes(self) -> typing.List[str]:
+        return []
+
     def highlight(self) -> None:
         pass

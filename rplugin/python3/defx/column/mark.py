@@ -25,6 +25,12 @@ class Column(Base):
             'root_icon': '-',
             'length': 1,
         }
+        self._syntaxes = [
+            'selected',
+            'root',
+            'readonly',
+            'directory',
+        ]
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
@@ -41,6 +47,9 @@ class Column(Base):
 
     def length(self, context: Context) -> int:
         return typing.cast(int, self.vars['length'])
+
+    def syntaxes(self) -> typing.List[str]:
+        return [self.syntax_name + '_' + x for x in self._syntaxes]
 
     def highlight(self) -> None:
         for icon, highlight in {

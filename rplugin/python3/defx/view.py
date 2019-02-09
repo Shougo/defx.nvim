@@ -178,6 +178,9 @@ class View(object):
 
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
+            for syntax in column.syntaxes():
+                self._vim.command(
+                    'silent! syntax clear ' + syntax)
             self._vim.command(
                 'syntax region ' + column.syntax_name +
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
@@ -268,6 +271,8 @@ class View(object):
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
+
+        self._vim.command('redraw')
 
     def get_columns_text(self, context: Context,
                          candidate: typing.Dict[str, typing.Any]) -> str:

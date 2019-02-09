@@ -23,6 +23,10 @@ class Column(Base):
         }
 
         self._current_length = 0
+        self._syntaxes = [
+            'directory',
+            'hidden',
+        ]
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
@@ -35,6 +39,9 @@ class Column(Base):
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))
         return self._current_length
+
+    def syntaxes(self) -> typing.List[str]:
+        return [self.syntax_name + '_' + x for x in self._syntaxes]
 
     def highlight(self) -> None:
         self.vim.command(

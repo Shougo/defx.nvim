@@ -56,6 +56,10 @@ class Column(Base):
     def length(self, context: Context) -> int:
         return self._length
 
+    def syntaxes(self) -> typing.List[str]:
+        return [self.syntax_name + '_' + x['name'] for x
+                in self.vars['types']]
+
     def highlight(self) -> None:
         for t in self.vars['types']:
             self.vim.command(
