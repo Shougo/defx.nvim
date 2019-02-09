@@ -168,14 +168,17 @@ class View(object):
 
         return True
 
-    def init_syntax(self) -> None:
+    def init_length(self) -> None:
         start = 1
         for column in self._columns:
             column.start = start
             length = column.length(
                 self._context._replace(targets=self._candidates))
             column.end = start + length
+            start += length + 1
 
+    def init_syntax(self) -> None:
+        for column in self._columns:
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
             for syntax in column.syntaxes():
@@ -186,8 +189,6 @@ class View(object):
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
             column.highlight()
-
-            start += length + 1
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
@@ -242,7 +243,7 @@ class View(object):
         if is_force:
             self._selected_candidates = []
             self.init_candidates()
-            self.init_syntax()
+            self.init_length()
 
         # Set is_selected flag
         for candidate in self._candidates:
@@ -271,6 +272,9 @@ class View(object):
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
+
+        if is_force:
+            self.init_syntax()
 
         self._vim.command('redraw')
 
