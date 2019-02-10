@@ -1,6 +1,6 @@
 *defx.txt*	Dark powered file explorer for neovim/Vim8.
 
-Version: 0.0
+Version: 0.5
 Author: Shougo <Shougo.Matsu at gmail.com>
 License: MIT license
 
