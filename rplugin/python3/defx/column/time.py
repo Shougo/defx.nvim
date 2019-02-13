@@ -38,6 +38,8 @@ class Column(Base):
     def length(self, context: Context) -> int:
         return self._length
 
-    def highlight(self) -> None:
-        self.vim.command(
+    def highlight_commands(self) -> typing.List[str]:
+        commands: typing.List[str] = []
+        commands.append(
             f'highlight default link {self.syntax_name} Identifier')
+        return commands

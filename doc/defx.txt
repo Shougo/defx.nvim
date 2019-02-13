@@ -520,6 +520,9 @@ A: >
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
+2019-02-14
+* Change column "highlight" method to "highlight_commands" method.
+
 2019-01-02
 * Remove "fnamewidth" option.
 

@@ -60,12 +60,14 @@ class Column(Base):
         return [self.syntax_name + '_' + x['name'] for x
                 in self.vars['types']]
 
-    def highlight(self) -> None:
+    def highlight_commands(self) -> typing.List[str]:
+        commands: typing.List[str] = []
         for t in self.vars['types']:
-            self.vim.command(
+            commands.append(
                 ('syntax match {0}_{1} /{2}/ ' +
                  'contained containedin={0}').format(
                     self.syntax_name, t['name'], re.escape(t['icon'])))
-            self.vim.command(
+            commands.append(
                 'highlight default link {}_{} {}'.format(
                     self.syntax_name, t['name'], t['highlight']))
+        return commands

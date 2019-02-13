@@ -27,6 +27,7 @@ class View(object):
         self._bufname = '[defx]'
         self._buffer: Nvim.buffer = None
         self._prev_action = ''
+        self._prev_highlight_commands: typing.List[str] = []
 
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
@@ -177,7 +178,17 @@ class View(object):
             column.end = start + length
             start += length + 1
 
-    def init_syntax(self) -> None:
+    def update_syntax(self) -> None:
+        commands: typing.List[str] = []
+        for column in self._columns:
+            commands += column.highlight_commands()
+
+        if commands == self._prev_highlight_commands:
+            # Skip highlights
+            return
+
+        self._prev_highlight_commands = commands
+
         for column in self._columns:
             self._vim.command(
                 'silent! syntax clear ' + column.syntax_name)
@@ -188,7 +199,9 @@ class View(object):
                 'syntax region ' + column.syntax_name +
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
-            column.highlight()
+
+        for command in commands:
+            self._vim.command(command)
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
@@ -244,6 +257,7 @@ class View(object):
             self._selected_candidates = []
             self.init_candidates()
             self.init_length()
+            self.update_syntax()
 
         # Set is_selected flag
         for candidate in self._candidates:
@@ -272,9 +286,6 @@ class View(object):
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
-
-        if is_force:
-            self.init_syntax()
 
         self._vim.command('redraw')
 

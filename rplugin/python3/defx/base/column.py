@@ -40,5 +40,5 @@ class Base:
     def syntaxes(self) -> typing.List[str]:
         return []
 
-    def highlight(self) -> None:
-        pass
+    def highlight_commands(self) -> typing.List[str]:
+        return []
