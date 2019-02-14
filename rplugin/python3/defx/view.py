@@ -319,7 +319,8 @@ class View(object):
         else:
             candidates = [self._candidates[x]
                           for x in self._selected_candidates]
-        return [x for x in candidates if x['_defx_index'] == index]
+        return [x for x in candidates
+                if x.get('_defx_index', -1) == index]
 
     def cd(self, defx: Defx, path: str, cursor: int) -> None:
         # Save previous cursor position
