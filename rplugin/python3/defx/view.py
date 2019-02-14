@@ -169,6 +169,8 @@ class View(object):
                           'CursorHold,WinEnter,FocusGained <buffer> '
                           'call defx#call_async_action("check_redraw")')
 
+        self._prev_highlight_commands = []
+
         return True
 
     def init_length(self) -> None:
