@@ -14,8 +14,8 @@ Interface		|defx-interface|
   Key mappings		  |defx-key-mappings|
   Actions		  |defx-actions|
   Options		  |defx-options|
-Columns			|defx-columns|
-  External columns	  |defx-external-columns|
+  Columns		  |defx-columns|
+    External columns	    |defx-external-columns|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -425,6 +425,9 @@ EXTERNAL COLUMNS					*defx-external-columns*
 
 git 		Git status.
 		https://github.com/kristijanhusak/defx-git
+
+icons		Nerd font icons.
+		https://github.com/kristijanhusak/defx-icons
 
 ==============================================================================
 DENITE SOURCES						*defx-denite-sources*
