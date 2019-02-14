@@ -161,8 +161,10 @@ class View(object):
             buffer_options['buflisted'] = False
             buffer_options['bufhidden'] = 'wipe'
 
-        self._vim.command('silent doautocmd FileType defx')
-        self._vim.command('autocmd! defx * <buffer>')
+        self.execute_commands([
+            'silent doautocmd FileType defx',
+            'autocmd! defx * <buffer>',
+        ])
         self._vim.command('autocmd defx '
                           'CursorHold,WinEnter,FocusGained <buffer> '
                           'call defx#call_async_action("check_redraw")')
@@ -179,35 +181,39 @@ class View(object):
             start += length + 1
 
     def update_syntax(self) -> None:
-        commands: typing.List[str] = []
+        highlight_commands: typing.List[str] = []
         for column in self._columns:
-            commands += column.highlight_commands()
+            highlight_commands += column.highlight_commands()
 
-        if commands == self._prev_highlight_commands:
+        if highlight_commands == self._prev_highlight_commands:
             # Skip highlights
             return
 
-        self._prev_highlight_commands = commands
+        self._prev_highlight_commands = highlight_commands
 
+        commands: typing.List[str] = []
         for column in self._columns:
-            self._vim.command(
+            commands.append(
                 'silent! syntax clear ' + column.syntax_name)
             for syntax in column.syntaxes():
-                self._vim.command(
+                commands.append(
                     'silent! syntax clear ' + syntax)
-            self._vim.command(
+            commands.append(
                 'syntax region ' + column.syntax_name +
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
+        commands += highlight_commands
 
-        for command in commands:
-            self._vim.command(command)
+        self.execute_commands(commands)
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 
     def print_msg(self, expr: typing.Any) -> None:
         self._vim.call('defx#util#print_message', expr)
+
+    def execute_commands(self, commands: typing.List[str]) -> None:
+        self._vim.command(' | '.join(commands))
 
     def quit(self) -> None:
         winnr = self._vim.call('bufwinnr', self._bufname)
@@ -286,8 +292,6 @@ class View(object):
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
-
-        self._vim.command('redraw')
 
     def get_columns_text(self, context: Context,
                          candidate: typing.Dict[str, typing.Any]) -> str:
