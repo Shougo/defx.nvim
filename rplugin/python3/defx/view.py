@@ -27,6 +27,7 @@ class View(object):
         self._bufname = '[defx]'
         self._buffer: Nvim.buffer = None
         self._prev_action = ''
+        self._prev_highlight_commands: typing.List[str] = []
 
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
@@ -160,11 +161,15 @@ class View(object):
             buffer_options['buflisted'] = False
             buffer_options['bufhidden'] = 'wipe'
 
-        self._vim.command('silent doautocmd FileType defx')
-        self._vim.command('autocmd! defx * <buffer>')
+        self.execute_commands([
+            'silent doautocmd FileType defx',
+            'autocmd! defx * <buffer>',
+        ])
         self._vim.command('autocmd defx '
                           'CursorHold,WinEnter,FocusGained <buffer> '
                           'call defx#call_async_action("check_redraw")')
+
+        self._prev_highlight_commands = []
 
         return True
 
@@ -177,24 +182,40 @@ class View(object):
             column.end = start + length
             start += length + 1
 
-    def init_syntax(self) -> None:
+    def update_syntax(self) -> None:
+        highlight_commands: typing.List[str] = []
         for column in self._columns:
-            self._vim.command(
+            highlight_commands += column.highlight_commands()
+
+        if highlight_commands == self._prev_highlight_commands:
+            # Skip highlights
+            return
+
+        self._prev_highlight_commands = highlight_commands
+
+        commands: typing.List[str] = []
+        for column in self._columns:
+            commands.append(
                 'silent! syntax clear ' + column.syntax_name)
             for syntax in column.syntaxes():
-                self._vim.command(
+                commands.append(
                     'silent! syntax clear ' + syntax)
-            self._vim.command(
+            commands.append(
                 'syntax region ' + column.syntax_name +
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
-            column.highlight()
+        commands += highlight_commands
+
+        self.execute_commands(commands)
 
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 
     def print_msg(self, expr: typing.Any) -> None:
         self._vim.call('defx#util#print_message', expr)
+
+    def execute_commands(self, commands: typing.List[str]) -> None:
+        self._vim.command(' | '.join(commands))
 
     def quit(self) -> None:
         winnr = self._vim.call('bufwinnr', self._bufname)
@@ -244,6 +265,7 @@ class View(object):
             self._selected_candidates = []
             self.init_candidates()
             self.init_length()
+            self.update_syntax()
 
         # Set is_selected flag
         for candidate in self._candidates:
@@ -273,11 +295,6 @@ class View(object):
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
 
-        if is_force:
-            self.init_syntax()
-
-        self._vim.command('redraw')
-
     def get_columns_text(self, context: Context,
                          candidate: typing.Dict[str, typing.Any]) -> str:
         text = ''
@@ -304,7 +321,8 @@ class View(object):
         else:
             candidates = [self._candidates[x]
                           for x in self._selected_candidates]
-        return [x for x in candidates if x['_defx_index'] == index]
+        return [x for x in candidates
+                if x.get('_defx_index', -1) == index]
 
     def cd(self, defx: Defx, path: str, cursor: int) -> None:
         # Save previous cursor position

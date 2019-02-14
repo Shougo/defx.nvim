@@ -51,17 +51,19 @@ class Column(Base):
     def syntaxes(self) -> typing.List[str]:
         return [self.syntax_name + '_' + x for x in self._syntaxes]
 
-    def highlight(self) -> None:
+    def highlight_commands(self) -> typing.List[str]:
+        commands: typing.List[str] = []
         for icon, highlight in {
                 'selected': 'Statement',
                 'root': 'Identifier',
                 'readonly': 'Comment',
                 'directory': 'Special',
         }.items():
-            self.vim.command(
+            commands.append(
                 ('syntax match {0}_{1} /[{2}]/ ' +
                  'contained containedin={0}').format(
                     self.syntax_name, icon, self.vars[icon + '_icon']))
-            self.vim.command(
+            commands.append(
                 'highlight default link {}_{} {}'.format(
                     self.syntax_name, icon, highlight))
+        return commands
