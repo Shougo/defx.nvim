@@ -315,6 +315,16 @@ def _quit(view: View, defx: Defx, context: Context) -> None:
     view.quit()
 
 
+def _multi(view: View, defx: Defx, context: Context) -> None:
+    for arg in context.args:
+        args: typing.List[str]
+        if isinstance(arg, list):
+            args = arg
+        else:
+            args = [arg]
+        do_action(view, defx, args[0], context._replace(args=args[1:]))
+
+
 def _redraw(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
     if context.args and context.args[0]:
@@ -509,6 +519,7 @@ DEFAULT_ACTIONS = {
     'open': ActionTable(func=_open),
     'open_directory': ActionTable(func=_open_directory),
     'drop': ActionTable(func=_drop),
+    'multi': ActionTable(func=_multi),
     'new_directory': ActionTable(func=_new_directory),
     'new_file': ActionTable(func=_new_file),
     'new_multiple_files': ActionTable(func=_new_multiple_files),

@@ -192,6 +192,20 @@ execute_system 					*defx-action-execute_system*
 move 						*defx-action-move*
 		Move the selected files to defx clipboard.
 
+multi 						*defx-action-multi*
+		Multiple actions.
+
+		Action args:
+			0. action 1
+			1. action 2
+			...
+
+		Example: >
+
+		" auto quit like behavior
+		nnoremap <silent><buffer><expr> <CR>
+		\ defx#do_action('drop', 'quit')
+
 new_directory 					*defx-action-new_directory*
 		Create a new directory.
 
