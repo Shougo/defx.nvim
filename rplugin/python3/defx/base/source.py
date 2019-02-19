@@ -7,6 +7,7 @@
 import typing
 
 from abc import abstractmethod
+from defx.action import ActionTable
 from defx.context import Context
 from defx.util import Nvim
 from pathlib import Path
@@ -17,6 +18,7 @@ class Base:
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim
         self.name = 'base'
+        self.actions: typing.Dict[str, ActionTable] = {}
 
     @abstractmethod
     def gather_candidates(
