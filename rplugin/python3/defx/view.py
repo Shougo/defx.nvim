@@ -183,16 +183,6 @@ class View(object):
             start += length + 1
 
     def update_syntax(self) -> None:
-        highlight_commands: typing.List[str] = []
-        for column in self._columns:
-            highlight_commands += column.highlight_commands()
-
-        if highlight_commands == self._prev_highlight_commands:
-            # Skip highlights
-            return
-
-        self._prev_highlight_commands = highlight_commands
-
         commands: typing.List[str] = []
         for column in self._columns:
             commands.append(
@@ -204,7 +194,13 @@ class View(object):
                 'syntax region ' + column.syntax_name +
                 r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                 str(column.end) + 'v/ keepend oneline')
-        commands += highlight_commands
+            commands += column.highlight_commands()
+
+        if commands == self._prev_highlight_commands:
+            # Skip highlights
+            return
+
+        self._prev_highlight_commands = commands
 
         self.execute_commands(commands)
 
