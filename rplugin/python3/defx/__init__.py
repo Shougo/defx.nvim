@@ -44,6 +44,11 @@ if hasattr(vim, 'plugin'):
         def async_action(self, args: typing.List[typing.Any]) -> None:
             self._rplugin.do_action(args)
 
+        @vim.rpc_export('_defx_get_candidate', sync=True)  # type: ignore
+        def get_candidate(self, args: typing.List[
+                typing.Any]) -> typing.Dict[str, str]:
+            return self._rplugin.get_candidate()
+
 if find_spec('yarp'):
 
     global_defx = Rplugin(vim)
@@ -59,3 +64,7 @@ if find_spec('yarp'):
 
     def _defx_async_action(args: typing.List[typing.Any]) -> None:
         global_defx.do_action(args)
+
+    def _defx_get_candidate(args: typing.List[
+            typing.Any]) -> typing.Dict[str, str]:
+        return global_defx.get_candidate()

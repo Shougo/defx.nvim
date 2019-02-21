@@ -82,6 +82,14 @@ defx#call_action({action}[, {args}])
 		list in |defx-actions|.
 		{args} behavior depends on {action}.
 
+						*defx#call_async_action()*
+defx#call_async_action({action}[, {args}])
+		Fire {action} action with {args} asynchronously.  You can find
+		the actions list in |defx-actions|.
+		{args} behavior depends on {action}.
+		Note: You cannot fire the next action until the previous
+		action is finished.
+
 						*defx#custom#column()*
 defx#custom#column({column-name}, {option-name}, {value})
 defx#custom#column({column-name}, {dict})
@@ -123,13 +131,18 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 		{args} behavior depends on {action}.
 		Note: It is only used to define mappings.
 
-						*defx#call_async_action()*
-defx#call_async_action({action}[, {args}])
-		Fire {action} action with {args} asynchronously.  You can find
-		the actions list in |defx-actions|.
-		{args} behavior depends on {action}.
-		Note: You cannot fire the next action until the previous
-		action is finished.
+defx#get_candidate()					*defx#get_candidate()*
+		Returns the current cursor candidate as |Dictionary|.
+
+defx#is_directory()					*defx#is_directory()*
+		Returns |v:true| if the current cursor candidate is directory.
+
+		Example: >
+
+		nnoremap <silent><buffer><expr> <CR>
+		\ defx#is_directory() ?
+		\ defx#do_action('open') :
+		\ defx#do_action('multi', ['drop', 'quit'])
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 						*defx-key-mappings*

@@ -36,3 +36,15 @@ class Rplugin:
                      if x._bufnr == self._vim.current.buffer.number]:
             view.do_action(args[0], args[1], args[2])
             break
+
+    def get_candidate(self) -> typing.Dict[str, str]:
+        cursor = self._vim.call('line', '.')
+        for view in [x for x in self._views
+                     if x._bufnr == self._vim.current.buffer.number]:
+            candidate = view.get_cursor_candidate(cursor)
+            return {
+                'word': candidate['word'],
+                'is_directory': candidate['is_directory'],
+                'action__path': str(candidate['action__path']),
+            }
+        return {}

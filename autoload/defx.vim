@@ -58,3 +58,14 @@ function! defx#call_async_action(action, ...) abort
   call defx#util#rpcrequest(
         \ '_defx_async_action', [a:action, args, context], v:true)
 endfunction
+
+function! defx#get_candidate() abort
+  if &l:filetype !=# 'defx'
+    return {}
+  endif
+
+  return defx#util#rpcrequest('_defx_get_candidate', [], v:false)
+endfunction
+function! defx#is_directory() abort
+  return get(defx#get_candidate(), 'is_directory', v:false)
+endfunction
