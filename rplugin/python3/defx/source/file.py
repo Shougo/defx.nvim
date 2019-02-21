@@ -7,8 +7,6 @@
 from pathlib import Path
 import typing
 
-# from defx.action import ActionAttr
-# from defx.action import ActionTable
 from defx.base.source import Base
 from defx.context import Context
 from defx.util import error, readable, safe_call, Nvim
@@ -20,6 +18,9 @@ class Source(Base):
         super().__init__(vim)
 
         self.name = 'file'
+
+        from defx.kind.file import Kind
+        self.kind: Kind = Kind(self.vim)
 
     def get_root_candidate(
             self, context: Context, path: str
