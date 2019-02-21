@@ -204,7 +204,9 @@ multi 						*defx-action-multi*
 
 		" auto quit like behavior
 		nnoremap <silent><buffer><expr> <CR>
-		\ defx#do_action('drop', 'quit')
+		\ defx#do_action('multi', ['drop', 'quit'])
+		nnoremap <silent><buffer><expr> s
+		\ defx#do_action('multi', [['drop', 'split'], 'quit'])
 
 new_directory 					*defx-action-new_directory*
 		Create a new directory.
