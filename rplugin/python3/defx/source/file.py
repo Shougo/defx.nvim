@@ -7,6 +7,8 @@
 from pathlib import Path
 import typing
 
+# from defx.action import ActionAttr
+# from defx.action import ActionTable
 from defx.base.source import Base
 from defx.context import Context
 from defx.util import error, readable, safe_call, Nvim

@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import copy
 from enum import auto, IntFlag
 import importlib
 from pathlib import Path
@@ -18,12 +19,24 @@ from defx.util import error, cwd_input, confirm, readable
 from defx.view import View
 
 
+class ActionAttr(IntFlag):
+    REDRAW = auto()
+    MARK = auto()
+    NONE = 0
+
+
+class ActionTable(typing.NamedTuple):
+    func: typing.Callable[[View, Defx, Context], None]
+    attr: ActionAttr = ActionAttr.NONE
+
+
 def do_action(view: View, defx: Defx,
               action_name: str, context: Context) -> bool:
     """
     Do "action_name" action.
     """
-    actions = DEFAULT_ACTIONS
+    actions: typing.Dict[str, ActionTable] = copy.copy(defx._source.actions)
+    actions.update(DEFAULT_ACTIONS)
 
     if action_name not in actions:
         return True
@@ -494,17 +507,6 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     elif choice == 5:
         ret = Path(str(src) + '_')
     return ret
-
-
-class ActionAttr(IntFlag):
-    REDRAW = auto()
-    MARK = auto()
-    NONE = 0
-
-
-class ActionTable(typing.NamedTuple):
-    func: typing.Callable[[View, Defx, Context], None]
-    attr: ActionAttr = ActionAttr.NONE
 
 
 DEFAULT_ACTIONS = {
