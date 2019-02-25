@@ -218,6 +218,11 @@ class View(object):
         if winnr < 0:
             return
 
+        if winnr != self._vim.call('winnr'):
+            # Use current window
+            self._context = self._context._replace(
+                prev_winid=self._vim.call('win_getid'))
+
         self._vim.command(f'{winnr}wincmd w')
 
         if self._context.split in ['no', 'tab']:
