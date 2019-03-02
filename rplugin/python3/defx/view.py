@@ -32,7 +32,9 @@ class View(object):
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
              clipboard: Clipboard) -> None:
+        context['wincol'] = int(context['wincol'])
         context['winheight'] = int(context['winheight'])
+        context['winrow'] = int(context['winrow'])
         context['winwidth'] = int(context['winwidth'])
         context['prev_bufnr'] = int(context['prev_bufnr'])
         context['prev_winid'] = int(context['prev_winid'])
@@ -101,11 +103,24 @@ class View(object):
                 self._context.split == 'no'):
             self._context = self._context._replace(split='vertical')
 
+        if (self._context.split == 'floating'
+                and self._vim.call('exists', '*nvim_open_win')):
+            # Use floating window
+            self._vim.call(
+                'nvim_open_win',
+                self._vim.call('bufnr', '%'), True,
+                self._context.winwidth,
+                self._context.winheight, {
+                    'relative': 'editor',
+                    'row': self._context.winrow,
+                    'col': self._context.wincol,
+                })
+
         # Create new buffer
         vertical = 'vertical' if self._context.split == 'vertical' else ''
+        no_split = self._context.split in ['no', 'tab', 'floating']
         if self._vim.call('bufexists', self._bufnr):
-            command = ('buffer' if self._context.split in ['no', 'tab']
-                       else 'sbuffer')
+            command = ('buffer' if no_split else 'sbuffer')
             self._vim.command(
                 'silent keepalt %s %s %s %s' % (
                     self._context.direction,
@@ -117,8 +132,7 @@ class View(object):
             if self._context.resume:
                 return False
         else:
-            command = ('edit' if self._context.split in ['no', 'tab']
-                       else 'new')
+            command = ('edit' if no_split else 'new')
             self._vim.call(
                 'defx#util#execute_path',
                 'silent keepalt %s %s %s ' % (

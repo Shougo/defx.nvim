@@ -392,6 +392,7 @@ OPTIONS							*defx-options*
 		"horizontal": Split buffer horizontally
 		"no": No split
 		"tab": Create the new tab
+		"floating": Use neovim floating window feature
 
 		Default: "no"
 
@@ -400,19 +401,33 @@ OPTIONS							*defx-options*
 		Close defx buffer window if this defx window exists.
 		Default: false
 
+						*defx-option-wincol*
+-wincol={window-column}
+		Set the column position of the Defx window if
+		|defx-option-split| is "floating".
+
+		Default: &columns / 4
+
 						*defx-option-winheight*
 -winheight={window-height}
 		Set the height of the window if |defx-option-split| is
 		"horizontal".
 
-		Default: 0
+		Default: 30
+
+						*defx-option-winrow*
+-winrow={window-row}
+		Set the row position of the Defx window if
+		|defx-option-split| is "floating".
+
+		Default: &lines / 3
 
 						*defx-option-winwidth*
 -winwidth={window-width}
 		Set the width of the window if |defx-option-split| is
 		"vertical".
 
-		Default: 0
+		Default: 90
 
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*

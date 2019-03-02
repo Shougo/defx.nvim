@@ -105,8 +105,10 @@ function! defx#init#_user_options() abort
         \ 'split': 'no',
         \ 'sort': 'filename',
         \ 'toggle': v:false,
-        \ 'winheight': 0,
-        \ 'winwidth': 0,
+        \ 'wincol': &columns / 4,
+        \ 'winheight': 30,
+        \ 'winrow': &lines / 3,
+        \ 'winwidth': 90,
         \ }
 endfunction
 function! s:internal_options() abort
