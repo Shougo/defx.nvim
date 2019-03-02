@@ -8,7 +8,7 @@ It replaces the deprecated vimfiler plugin.
 
 ## Concept
 
-* Doesn't depends on denite.nvim
+* Doesn't depend on denite.nvim
 
 * Vim8/neovim compatible(nvim-yarp is needed for Vim8)
 
