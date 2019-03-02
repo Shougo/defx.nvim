@@ -503,7 +503,8 @@ file		File
 
 		variables:
 		root		  root function name
-				  Note: It must be function name.
+				  Note: It must be string.  You cannot use
+				  |funcref| or |lambda|.
 				  (default is v:null)
 
 ==============================================================================
