@@ -144,7 +144,10 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
         if winids:
             view._vim.call('win_gotoid', winids[0])
         else:
-            view._vim.call('win_gotoid', context.prev_winid)
+            if context.prev_winid != view._vim.call('win_getid'):
+                view._vim.call('win_gotoid', context.prev_winid)
+            else:
+                view._vim.command('wincmd w')
             if path.match(cwd):
                 path = path.relative_to(cwd)
             view._vim.call('defx#util#execute_path', command, str(path))
