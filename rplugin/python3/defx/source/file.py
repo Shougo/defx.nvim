@@ -22,12 +22,20 @@ class Source(Base):
         from defx.kind.file import Kind
         self.kind: Kind = Kind(self.vim)
 
+        self.vars = {
+            'root': None,
+        }
+
     def get_root_candidate(
             self, context: Context, path: str
     ) -> typing.Dict[str, typing.Any]:
+        word = self.vim.call('fnamemodify',
+                             path + ('/' if path != '/' else ''), ':~')
+        if self.vars['root']:
+            word = self.vim.call(self.vars['root'], word)
+
         return {
-            'word': self.vim.call('fnamemodify',
-                                  path + ('/' if path != '/' else ''), ':~'),
+            'word': word,
             'is_directory': True,
             'action__path': Path(path),
         }

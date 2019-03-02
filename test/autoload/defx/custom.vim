@@ -20,3 +20,10 @@ function! s:suite.custom_option() abort
   call defx#custom#option('default', 'columns', 'mark')
   call s:assert.equals(custom.default.columns, 'mark')
 endfunction
+
+function! s:suite.custom_source() abort
+  let custom = defx#custom#_get().source
+
+  call defx#custom#source('file', 'root', 'mark')
+  call s:assert.equals(custom.file.root, 'mark')
+endfunction

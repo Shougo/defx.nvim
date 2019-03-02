@@ -16,6 +16,7 @@ function! defx#custom#_init() abort
   let s:custom = {}
   let s:custom.column = {}
   let s:custom.option = {}
+  let s:custom.source = {}
 endfunction
 
 function! defx#custom#column(column_name, name_or_dict, ...) abort
@@ -37,6 +38,17 @@ function! defx#custom#option(buffer_name, name_or_dict, ...) abort
       let custom[key] = {}
     endif
 
+    call s:set_custom(custom[key], a:name_or_dict, get(a:000, 0, ''))
+  endfor
+endfunction
+
+function! defx#custom#source(source_name, name_or_dict, ...) abort
+  let custom = defx#custom#_get().source
+
+  for key in defx#util#split(a:source_name)
+    if !has_key(custom, key)
+      let custom[key] = {}
+    endif
     call s:set_custom(custom[key], a:name_or_dict, get(a:000, 0, ''))
   endfor
 endfunction

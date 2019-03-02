@@ -16,6 +16,7 @@ Interface		|defx-interface|
   Options		  |defx-options|
   Columns		  |defx-columns|
     External columns	    |defx-external-columns|
+  Sources		  |defx-sources|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
@@ -108,7 +109,7 @@ defx#custom#column({column-name}, {dict})
 	      \ 'readonly_icon': '✗',
 	      \ 'selected_icon': '✓',
 	      \ })
-
+<
 						*defx#custom#option()*
 defx#custom#option({buffer-name}, {option-name}, {value})
 defx#custom#option({buffer-name}, {dict})
@@ -123,8 +124,22 @@ defx#custom#option({buffer-name}, {dict})
 	call defx#custom#option('_', {
 	      \ 'columns': 'mark:filename:type:size:time',
 	      \ })
-
-
+<
+							*defx#custom#source()*
+defx#custom#source({source-name}, {var-name}, {value})
+defx#custom#source({source-name}, {dict})
+		Set {source-name} source specialized variable {variable-name}
+		to {value}.  You may specify multiple sources with the
+		separator "," in {source-name}.
+>
+	function! Root(word) abort
+	  return fnamemodify(a:word, ':h:t')
+	endfunction
+	
+	call defx#custom#source('file', {
+	     \ 'root': 'Root',
+	     \})
+<
 defx#do_action({action}[, {args}])			*defx#do_action()*
 		Fire {action} action with {args}.  You can find the actions
 		list in |defx-actions|.
@@ -480,6 +495,16 @@ git 		Git status.
 
 icons		Nerd font icons.
 		https://github.com/kristijanhusak/defx-icons
+
+------------------------------------------------------------------------------
+SOURCES 						*defx-sources*
+
+file		File
+
+		variables:
+		root		  root function name
+				  Note: It must be function name.
+				  (default is v:null)
 
 ==============================================================================
 DENITE SOURCES						*defx-denite-sources*

@@ -10,6 +10,7 @@ from defx.source.file import Source as File
 from defx.context import Context
 from defx.sort import sort
 from defx.util import Nvim
+from defx.util import error
 from pathlib import Path
 
 
@@ -28,6 +29,17 @@ class Defx(object):
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
+
+        self._init_source()
+
+    def _init_source(self) -> None:
+        custom = self._vim.call('defx#custom#_get')['source']
+        name = self._source.name
+        if name in custom:
+            self._source.vars.update(custom[name])
+
+    def debug(self, expr: typing.Any) -> None:
+        error(self._vim, expr)
 
     def cd(self, path: str) -> None:
         self._cwd = str(Path(self._cwd).joinpath(path).resolve())
