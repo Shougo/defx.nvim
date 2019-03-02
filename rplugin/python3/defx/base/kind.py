@@ -29,6 +29,7 @@ class Base:
             'quit': ActionTable(func=_quit),
             'redraw': ActionTable(func=_redraw),
             'repeat': ActionTable(func=_repeat, attr=ActionAttr.MARK),
+            'search': ActionTable(func=_search),
             'toggle_columns': ActionTable(
                 func=_toggle_columns, attr=ActionAttr.REDRAW),
             'toggle_ignored_files': ActionTable(
@@ -78,12 +79,15 @@ def _quit(view: View, defx: Defx, context: Context) -> None:
 
 def _redraw(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
-    if context.args and context.args[0]:
-        view.search_tree(context.args[0], defx._index)
 
 
 def _repeat(view: View, defx: Defx, context: Context) -> None:
     do_action(view, defx, view._prev_action, context)
+
+
+def _search(view: View, defx: Defx, context: Context) -> None:
+    if context.args and context.args[0]:
+        view.search_tree(context.args[0], defx._index)
 
 
 def _toggle_columns(view: View, defx: Defx, context: Context) -> None:

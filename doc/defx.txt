@@ -273,6 +273,12 @@ remove_trash					*defx-action-remove_trash*
 		Note: Send2Trash module is needed for the action.
 		https://pypi.org/project/Send2Trash/
 
+search						      *defx-action-search*
+		Search the path.
+
+		Action args:
+			0. search the path
+
 toggle_columns			*defx-action-toggle_columns*
 		Toggle the current columns.
 
@@ -357,6 +363,8 @@ OPTIONS							*defx-options*
 							*defx-option-search*
 -search={path}
 		Search the {path}.
+		Note: It must be full path.
+
 		Default: ""
 
 							*defx-option-show-ignored-files*
