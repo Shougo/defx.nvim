@@ -132,8 +132,8 @@ defx#custom#source({source-name}, {dict})
 		to {value}.  You may specify multiple sources with the
 		separator "," in {source-name}.
 >
-	function! Root(word) abort
-	  return fnamemodify(a:word, ':h:t')
+	function! Root(path) abort
+	  return fnamemodify(a:path, ':t')
 	endfunction
 	
 	call defx#custom#source('file', {

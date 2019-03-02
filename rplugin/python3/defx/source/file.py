@@ -32,7 +32,7 @@ class Source(Base):
         word = self.vim.call('fnamemodify',
                              path + ('/' if path != '/' else ''), ':~')
         if self.vars['root']:
-            word = self.vim.call(self.vars['root'], word)
+            word = self.vim.call(self.vars['root'], path)
 
         return {
             'word': word,
