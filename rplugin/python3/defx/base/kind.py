@@ -73,7 +73,29 @@ def _call(view: View, defx: Defx, context: Context) -> None:
 
 
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
-    pass
+    for target in [x for x in context.targets if x['is_directory']]:
+        if not target['is_opened']:
+            continue
+
+        path = target['action__path']
+
+        # Search insert position
+        pos = view.get_candidate_pos(path, defx._index)
+        if pos < 0:
+            continue
+
+        view._candidates[pos]['is_opened'] = False
+
+        start = pos + 1
+        base_level = target['level']
+        end = start
+        for candidate in view._candidates[start:]:
+            if candidate['level'] <= base_level:
+                break
+            end += 1
+
+        view._candidates = (view._candidates[: start] +
+                            view._candidates[end:])
 
 
 def _multi(view: View, defx: Defx, context: Context) -> None:
@@ -87,7 +109,10 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
 
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
-    for target in context.targets:
+    for target in [x for x in context.targets if x['is_directory']]:
+        if target['is_opened']:
+            continue
+
         path = target['action__path']
 
         # Search insert position
@@ -113,7 +138,11 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
 
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
-    pass
+    for target in [x for x in context.targets if x['is_directory']]:
+        if target['is_opened']:
+            _close_tree(view, defx, context._replace(targets=[target]))
+        else:
+            _open_tree(view, defx, context._replace(targets=[target]))
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:
