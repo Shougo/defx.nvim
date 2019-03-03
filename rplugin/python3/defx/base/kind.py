@@ -26,12 +26,12 @@ class Base:
             'call': ActionTable(
                 func=_call, attr=ActionAttr.REDRAW),
             'close_tree': ActionTable(
-                func=_close_tree, attr=ActionAttr.REDRAW),
+                func=_close_tree, attr=ActionAttr.TREE),
             'multi': ActionTable(func=_multi),
             'open_tree': ActionTable(
-                func=_open_tree, attr=ActionAttr.REDRAW),
+                func=_open_tree, attr=ActionAttr.TREE),
             'open_or_close_tree': ActionTable(
-                func=_open_or_close_tree, attr=ActionAttr.REDRAW),
+                func=_open_or_close_tree, attr=ActionAttr.TREE),
             'print': ActionTable(func=_print),
             'quit': ActionTable(
                 func=_quit, attr=ActionAttr.NO_TARGET),
@@ -87,7 +87,29 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
 
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
-    pass
+    for target in context.targets:
+        path = target['action__path']
+
+        # Search insert position
+        pos = view.get_candidate_pos(path, defx._index)
+        if pos < 0:
+            continue
+
+        view._candidates[pos]['is_opened'] = True
+
+        candidates = defx.gather_candidates(path)
+
+        if not candidates:
+            continue
+
+        base_level = target['level'] + 1
+        for candidate in candidates:
+            candidate['level'] = base_level
+            candidate['is_opened'] = False
+            candidate['_defx_index'] = defx._index
+
+        view._candidates = (view._candidates[: pos + 1] +
+                            candidates + view._candidates[pos + 1:])
 
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:

@@ -376,6 +376,13 @@ class View(object):
             path = path.parent
         return False
 
+    def get_candidate_pos(self, path: Path, index: int) -> int:
+        for [pos, candidate] in enumerate(self._candidates):
+            if (candidate['_defx_index'] == index and
+                    candidate['action__path'] == path):
+                return pos
+        return -1
+
     def search_file(self, path: Path, index: int) -> bool:
         linenr = 1
         target = str(path)

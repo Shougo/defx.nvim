@@ -16,6 +16,7 @@ class ActionAttr(IntFlag):
     REDRAW = auto()
     MARK = auto()
     NO_TARGET = auto()
+    TREE = auto()
     NONE = 0
 
 
@@ -48,6 +49,11 @@ def do_action(view: View, defx: Defx,
 
     if ActionAttr.MARK in action.attr:
         # Update marks
+        view.redraw()
+    elif ActionAttr.TREE in action.attr:
+        # Update opened state
+        view._opened_candidates = [
+            x[0] for x in enumerate(view._candidates) if x[1]['is_opened']]
         view.redraw()
     elif ActionAttr.REDRAW in action.attr:
         # Redraw

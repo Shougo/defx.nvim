@@ -32,7 +32,7 @@ class Column(Base):
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        return self._truncate(candidate['word'])
+        return self._truncate(' ' * candidate['level'] + candidate['word'])
 
     def length(self, context: Context) -> int:
         max_fnamewidth = max([self._strwidth(x['word'])
