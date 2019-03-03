@@ -25,7 +25,13 @@ class Base:
         return {
             'call': ActionTable(
                 func=_call, attr=ActionAttr.REDRAW),
+            'close_tree': ActionTable(
+                func=_close_tree, attr=ActionAttr.REDRAW),
             'multi': ActionTable(func=_multi),
+            'open_tree': ActionTable(
+                func=_open_tree, attr=ActionAttr.REDRAW),
+            'open_or_close_tree': ActionTable(
+                func=_open_or_close_tree, attr=ActionAttr.REDRAW),
             'print': ActionTable(func=_print),
             'quit': ActionTable(
                 func=_quit, attr=ActionAttr.NO_TARGET),
@@ -66,6 +72,10 @@ def _call(view: View, defx: Defx, context: Context) -> None:
     view._vim.call(function, dict_context)
 
 
+def _close_tree(view: View, defx: Defx, context: Context) -> None:
+    pass
+
+
 def _multi(view: View, defx: Defx, context: Context) -> None:
     for arg in context.args:
         args: typing.List[str]
@@ -74,6 +84,14 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
         else:
             args = [arg]
         do_action(view, defx, args[0], context._replace(args=args[1:]))
+
+
+def _open_tree(view: View, defx: Defx, context: Context) -> None:
+    pass
+
+
+def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
+    pass
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:

@@ -21,6 +21,7 @@ class View(object):
         self._vim: Nvim = vim
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._selected_candidates: typing.List[int] = []
+        self._opened_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
         self._index = index
@@ -282,11 +283,14 @@ class View(object):
             self.init_length()
             self.update_syntax()
 
-        # Set is_selected flag
+        # Set flags
         for candidate in self._candidates:
             candidate['is_selected'] = False
+            candidate['is_opened'] = False
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
+        for index in self._opened_candidates:
+            self._candidates[index]['is_opened'] = True
 
         for column in self._columns:
             column.on_redraw(self._context)
