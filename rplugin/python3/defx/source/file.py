@@ -35,7 +35,7 @@ class Source(Base):
             word = self.vim.call(self.vars['root'], path)
 
         return {
-            'word': word,
+            'word': ': ' + word,
             'is_directory': True,
             'action__path': Path(path),
         }

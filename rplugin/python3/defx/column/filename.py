@@ -26,6 +26,7 @@ class Column(Base):
         self._syntaxes = [
             'directory',
             'hidden',
+            'root',
         ]
 
     def get(self, context: Context,
@@ -53,11 +54,17 @@ class Column(Base):
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
         commands.append(
+            r'syntax match {0}_{1} /: .*/ contained containedin={0}'.format(
+                self.syntax_name, 'root'))
+        commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'directory', 'PreProc'))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'hidden', 'Comment'))
+        commands.append(
+            'highlight default link {}_{} {}'.format(
+                self.syntax_name, 'root', 'Identifier'))
         return commands
 
     def _strwidth(self, word: str) -> int:
