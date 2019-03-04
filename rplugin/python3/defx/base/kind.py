@@ -34,26 +34,26 @@ class Base:
                 func=_open_or_close_tree, attr=ActionAttr.TREE),
             'print': ActionTable(func=_print),
             'quit': ActionTable(
-                func=_quit, attr=ActionAttr.NO_TARGET),
+                func=_quit, attr=ActionAttr.NO_TAGETS),
             'redraw': ActionTable(
-                func=_redraw, attr=ActionAttr.NO_TARGET),
+                func=_redraw, attr=ActionAttr.NO_TAGETS),
             'repeat': ActionTable(
                 func=_repeat, attr=ActionAttr.MARK),
             'search': ActionTable(
-                func=_search, attr=ActionAttr.NO_TARGET),
+                func=_search, attr=ActionAttr.NO_TAGETS),
             'toggle_columns': ActionTable(
                 func=_toggle_columns, attr=ActionAttr.REDRAW),
             'toggle_ignored_files': ActionTable(
                 func=_toggle_ignored_files, attr=ActionAttr.REDRAW),
             'toggle_select': ActionTable(
                 func=_toggle_select,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'toggle_select_all': ActionTable(
                 func=_toggle_select_all,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'toggle_sort': ActionTable(
                 func=_toggle_sort,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'yank_path': ActionTable(func=_yank_path),
         }
 

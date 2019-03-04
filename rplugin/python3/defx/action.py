@@ -15,7 +15,7 @@ from defx.view import View
 class ActionAttr(IntFlag):
     REDRAW = auto()
     MARK = auto()
-    NO_TARGET = auto()
+    NO_TAGETS = auto()
     TREE = auto()
     NONE = 0
 
@@ -37,7 +37,7 @@ def do_action(view: View, defx: Defx,
 
     action = actions[action_name]
 
-    if ActionAttr.NO_TARGET not in action.attr and view._selected_candidates:
+    if ActionAttr.NO_TAGETS not in action.attr and view._selected_candidates:
         # Clear marks
         view._selected_candidates = []
         view.redraw()
