@@ -47,6 +47,7 @@ class View(object):
 
         self._candidates = []
         self._selected_candidates = []
+        self._opened_candidates = []
         self._context = Context(**context)
         self._clipboard = clipboard
 
@@ -253,6 +254,8 @@ class View(object):
                 self._vim.command('enew')
 
     def init_candidates(self) -> None:
+        self._selected_candidates = []
+        self._opened_candidates = []
         self._candidates = []
         for defx in self._defxs:
             root = defx.get_root_candidate()
@@ -278,7 +281,6 @@ class View(object):
         prev = self.get_cursor_candidate(prev_linenr)
 
         if is_force:
-            self._selected_candidates = []
             self.init_candidates()
             self.init_length()
             self.update_syntax()
@@ -358,6 +360,7 @@ class View(object):
         if path in history:
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
+        self._opened_candidates = []
 
         self.update_paths(defx._index, path)
 
