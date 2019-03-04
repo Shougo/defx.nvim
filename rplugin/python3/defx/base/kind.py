@@ -74,7 +74,7 @@ def _call(view: View, defx: Defx, context: Context) -> None:
 
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if not target['is_opened']:
+        if not target['is_opened'] or target.get('is_root', False):
             continue
 
         path = target['action__path']
@@ -110,7 +110,7 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if target['is_opened']:
+        if target['is_opened'] or target.get('is_root', False):
             continue
 
         path = target['action__path']
