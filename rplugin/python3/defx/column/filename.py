@@ -55,11 +55,12 @@ class Column(Base):
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
         commands.append(
-            r'syntax match {0}_{1} /: / contained '
-            'conceal containedin={0}_root'.format(
+            r'syntax match {0}_{1} /\[in\]: / contained '
+            'containedin={0}_root'.format(
                 self.syntax_name, 'marker'))
         commands.append(
-            r'syntax match {0}_{1} /: .*/ contained containedin={0}'.format(
+            r'syntax match {0}_{1} /\[in\]: .*/ contained '
+            'containedin={0}'.format(
                 self.syntax_name, 'root'))
         commands.append(
             'highlight default link {}_{} {}'.format(
@@ -67,6 +68,9 @@ class Column(Base):
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'hidden', 'Comment'))
+        commands.append(
+            'highlight default link {}_{} {}'.format(
+                self.syntax_name, 'marker', 'Constant'))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'root', 'Identifier'))
