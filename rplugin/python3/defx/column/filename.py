@@ -26,6 +26,7 @@ class Column(Base):
         self._syntaxes = [
             'directory',
             'hidden',
+            'marker',
             'root',
         ]
 
@@ -53,6 +54,10 @@ class Column(Base):
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
+        commands.append(
+            r'syntax match {0}_{1} /: / contained '
+            'conceal containedin={0}_root'.format(
+                self.syntax_name, 'marker'))
         commands.append(
             r'syntax match {0}_{1} /: .*/ contained containedin={0}'.format(
                 self.syntax_name, 'root'))
