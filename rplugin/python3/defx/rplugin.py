@@ -37,14 +37,17 @@ class Rplugin:
             view.do_action(args[0], args[1], args[2])
             break
 
-    def get_candidate(self) -> typing.Dict[str, str]:
+    def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
         cursor = self._vim.call('line', '.')
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:
             candidate = view.get_cursor_candidate(cursor)
+            pos = view.get_candidate_pos(
+                candidate['action__path'], candidate['_defx_index'])
             return {
                 'word': candidate['word'],
                 'is_directory': candidate['is_directory'],
+                'is_opened_tree': pos in view._opened_candidates,
                 'action__path': str(candidate['action__path']),
             }
         return {}

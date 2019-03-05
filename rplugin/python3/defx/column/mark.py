@@ -20,16 +20,18 @@ class Column(Base):
         self.name = 'mark'
         self.vars = {
             'directory_icon': '+',
-            'selected_icon': '*',
-            'readonly_icon': 'X',
-            'root_icon': '-',
             'length': 1,
+            'opened_icon': '-',
+            'readonly_icon': 'X',
+            'root_icon': ' ',
+            'selected_icon': '*',
         }
         self._syntaxes = [
-            'selected',
-            'root',
-            'readonly',
             'directory',
+            'opened',
+            'readonly',
+            'root',
+            'selected',
         ]
 
     def get(self, context: Context,
@@ -41,6 +43,8 @@ class Column(Base):
             icon = self.vars['root_icon']
         elif not os.access(str(candidate['action__path']), os.W_OK):
             icon = self.vars['readonly_icon']
+        elif candidate.get('is_opened', False):
+            icon = self.vars['opened_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']
         return icon
@@ -54,10 +58,11 @@ class Column(Base):
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
         for icon, highlight in {
-                'selected': 'Statement',
-                'root': 'Identifier',
-                'readonly': 'Comment',
                 'directory': 'Special',
+                'opened': 'Special',
+                'readonly': 'Comment',
+                'root': 'Identifier',
+                'selected': 'Statement',
         }.items():
             commands.append(
                 ('syntax match {0}_{1} /[{2}]/ ' +

@@ -32,13 +32,13 @@ class Kind(Base):
         actions.update({
             'cd': ActionTable(func=_cd),
             'change_vim_cwd': ActionTable(
-                func=_change_vim_cwd, attr=ActionAttr.NO_TARGET),
+                func=_change_vim_cwd, attr=ActionAttr.NO_TAGETS),
             'check_redraw': ActionTable(
-                func=_check_redraw, attr=ActionAttr.NO_TARGET),
+                func=_check_redraw, attr=ActionAttr.NO_TAGETS),
             'copy': ActionTable(func=_copy),
             'drop': ActionTable(func=_drop),
             'execute_command': ActionTable(
-                func=_execute_command, attr=ActionAttr.NO_TARGET),
+                func=_execute_command, attr=ActionAttr.NO_TAGETS),
             'execute_system': ActionTable(func=_execute_system),
             'move': ActionTable(func=_move),
             'new_directory': ActionTable(func=_new_directory),
@@ -46,7 +46,7 @@ class Kind(Base):
             'new_multiple_files': ActionTable(func=_new_multiple_files),
             'open': ActionTable(func=_open),
             'open_directory': ActionTable(func=_open_directory),
-            'paste': ActionTable(func=_paste, attr=ActionAttr.NO_TARGET),
+            'paste': ActionTable(func=_paste, attr=ActionAttr.NO_TAGETS),
             'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
             'remove_trash': ActionTable(func=_remove_trash),
             'rename': ActionTable(func=_rename),

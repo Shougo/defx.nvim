@@ -25,29 +25,35 @@ class Base:
         return {
             'call': ActionTable(
                 func=_call, attr=ActionAttr.REDRAW),
+            'close_tree': ActionTable(
+                func=_close_tree, attr=ActionAttr.TREE),
             'multi': ActionTable(func=_multi),
+            'open_tree': ActionTable(
+                func=_open_tree, attr=ActionAttr.TREE),
+            'open_or_close_tree': ActionTable(
+                func=_open_or_close_tree, attr=ActionAttr.TREE),
             'print': ActionTable(func=_print),
             'quit': ActionTable(
-                func=_quit, attr=ActionAttr.NO_TARGET),
+                func=_quit, attr=ActionAttr.NO_TAGETS),
             'redraw': ActionTable(
-                func=_redraw, attr=ActionAttr.NO_TARGET),
+                func=_redraw, attr=ActionAttr.NO_TAGETS),
             'repeat': ActionTable(
                 func=_repeat, attr=ActionAttr.MARK),
             'search': ActionTable(
-                func=_search, attr=ActionAttr.NO_TARGET),
+                func=_search, attr=ActionAttr.NO_TAGETS),
             'toggle_columns': ActionTable(
                 func=_toggle_columns, attr=ActionAttr.REDRAW),
             'toggle_ignored_files': ActionTable(
                 func=_toggle_ignored_files, attr=ActionAttr.REDRAW),
             'toggle_select': ActionTable(
                 func=_toggle_select,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'toggle_select_all': ActionTable(
                 func=_toggle_select_all,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'toggle_sort': ActionTable(
                 func=_toggle_sort,
-                attr=ActionAttr.MARK | ActionAttr.NO_TARGET),
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'yank_path': ActionTable(func=_yank_path),
         }
 
@@ -66,6 +72,32 @@ def _call(view: View, defx: Defx, context: Context) -> None:
     view._vim.call(function, dict_context)
 
 
+def _close_tree(view: View, defx: Defx, context: Context) -> None:
+    for target in [x for x in context.targets if x['is_directory']]:
+        if not target['is_opened'] or target.get('is_root', False):
+            continue
+
+        path = target['action__path']
+
+        # Search insert position
+        pos = view.get_candidate_pos(path, defx._index)
+        if pos < 0:
+            continue
+
+        view._candidates[pos]['is_opened'] = False
+
+        start = pos + 1
+        base_level = target['level']
+        end = start
+        for candidate in view._candidates[start:]:
+            if candidate['level'] <= base_level:
+                break
+            end += 1
+
+        view._candidates = (view._candidates[: start] +
+                            view._candidates[end:])
+
+
 def _multi(view: View, defx: Defx, context: Context) -> None:
     for arg in context.args:
         args: typing.List[str]
@@ -74,6 +106,43 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
         else:
             args = [arg]
         do_action(view, defx, args[0], context._replace(args=args[1:]))
+
+
+def _open_tree(view: View, defx: Defx, context: Context) -> None:
+    for target in [x for x in context.targets if x['is_directory']]:
+        if target['is_opened'] or target.get('is_root', False):
+            continue
+
+        path = target['action__path']
+
+        # Search insert position
+        pos = view.get_candidate_pos(path, defx._index)
+        if pos < 0:
+            continue
+
+        view._candidates[pos]['is_opened'] = True
+
+        candidates = defx.gather_candidates(path)
+
+        if not candidates:
+            continue
+
+        base_level = target['level'] + 1
+        for candidate in candidates:
+            candidate['level'] = base_level
+            candidate['is_opened'] = False
+            candidate['_defx_index'] = defx._index
+
+        view._candidates = (view._candidates[: pos + 1] +
+                            candidates + view._candidates[pos + 1:])
+
+
+def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
+    for target in [x for x in context.targets if x['is_directory']]:
+        if target['is_opened']:
+            _close_tree(view, defx, context._replace(targets=[target]))
+        else:
+            _open_tree(view, defx, context._replace(targets=[target]))
 
 
 def _print(view: View, defx: Defx, context: Context) -> None:

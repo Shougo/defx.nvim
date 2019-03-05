@@ -21,6 +21,7 @@ class View(object):
         self._vim: Nvim = vim
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._selected_candidates: typing.List[int] = []
+        self._opened_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
         self._index = index
@@ -46,6 +47,7 @@ class View(object):
 
         self._candidates = []
         self._selected_candidates = []
+        self._opened_candidates = []
         self._context = Context(**context)
         self._clipboard = clipboard
 
@@ -56,6 +58,8 @@ class View(object):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
         self.init_columns(self._context.columns.split(':'))
+
+        self.redraw(True)
 
         for defx in self._defxs:
             if self._context.search:
@@ -173,7 +177,6 @@ class View(object):
 
         if not self._context.listed:
             buffer_options['buflisted'] = False
-            buffer_options['bufhidden'] = 'wipe'
 
         self.execute_commands([
             'silent doautocmd FileType defx',
@@ -252,6 +255,8 @@ class View(object):
                 self._vim.command('enew')
 
     def init_candidates(self) -> None:
+        self._selected_candidates = []
+        self._opened_candidates = []
         self._candidates = []
         for defx in self._defxs:
             root = defx.get_root_candidate()
@@ -277,16 +282,18 @@ class View(object):
         prev = self.get_cursor_candidate(prev_linenr)
 
         if is_force:
-            self._selected_candidates = []
             self.init_candidates()
             self.init_length()
             self.update_syntax()
 
-        # Set is_selected flag
+        # Set flags
         for candidate in self._candidates:
             candidate['is_selected'] = False
+            candidate['is_opened'] = False
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
+        for index in self._opened_candidates:
+            self._candidates[index]['is_opened'] = True
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -354,6 +361,7 @@ class View(object):
         if path in history:
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
+        self._opened_candidates = []
 
         self.update_paths(defx._index, path)
 
@@ -371,6 +379,13 @@ class View(object):
                 break
             path = path.parent
         return False
+
+    def get_candidate_pos(self, path: Path, index: int) -> int:
+        for [pos, candidate] in enumerate(self._candidates):
+            if (candidate['_defx_index'] == index and
+                    candidate['action__path'] == path):
+                return pos
+        return -1
 
     def search_file(self, path: Path, index: int) -> bool:
         linenr = 1
