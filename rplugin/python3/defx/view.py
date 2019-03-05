@@ -24,6 +24,7 @@ class View(object):
         self._opened_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
+        self._winid = -1
         self._index = index
         self._bufname = '[defx]'
         self._buffer: Nvim.buffer = None
@@ -43,6 +44,7 @@ class View(object):
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 
         if not self.init_buffer(paths):
+            self._winid = self._vim.call('win_getid')
             return
 
         self._candidates = []
@@ -148,6 +150,7 @@ class View(object):
 
         self._buffer = self._vim.current.buffer
         self._bufnr = self._buffer.number
+        self._winid = self._vim.call('win_getid')
 
         window_options = self._vim.current.window.options
         window_options['list'] = False

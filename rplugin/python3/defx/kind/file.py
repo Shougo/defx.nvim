@@ -134,6 +134,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     """
     cwd = view._vim.call('getcwd')
     command = context.args[0] if context.args else 'edit'
+
     for target in context.targets:
         path = target['action__path']
 
@@ -147,7 +148,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
         if winids:
             view._vim.call('win_gotoid', winids[0])
         else:
-            if context.prev_winid != view._vim.call('win_getid'):
+            if context.prev_winid != view._winid:
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
