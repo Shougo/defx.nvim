@@ -37,7 +37,7 @@ class Rplugin:
             view.do_action(args[0], args[1], args[2])
             break
 
-    def get_candidate(self) -> typing.Dict[str, str]:
+    def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
         cursor = self._vim.call('line', '.')
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:

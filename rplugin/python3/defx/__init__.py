@@ -46,7 +46,7 @@ if hasattr(vim, 'plugin'):
 
         @vim.rpc_export('_defx_get_candidate', sync=True)  # type: ignore
         def get_candidate(self, args: typing.List[
-                typing.Any]) -> typing.Dict[str, str]:
+                typing.Any]) -> typing.Dict[str, typing.Union[str, bool]]:
             return self._rplugin.get_candidate()
 
 if find_spec('yarp'):
@@ -66,5 +66,5 @@ if find_spec('yarp'):
         global_defx.do_action(args)
 
     def _defx_get_candidate(args: typing.List[
-            typing.Any]) -> typing.Dict[str, str]:
+            typing.Any]) -> typing.Dict[str, typing.Union[str, bool]]:
         return global_defx.get_candidate()
