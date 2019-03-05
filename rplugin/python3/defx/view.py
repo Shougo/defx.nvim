@@ -59,6 +59,8 @@ class View(object):
 
         self.init_columns(self._context.columns.split(':'))
 
+        self.redraw(True)
+
         for defx in self._defxs:
             if self._context.search:
                 self.search_tree(self._context.search, defx._index)
@@ -175,7 +177,6 @@ class View(object):
 
         if not self._context.listed:
             buffer_options['buflisted'] = False
-            buffer_options['bufhidden'] = 'wipe'
 
         self.execute_commands([
             'silent doautocmd FileType defx',

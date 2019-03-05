@@ -17,7 +17,6 @@ function! defx#start(paths, user_context) abort
   endif
   let paths = map(paths, "fnamemodify(v:val, ':p')")
   call defx#util#rpcrequest('_defx_start', [paths, context], v:false)
-  call defx#call_action('redraw')
   if context['search'] !=# ''
     call defx#call_action('search', [context['search']])
   endif
