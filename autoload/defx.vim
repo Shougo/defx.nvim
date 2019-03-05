@@ -72,3 +72,6 @@ endfunction
 function! defx#is_directory() abort
   return get(defx#get_candidate(), 'is_directory', v:false)
 endfunction
+function! defx#is_opened_tree() abort
+  return get(defx#get_candidate(), 'is_opened_tree', v:false)
+endfunction
