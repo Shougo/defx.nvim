@@ -474,27 +474,29 @@ COLUMNS							*defx-columns*
 filename	File name.
 
 		variables:
+		indent		  the tree indentation
+				  (default: " ")
 		min_width	  the minimum width of a defx buffer
-				  (default is '40')
+				  (default: 40)
 		max_width	  the maximum width of a defx buffer
-				  (default is '100')
+				  (default: 100)
 
 							*defx-column-mark*
 mark		File selected mark.
 
 		variables:
 		directory_icon	  the closed directory icon
-				  (default is '+')
+				  (default: "+")
 		opened_icon	  the opened directory icon
-				  (default is '-')
+				  (default: "-")
 		length		  the column length
-				  (default is 1)
+				  (default: 1)
 		readonly_icon	  the readonly file icon
-				  (default is 'X')
+				  (default: "X")
 		root_icon	  the root directory icon
-				  (default is ' ')
+				  (default: " ")
 		selected_icon	  the selected file icon
-				  (default is '*')
+				  (default: "*")
 
 							*defx-column-size*
 size		File size.
@@ -504,14 +506,14 @@ time		File modified time.
 
 		variables:
 		format		  the time format
-				  (default is '%y.%m.%d %H:%M')
+				  (default: "%y.%m.%d %H:%M")
 
 							*defx-column-type*
 type		File type.
 
 		variables:
 		types		  the types definition
-				  (default is complicated)
+				  (default: complicated)
 
 EXTERNAL COLUMNS					*defx-external-columns*
 

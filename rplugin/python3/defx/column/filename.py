@@ -18,6 +18,7 @@ class Column(Base):
 
         self.name = 'filename'
         self.vars = {
+            'indent': ' ',
             'min_width': 40,
             'max_width': 100,
         }
@@ -36,7 +37,8 @@ class Column(Base):
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        return self._truncate(' ' * candidate['level'] + candidate['word'])
+        return self._truncate(
+            self.vars['indent'] * candidate['level'] + candidate['word'])
 
     def length(self, context: Context) -> int:
         max_fnamewidth = max([self._strwidth(x['word'])
