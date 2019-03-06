@@ -392,6 +392,12 @@ OPTIONS							*defx-options*
 
 		Default: false
 
+						*defx-option-root-marker*
+-root-marker={marker}
+		Root marker.
+
+		Default: "[in]: "
+
 							*defx-option-search*
 -search={path}
 		Search the {path}.

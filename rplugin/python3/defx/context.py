@@ -20,6 +20,7 @@ class Context(typing.NamedTuple):
     prev_winid: int = 0
     profile: bool = False
     resume: bool = False
+    root_marker: str = ''
     search: str = ''
     sort: str = ''
     show_ignored_files: bool = False

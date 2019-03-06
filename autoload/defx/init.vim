@@ -100,6 +100,7 @@ function! defx#init#_user_options() abort
         \ 'new': v:false,
         \ 'profile': v:false,
         \ 'resume': v:false,
+        \ 'root_marker': '[in]: ',
         \ 'search': '',
         \ 'show_ignored_files': v:false,
         \ 'split': 'no',

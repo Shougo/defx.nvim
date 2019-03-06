@@ -29,6 +29,10 @@ class Column(Base):
             'marker',
             'root',
         ]
+        self._context = None
+
+    def on_init(self, context: Context) -> None:
+        self._context = context
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
@@ -54,14 +58,16 @@ class Column(Base):
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
+        root_marker = self.vim.call('escape',
+                                    self._context.root_marker, '~/\.^$[]*')
         commands.append(
-            r'syntax match {0}_{1} /\[in\]: / contained '
+            r'syntax match {0}_{1} /{2}/ contained '
             'containedin={0}_root'.format(
-                self.syntax_name, 'marker'))
+                self.syntax_name, 'marker', root_marker))
         commands.append(
-            r'syntax match {0}_{1} /\[in\]: .*/ contained '
+            r'syntax match {0}_{1} /{2}.*/ contained '
             'containedin={0}'.format(
-                self.syntax_name, 'root'))
+                self.syntax_name, 'root', root_marker))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'directory', 'PreProc'))

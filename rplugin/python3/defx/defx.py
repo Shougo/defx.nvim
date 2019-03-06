@@ -53,7 +53,7 @@ class Defx(object):
         """
         root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
-        root['word'] = '[in]: ' + root['word']
+        root['word'] = self._context.root_marker + root['word']
 
         return root
 
