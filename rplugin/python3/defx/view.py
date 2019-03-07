@@ -61,10 +61,7 @@ class View(object):
         self.redraw(True)
 
         for defx in self._defxs:
-            if self._context.search:
-                self.search_tree(self._context.search, defx._index)
-            else:
-                self.init_cursor(defx)
+            self.init_cursor(defx)
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -383,16 +380,6 @@ class View(object):
         var_defx['paths'][index] = path
         self._buffer.vars['defx'] = var_defx
 
-    def search_tree(self, start: str, index: int) -> bool:
-        path = Path(start)
-        while True:
-            if self.search_file(path, index):
-                return True
-            if path.parent == path:
-                break
-            path = path.parent
-        return False
-
     def get_candidate_pos(self, path: Path, index: int) -> int:
         for [pos, candidate] in enumerate(self._candidates):
             if (candidate['_defx_index'] == index and
@@ -401,17 +388,15 @@ class View(object):
         return -1
 
     def search_file(self, path: Path, index: int) -> bool:
-        linenr = 1
         target = str(path)
         if target and target[-1] == '/':
             target = target[:-1]
-        for candidate in self._candidates:
-            if (candidate['_defx_index'] == index and
-                    str(candidate['action__path']) == target):
-                self._vim.call('cursor', [linenr, 1])
-                return True
-            linenr += 1
-        return False
+        pos = self.get_candidate_pos(Path(target), index)
+        if pos < 0:
+            return False
+
+        self._vim.call('cursor', [pos + 1, 1])
+        return True
 
     def init_cursor(self, defx: Defx) -> None:
         self.search_file(Path(defx._cwd), defx._index)

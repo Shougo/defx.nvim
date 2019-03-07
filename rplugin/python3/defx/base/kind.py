@@ -5,6 +5,7 @@
 # ============================================================================
 
 import typing
+from pathlib import Path
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
@@ -42,8 +43,7 @@ class Base:
             'repeat': ActionTable(
                 func=_repeat, attr=ActionAttr.MARK),
             'search': ActionTable(
-                func=_search,
-                attr=ActionAttr.NO_TAGETS & ActionAttr.TREE),
+                func=_search, attr=ActionAttr.NO_TAGETS),
             'toggle_columns': ActionTable(
                 func=_toggle_columns, attr=ActionAttr.REDRAW),
             'toggle_ignored_files': ActionTable(
@@ -81,7 +81,7 @@ def _close_tree(view: View, defx: Defx, context: Context) -> None:
             view.close_tree(target['action__path'], defx._index)
         else:
             view.close_tree(target['action__path'].parent, defx._index)
-            view.search_tree(target['action__path'].parent, defx._index)
+            view.search_file(target['action__path'].parent, defx._index)
 
 
 def _multi(view: View, defx: Defx, context: Context) -> None:
@@ -134,7 +134,15 @@ def _search(view: View, defx: Defx, context: Context) -> None:
         return
 
     search_path = context.args[0]
-    view.search_tree(search_path, defx._index)
+    path = Path(search_path)
+    while view.get_candidate_pos(
+            path, defx._index) < 0 and path.parent != path:
+        path = path.parent
+        view.open_tree(path, defx._index, False)
+
+    view.update_opened_candidates()
+    view.redraw()
+    view.search_file(Path(search_path), defx._index)
 
 
 def _toggle_columns(view: View, defx: Defx, context: Context) -> None:
