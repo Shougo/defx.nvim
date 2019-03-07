@@ -114,6 +114,17 @@ class View(object):
             column.on_init(self._context)
             column.syntax_name = 'Defx_' + column.name
 
+    def resize_window(self) -> None:
+        window_options = self._vim.current.window.options
+        if (self._context.split == 'vertical'
+                and self._context.winwidth > 0):
+            window_options['winfixwidth'] = True
+            self._vim.command(f'vertical resize {self._context.winwidth}')
+        elif (self._context.split == 'horizontal' and
+              self._context.winheight > 0):
+            window_options['winfixheight'] = True
+            self._vim.command(f'resize {self._context.winheight}')
+
     def init_buffer(self, paths: typing.List[str]) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
@@ -123,8 +134,9 @@ class View(object):
             self._vim.command(f'{winnr}wincmd w')
             if self._context.toggle:
                 self.quit()
-                return False
-            return True
+            else:
+                self.resize_window()
+            return False
 
         if (self._vim.current.buffer.options['modified'] and
                 not self._vim.options['hidden'] and
@@ -158,6 +170,7 @@ class View(object):
                 )
             )
             if self._context.resume:
+                self.resize_window()
                 return False
         else:
             command = ('edit' if no_split else 'new')
@@ -178,14 +191,7 @@ class View(object):
         window_options['list'] = False
         window_options['wrap'] = False
 
-        if (self._context.split == 'vertical'
-                and self._context.winwidth > 0):
-            window_options['winfixwidth'] = True
-            self._vim.command(f'vertical resize {self._context.winwidth}')
-        elif (self._context.split == 'horizontal' and
-              self._context.winheight > 0):
-            window_options['winfixheight'] = True
-            self._vim.command(f'resize {self._context.winheight}')
+        self.resize_window()
 
         buffer_options = self._buffer.options
         buffer_options['buftype'] = 'nofile'
