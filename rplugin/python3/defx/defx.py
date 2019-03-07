@@ -14,6 +14,9 @@ from defx.util import error
 from pathlib import Path
 
 
+Candidate = typing.Dict[str, typing.Any]
+
+
 class Defx(object):
 
     def __init__(self, vim: Nvim, context: Context,
@@ -29,6 +32,7 @@ class Defx(object):
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
+        self._opened_candidates: typing.Set[Candidate] = set()
 
         self._init_source()
 
@@ -47,7 +51,7 @@ class Defx(object):
         if self._context.auto_cd:
             self._vim.command('silent lcd ' + path)
 
-    def get_root_candidate(self) -> typing.Dict[str, typing.Any]:
+    def get_root_candidate(self) -> Candidate:
         """
         Returns root candidate
         """
@@ -57,9 +61,24 @@ class Defx(object):
 
         return root
 
-    def gather_candidates(
-            self, path: str = ''
-    ) -> typing.List[typing.Dict[str, typing.Any]]:
+    def tree_candidates(self, path: str = '') -> typing.List[Candidate]:
+
+        gathered_candidates = self.gather_candidates(path)
+
+        if self._opened_candidates:
+            candidates = []
+            for candidate in gathered_candidates:
+                candidates.append(candidate)
+                if candidate in self._opened_candidates:
+                    candidates += self.tree_candidates(
+                        str(candidate['action__path']))
+        else:
+            candidates = gathered_candidates
+
+        return candidates
+
+    def gather_candidates(self, path: str = '') -> typing.List[
+            typing.Dict[str, typing.Any]]:
         """
         Returns file candidates
         """

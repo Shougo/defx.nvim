@@ -267,7 +267,7 @@ class View(object):
             defx._mtime = root['action__path'].stat().st_mtime
 
             candidates = [root]
-            candidates += defx.gather_candidates()
+            candidates += defx.tree_candidates()
             for candidate in candidates:
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates
@@ -409,6 +409,11 @@ class View(object):
 
         # Move to next
         self._vim.call('cursor', [self._vim.call('line', '.') + 1, 1])
+
+    def update_opened_candidates(self) -> None:
+        # Update opened state
+        self._opened_candidates = [
+            x[0] for x in enumerate(self._candidates) if x[1]['is_opened']]
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
