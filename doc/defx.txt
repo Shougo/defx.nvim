@@ -272,6 +272,9 @@ open_or_close_tree			*defx-action-open_or_close_tree*
 open_tree					*defx-action-open_tree*
 		Open the directory tree.
 
+open_tree_recursive			*defx-action-open_tree_recursive*
+		Open the directory tree recursively.
+
 paste							*defx-action-paste*
 		Fire the clipboard action in the current directory.
 		Note: It is used after |defx-action-copy| or |defx-action-move|.

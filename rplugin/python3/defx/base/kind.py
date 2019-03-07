@@ -30,6 +30,8 @@ class Base:
             'multi': ActionTable(func=_multi),
             'open_tree': ActionTable(
                 func=_open_tree, attr=ActionAttr.TREE),
+            'open_tree_recursive': ActionTable(
+                func=_open_tree_recursive, attr=ActionAttr.TREE),
             'open_or_close_tree': ActionTable(
                 func=_open_or_close_tree, attr=ActionAttr.TREE),
             'print': ActionTable(func=_print),
@@ -94,10 +96,12 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if target['is_opened_tree'] or target.get('is_root', False):
-            continue
+        view.open_tree(target['action__path'], defx._index, False)
 
-        view.open_tree(target['action__path'], defx._index)
+
+def _open_tree_recursive(view: View, defx: Defx, context: Context) -> None:
+    for target in [x for x in context.targets if x['is_directory']]:
+        view.open_tree(target['action__path'], defx._index, True)
 
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:

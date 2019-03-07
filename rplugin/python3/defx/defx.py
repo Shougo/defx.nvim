@@ -84,14 +84,22 @@ class Defx(object):
 
         return candidates
 
-    def gather_candidates(self, path: str = '') -> typing.List[
-            typing.Dict[str, typing.Any]]:
+    def gather_candidates_recursive(
+            self, path: str, base_level: int) -> typing.List[Candidate]:
+        candidates = []
+        for candidate in self.gather_candidates(path, base_level):
+            candidates.append(candidate)
+            if candidate['is_directory']:
+                candidate['is_opened_tree'] = True
+                candidates += self.gather_candidates_recursive(
+                    str(candidate['action__path']), base_level + 1)
+        return candidates
+
+    def gather_candidates(
+            self, path: str, base_level: int = 0) -> typing.List[Candidate]:
         """
         Returns file candidates
         """
-        if not path:
-            path = self._cwd
-
         candidates = self._source.gather_candidates(
             self._context, Path(path))
 
@@ -103,6 +111,6 @@ class Defx(object):
         for candidate in candidates:
             candidate['is_opened_tree'] = False
             candidate['is_selected'] = False
-            candidate['level'] = 0
+            candidate['level'] = base_level
 
         return sort(self._sort_method, candidates)

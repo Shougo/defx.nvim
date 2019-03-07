@@ -440,27 +440,33 @@ class View(object):
 
         return result
 
-    def open_tree(self, path: Path, index: int) -> None:
+    def open_tree(self, path: Path, index: int, recursive: bool) -> None:
         # Search insert position
         pos = self.get_candidate_pos(path, index)
         if pos < 0:
             return
 
         target = self._candidates[pos]
-        target['is_opened_tree'] = True
-
-        candidates = self._defxs[index].gather_candidates(str(path))
-        if not candidates:
+        if target['is_opened_tree'] or target.get('is_root', False):
             return
 
+        target['is_opened_tree'] = True
         base_level = target['level'] + 1
-        for candidate in candidates:
-            candidate['level'] = base_level
-            candidate['is_opened_tree'] = False
+
+        defx = self._defxs[index]
+        if recursive:
+            children = defx.gather_candidates_recursive(
+                str(path), base_level)
+        else:
+            children = defx.gather_candidates(str(path), base_level)
+        if not children:
+            return
+
+        for candidate in children:
             candidate['_defx_index'] = index
 
         self._candidates = (self._candidates[: pos + 1] +
-                            candidates + self._candidates[pos + 1:])
+                            children + self._candidates[pos + 1:])
 
     def close_tree(self, path: Path, index: int) -> None:
         # Search insert position
