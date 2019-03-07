@@ -26,6 +26,8 @@ class Base:
         return {
             'call': ActionTable(
                 func=_call, attr=ActionAttr.REDRAW),
+            'check_redraw': ActionTable(
+                func=_nop, attr=ActionAttr.NO_TAGETS),
             'close_tree': ActionTable(
                 func=_close_tree, attr=ActionAttr.TREE),
             'multi': ActionTable(func=_multi),
@@ -92,6 +94,10 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
         else:
             args = [arg]
         do_action(view, defx, args[0], context._replace(args=args[1:]))
+
+
+def _nop(view: View, defx: Defx, context: Context) -> None:
+    pass
 
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
