@@ -190,21 +190,18 @@ def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:
 
 
 def _toggle_select(view: View, defx: Defx, context: Context) -> None:
-    index = context.cursor - 1
-    if index in view._selected_candidates:
-        view._selected_candidates.remove(index)
-    else:
-        view._selected_candidates.append(index)
+    candidate = view.get_cursor_candidate(context.cursor)
+    if not candidate:
+        return
+
+    candidate['is_selected'] = not candidate['is_selected']
 
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
-    for [index, candidate] in enumerate(view._candidates):
+    for candidate in view._candidates:
         if (not candidate.get('is_root', False) and
                 candidate['_defx_index'] == defx._index):
-            if index in view._selected_candidates:
-                view._selected_candidates.remove(index)
-            else:
-                view._selected_candidates.append(index)
+            candidate['is_selected'] = not candidate['is_selected']
 
 
 def _toggle_sort(view: View, defx: Defx, context: Context) -> None:

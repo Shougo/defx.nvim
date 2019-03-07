@@ -21,7 +21,6 @@ class View(object):
         self._vim: Nvim = vim
         self._defxs: typing.List[Defx] = []
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
-        self._selected_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
         self._winid = -1
@@ -48,7 +47,6 @@ class View(object):
             return
 
         self._candidates = []
-        self._selected_candidates = []
         self._context = Context(**context)
         self._clipboard = clipboard
 
@@ -257,7 +255,6 @@ class View(object):
                 self._vim.command('enew')
 
     def init_candidates(self) -> None:
-        self._selected_candidates = []
         self._candidates = []
         for defx in self._defxs:
             root = defx.get_root_candidate()
@@ -286,12 +283,6 @@ class View(object):
             self.init_candidates()
             self.init_length()
             self.update_syntax()
-
-        # Set flags
-        for candidate in self._candidates:
-            candidate['is_selected'] = False
-        for index in self._selected_candidates:
-            self._candidates[index]['is_selected'] = True
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -336,13 +327,11 @@ class View(object):
     ) -> typing.List[typing.Dict[str, typing.Any]]:
         if not self._candidates:
             return []
-        if not self._selected_candidates:
+
+        candidates = [x for x in self._candidates if x['is_selected']]
+        if not candidates:
             candidates = [self.get_cursor_candidate(cursor)]
-        else:
-            candidates = [self._candidates[x]
-                          for x in self._selected_candidates]
-        return [x for x in candidates
-                if x.get('_defx_index', -1) == index]
+        return [x for x in candidates if x.get('_defx_index', -1) == index]
 
     def cd(self, defx: Defx, path: str, cursor: int) -> None:
         # Save previous cursor position
@@ -358,7 +347,6 @@ class View(object):
         self.init_cursor(defx)
         if path in history:
             self.search_file(history[path], defx._index)
-        self._selected_candidates = []
 
         self.update_paths(defx._index, path)
 

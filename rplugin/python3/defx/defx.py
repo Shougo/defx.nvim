@@ -58,6 +58,7 @@ class Defx(object):
         root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
         root['is_opened_tree'] = False
+        root['is_selected'] = False
         root['level'] = 0
         root['word'] = self._context.root_marker + root['word']
 
@@ -101,6 +102,7 @@ class Defx(object):
 
         for candidate in candidates:
             candidate['is_opened_tree'] = False
+            candidate['is_selected'] = False
             candidate['level'] = 0
 
         return sort(self._sort_method, candidates)

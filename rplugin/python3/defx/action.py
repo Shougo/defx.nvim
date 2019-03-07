@@ -37,9 +37,11 @@ def do_action(view: View, defx: Defx,
 
     action = actions[action_name]
 
-    if ActionAttr.NO_TAGETS not in action.attr and view._selected_candidates:
+    selected_candidates = [x for x in view._candidates if x['is_selected']]
+    if ActionAttr.NO_TAGETS not in action.attr and selected_candidates:
         # Clear marks
-        view._selected_candidates = []
+        for candidate in selected_candidates:
+            candidate['is_selected'] = False
         view.redraw()
 
     action.func(view, defx, context)
