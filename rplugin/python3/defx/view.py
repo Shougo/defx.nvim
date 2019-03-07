@@ -19,6 +19,7 @@ class View(object):
 
     def __init__(self, vim: Nvim, index: int) -> None:
         self._vim: Nvim = vim
+        self._defxs: typing.List[Defx] = []
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._selected_candidates: typing.List[int] = []
         self._opened_candidates: typing.List[int] = []
@@ -54,7 +55,7 @@ class View(object):
         self._clipboard = clipboard
 
         # Initialize defx
-        self._defxs: typing.List[Defx] = []
+        self._defxs = []
         self._buffer.vars['defx']['paths'] = paths
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
