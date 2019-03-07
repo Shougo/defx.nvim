@@ -69,7 +69,7 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
                                  '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
     ret: Path = Path('')
     if choice == 1:
-        ret = src
+        ret = dest
     elif choice == 2:
         ret = Path('')
     elif choice == 3:
@@ -78,7 +78,7 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     elif choice == 4 and d_mtime < s_mtime:
         ret = src
     elif choice == 5:
-        ret = Path(str(src) + '_')
+        ret = Path(str(dest) + '_')
     return ret
 
 
@@ -323,7 +323,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             overwrite = check_overwrite(view, dest, path)
             if overwrite == Path(''):
                 continue
-            dest = Path(cwd).joinpath(overwrite.name)
+            dest = overwrite
 
         if path == dest:
             continue
