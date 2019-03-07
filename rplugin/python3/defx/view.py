@@ -22,7 +22,6 @@ class View(object):
         self._defxs: typing.List[Defx] = []
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._selected_candidates: typing.List[int] = []
-        self._opened_candidates: typing.List[int] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
         self._winid = -1
@@ -50,7 +49,6 @@ class View(object):
 
         self._candidates = []
         self._selected_candidates = []
-        self._opened_candidates = []
         self._context = Context(**context)
         self._clipboard = clipboard
 
@@ -260,7 +258,6 @@ class View(object):
 
     def init_candidates(self) -> None:
         self._selected_candidates = []
-        self._opened_candidates = []
         self._candidates = []
         for defx in self._defxs:
             root = defx.get_root_candidate()
@@ -293,11 +290,8 @@ class View(object):
         # Set flags
         for candidate in self._candidates:
             candidate['is_selected'] = False
-            candidate['is_opened'] = False
         for index in self._selected_candidates:
             self._candidates[index]['is_selected'] = True
-        for index in self._opened_candidates:
-            self._candidates[index]['is_opened'] = True
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -365,7 +359,6 @@ class View(object):
         if path in history:
             self.search_file(history[path], defx._index)
         self._selected_candidates = []
-        self._opened_candidates = []
 
         self.update_paths(defx._index, path)
 
@@ -412,12 +405,10 @@ class View(object):
 
     def update_opened_candidates(self) -> None:
         # Update opened state
-        self._opened_candidates = []
         for defx in self._defxs:
             defx._opened_candidates = set()
         for [i, candidate] in [x for x in enumerate(self._candidates)
-                               if x[1]['is_opened']]:
-            self._opened_candidates.append(i)
+                               if x[1]['is_opened_tree']]:
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
 

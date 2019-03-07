@@ -43,7 +43,7 @@ class Column(Base):
             icon = self.vars['root_icon']
         elif not os.access(str(candidate['action__path']), os.W_OK):
             icon = self.vars['readonly_icon']
-        elif candidate.get('is_opened', False):
+        elif candidate.get('is_opened_tree', False):
             icon = self.vars['opened_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']

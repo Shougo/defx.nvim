@@ -162,7 +162,7 @@ defx#is_directory()					*defx#is_directory()*
 		\ defx#do_action('multi', ['drop', 'quit'])
 
 
-defx#is_opened_tree()					*defx#is_opened()*
+defx#is_opened_tree()					*defx#is_opened_tree()*
 		Returns |v:true| if the current cursor candidate is opened
 		directory tree.
 

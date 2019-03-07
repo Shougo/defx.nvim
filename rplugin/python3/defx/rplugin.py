@@ -42,12 +42,10 @@ class Rplugin:
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:
             candidate = view.get_cursor_candidate(cursor)
-            pos = view.get_candidate_pos(
-                candidate['action__path'], candidate['_defx_index'])
             return {
                 'word': candidate['word'],
                 'is_directory': candidate['is_directory'],
-                'is_opened_tree': pos in view._opened_candidates,
+                'is_opened_tree': candidate['is_opened_tree'],
                 'action__path': str(candidate['action__path']),
             }
         return {}

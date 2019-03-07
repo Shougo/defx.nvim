@@ -57,6 +57,7 @@ class Defx(object):
         """
         root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
+        root['is_opened_tree'] = False
         root['word'] = self._context.root_marker + root['word']
 
         return root
@@ -70,6 +71,7 @@ class Defx(object):
                 candidates.append(candidate)
                 candidate_path = str(candidate['action__path'])
                 if candidate_path in self._opened_candidates:
+                    candidate['is_opened_tree'] = True
                     candidates += self.tree_candidates(candidate_path)
         else:
             candidates = gathered_candidates
@@ -91,5 +93,8 @@ class Defx(object):
             for glob in self._ignored_files:
                 candidates = [x for x in candidates
                               if not x['action__path'].match(glob)]
+
+        for candidate in candidates:
+            candidate['is_opened_tree'] = False
 
         return sort(self._sort_method, candidates)

@@ -75,7 +75,7 @@ def _call(view: View, defx: Defx, context: Context) -> None:
 
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if not target['is_opened'] or target.get('is_root', False):
+        if not target['is_opened_tree'] or target.get('is_root', False):
             continue
 
         path = target['action__path']
@@ -85,7 +85,7 @@ def _close_tree(view: View, defx: Defx, context: Context) -> None:
         if pos < 0:
             continue
 
-        view._candidates[pos]['is_opened'] = False
+        view._candidates[pos]['is_opened_tree'] = False
 
         start = pos + 1
         base_level = target['level']
@@ -111,7 +111,7 @@ def _multi(view: View, defx: Defx, context: Context) -> None:
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if target['is_opened'] or target.get('is_root', False):
+        if target['is_opened_tree'] or target.get('is_root', False):
             continue
 
         path = target['action__path']
@@ -121,7 +121,7 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
         if pos < 0:
             continue
 
-        view._candidates[pos]['is_opened'] = True
+        view._candidates[pos]['is_opened_tree'] = True
 
         candidates = defx.gather_candidates(path)
 
@@ -131,7 +131,7 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
         base_level = target['level'] + 1
         for candidate in candidates:
             candidate['level'] = base_level
-            candidate['is_opened'] = False
+            candidate['is_opened_tree'] = False
             candidate['_defx_index'] = defx._index
 
         view._candidates = (view._candidates[: pos + 1] +
@@ -140,7 +140,7 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        if target['is_opened']:
+        if target['is_opened_tree']:
             _close_tree(view, defx, context._replace(targets=[target]))
         else:
             _open_tree(view, defx, context._replace(targets=[target]))
