@@ -40,7 +40,8 @@ class Base:
             'repeat': ActionTable(
                 func=_repeat, attr=ActionAttr.MARK),
             'search': ActionTable(
-                func=_search, attr=ActionAttr.NO_TAGETS),
+                func=_search,
+                attr=ActionAttr.NO_TAGETS & ActionAttr.TREE),
             'toggle_columns': ActionTable(
                 func=_toggle_columns, attr=ActionAttr.REDRAW),
             'toggle_ignored_files': ActionTable(
@@ -163,8 +164,11 @@ def _repeat(view: View, defx: Defx, context: Context) -> None:
 
 
 def _search(view: View, defx: Defx, context: Context) -> None:
-    if context.args and context.args[0]:
-        view.search_tree(context.args[0], defx._index)
+    if not context.args or not context.args[0]:
+        return
+
+    search_path = context.args[0]
+    view.search_tree(search_path, defx._index)
 
 
 def _toggle_columns(view: View, defx: Defx, context: Context) -> None:
