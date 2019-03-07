@@ -439,3 +439,26 @@ class View(object):
                 result += column_path.glob('*.py')
 
         return result
+
+    def close_tree(self, path: Path, index: int):
+        # Search insert position
+        pos = self.get_candidate_pos(path, index)
+        if pos < 0:
+            return
+
+        target = self._candidates[pos]
+        if not target['is_opened_tree'] or target.get('is_root', False):
+            return
+
+        target['is_opened_tree'] = False
+
+        start = pos + 1
+        base_level = target['level']
+        end = start
+        for candidate in self._candidates[start:]:
+            if candidate['level'] <= base_level:
+                break
+            end += 1
+
+        self._candidates = (self._candidates[: start] +
+                            self._candidates[end:])
