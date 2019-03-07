@@ -32,7 +32,7 @@ class Defx(object):
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
-        self._opened_candidates: typing.Set[Candidate] = set()
+        self._opened_candidates: typing.Set[str] = set()
 
         self._init_source()
 
@@ -62,16 +62,15 @@ class Defx(object):
         return root
 
     def tree_candidates(self, path: str = '') -> typing.List[Candidate]:
-
         gathered_candidates = self.gather_candidates(path)
 
         if self._opened_candidates:
             candidates = []
             for candidate in gathered_candidates:
                 candidates.append(candidate)
-                if candidate in self._opened_candidates:
-                    candidates += self.tree_candidates(
-                        str(candidate['action__path']))
+                candidate_path = str(candidate['action__path'])
+                if candidate_path in self._opened_candidates:
+                    candidates += self.tree_candidates(candidate_path)
         else:
             candidates = gathered_candidates
 

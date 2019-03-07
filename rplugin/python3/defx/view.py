@@ -412,8 +412,14 @@ class View(object):
 
     def update_opened_candidates(self) -> None:
         # Update opened state
-        self._opened_candidates = [
-            x[0] for x in enumerate(self._candidates) if x[1]['is_opened']]
+        self._opened_candidates = []
+        for defx in self._defxs:
+            defx._opened_candidates = set()
+        for [i, candidate] in [x for x in enumerate(self._candidates)
+                               if x[1]['is_opened']]:
+            self._opened_candidates.append(i)
+            defx = self._defxs[candidate['_defx_index']]
+            defx._opened_candidates.add(str(candidate['action__path']))
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
