@@ -135,10 +135,14 @@ def _search(view: View, defx: Defx, context: Context) -> None:
 
     search_path = context.args[0]
     path = Path(search_path)
+    parents: typing.List[Path] = []
     while view.get_candidate_pos(
             path, defx._index) < 0 and path.parent != path:
         path = path.parent
-        view.open_tree(path, defx._index, False)
+        parents.append(path)
+
+    for parent in reversed(parents):
+        view.open_tree(parent, defx._index, False)
 
     view.update_opened_candidates()
     view.redraw()

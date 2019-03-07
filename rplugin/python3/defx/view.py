@@ -432,7 +432,8 @@ class View(object):
             return
 
         target = self._candidates[pos]
-        if target['is_opened_tree'] or target.get('is_root', False):
+        if (not target['is_directory'] or
+                target['is_opened_tree'] or target.get('is_root', False)):
             return
 
         target['is_opened_tree'] = True
