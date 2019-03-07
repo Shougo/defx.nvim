@@ -66,6 +66,34 @@ class View(object):
             else:
                 self.init_cursor(defx)
 
+    def do_action(self, action_name: str,
+                  action_args: typing.List[str],
+                  new_context: typing.Dict[str, typing.Any]) -> None:
+        """
+        Do "action" action.
+        """
+        cursor = new_context['cursor']
+
+        defx_targets = {
+            x._index: self.get_selected_candidates(cursor, x._index)
+            for x in self._defxs}
+        all_targets: typing.List[typing.Dict[str, typing.Any]] = []
+        for targets in defx_targets.values():
+            all_targets += targets
+
+        import defx.action as action
+        for defx in [x for x in self._defxs
+                     if not all_targets or defx_targets[x._index]]:
+            context = self._context._replace(
+                targets=defx_targets[defx._index],
+                args=action_args,
+                cursor=cursor
+            )
+            ret = action.do_action(self, defx, action_name, context)
+            if ret:
+                error(self._vim, 'Invalid action_name:' + action_name)
+                return
+
     def init_columns(self, columns: typing.List[str]) -> None:
         # Initialize columns
         self._columns: typing.List[Column] = []
@@ -400,34 +428,6 @@ class View(object):
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
 
-    def do_action(self, action_name: str,
-                  action_args: typing.List[str],
-                  new_context: typing.Dict[str, typing.Any]) -> None:
-        """
-        Do "action" action.
-        """
-        cursor = new_context['cursor']
-
-        defx_targets = {
-            x._index: self.get_selected_candidates(cursor, x._index)
-            for x in self._defxs}
-        all_targets: typing.List[typing.Dict[str, typing.Any]] = []
-        for targets in defx_targets.values():
-            all_targets += targets
-
-        import defx.action as action
-        for defx in [x for x in self._defxs
-                     if not all_targets or defx_targets[x._index]]:
-            context = self._context._replace(
-                targets=defx_targets[defx._index],
-                args=action_args,
-                cursor=cursor
-            )
-            ret = action.do_action(self, defx, action_name, context)
-            if ret:
-                error(self._vim, 'Invalid action_name:' + action_name)
-                return
-
     def load_custom_columns(self) -> typing.List[Path]:
         rtp_list = self._vim.options['runtimepath'].split(',')
         result: typing.List[Path] = []
@@ -440,7 +440,29 @@ class View(object):
 
         return result
 
-    def close_tree(self, path: Path, index: int):
+    def open_tree(self, path: Path, index: int) -> None:
+        # Search insert position
+        pos = self.get_candidate_pos(path, index)
+        if pos < 0:
+            return
+
+        target = self._candidates[pos]
+        target['is_opened_tree'] = True
+
+        candidates = self._defxs[index].gather_candidates(str(path))
+        if not candidates:
+            return
+
+        base_level = target['level'] + 1
+        for candidate in candidates:
+            candidate['level'] = base_level
+            candidate['is_opened_tree'] = False
+            candidate['_defx_index'] = index
+
+        self._candidates = (self._candidates[: pos + 1] +
+                            candidates + self._candidates[pos + 1:])
+
+    def close_tree(self, path: Path, index: int) -> None:
         # Search insert position
         pos = self.get_candidate_pos(path, index)
         if pos < 0:

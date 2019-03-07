@@ -97,28 +97,7 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
         if target['is_opened_tree'] or target.get('is_root', False):
             continue
 
-        path = target['action__path']
-
-        # Search insert position
-        pos = view.get_candidate_pos(path, defx._index)
-        if pos < 0:
-            continue
-
-        view._candidates[pos]['is_opened_tree'] = True
-
-        candidates = defx.gather_candidates(path)
-
-        if not candidates:
-            continue
-
-        base_level = target['level'] + 1
-        for candidate in candidates:
-            candidate['level'] = base_level
-            candidate['is_opened_tree'] = False
-            candidate['_defx_index'] = defx._index
-
-        view._candidates = (view._candidates[: pos + 1] +
-                            candidates + view._candidates[pos + 1:])
+        view.open_tree(target['action__path'], defx._index)
 
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
