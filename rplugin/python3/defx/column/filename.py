@@ -30,7 +30,7 @@ class Column(Base):
             'marker',
             'root',
         ]
-        self._context = None
+        self._context: Context = Context()
 
     def on_init(self, context: Context) -> None:
         self._context = context
@@ -61,7 +61,7 @@ class Column(Base):
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
         root_marker = self.vim.call('escape',
-                                    self._context.root_marker, '~/\.^$[]*')
+                                    self._context.root_marker, r'~/\.^$[]*')
         commands.append(
             r'syntax match {0}_{1} /{2}/ contained '
             'containedin={0}_root'.format(
