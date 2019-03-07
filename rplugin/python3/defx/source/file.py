@@ -38,7 +38,6 @@ class Source(Base):
             'word': word,
             'is_directory': True,
             'action__path': Path(path),
-            'level': 0,
         }
 
     def gather_candidates(
@@ -54,6 +53,5 @@ class Source(Base):
                                       else ''),
                 'is_directory': safe_call(entry.is_dir, False),
                 'action__path': entry,
-                'level': 0,
             })
         return candidates

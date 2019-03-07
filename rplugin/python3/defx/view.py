@@ -264,7 +264,7 @@ class View(object):
             defx._mtime = root['action__path'].stat().st_mtime
 
             candidates = [root]
-            candidates += defx.tree_candidates()
+            candidates += defx.tree_candidates(defx._cwd, 0)
             for candidate in candidates:
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates

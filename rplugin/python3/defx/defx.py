@@ -58,21 +58,26 @@ class Defx(object):
         root = self._source.get_root_candidate(self._context, self._cwd)
         root['is_root'] = True
         root['is_opened_tree'] = False
+        root['level'] = 0
         root['word'] = self._context.root_marker + root['word']
 
         return root
 
-    def tree_candidates(self, path: str = '') -> typing.List[Candidate]:
+    def tree_candidates(self,
+                        path: str, base_level: int) -> typing.List[Candidate]:
         gathered_candidates = self.gather_candidates(path)
 
         if self._opened_candidates:
             candidates = []
             for candidate in gathered_candidates:
                 candidates.append(candidate)
+                candidate['level'] = base_level
                 candidate_path = str(candidate['action__path'])
+
                 if candidate_path in self._opened_candidates:
                     candidate['is_opened_tree'] = True
-                    candidates += self.tree_candidates(candidate_path)
+                    candidates += self.tree_candidates(candidate_path,
+                                                       base_level + 1)
         else:
             candidates = gathered_candidates
 
@@ -96,5 +101,6 @@ class Defx(object):
 
         for candidate in candidates:
             candidate['is_opened_tree'] = False
+            candidate['level'] = 0
 
         return sort(self._sort_method, candidates)
