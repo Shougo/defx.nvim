@@ -54,7 +54,7 @@ class Column(Base):
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
         commands.append(
-            r'syntax match {0}_{1} /.*\// contained containedin={0}'.format(
+            r'syntax match {0}_{1} /\S.*\// contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
