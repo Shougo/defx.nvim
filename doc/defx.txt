@@ -101,13 +101,13 @@ defx#custom#column({column-name}, {dict})
 	call defx#custom#column('filename', {
 	      \ 'directory_icon': '▸',
 	      \ 'opened_icon': '▾',
+	      \ 'root_icon': ' ',
 	      \ 'min_width': 40,
 	      \ 'max_width': 40,
 	      \ })
 
 	call defx#custom#column('mark', {
 	      \ 'readonly_icon': '✗',
-	      \ 'root_icon': ' ',
 	      \ 'selected_icon': '✓',
 	      \ })
 <
@@ -498,6 +498,8 @@ filename	File name.
 				  (default: 100)
 		opened_icon	  the opened directory icon
 				  (default: "-")
+		root_icon	  the root directory icon
+				  (default: " ")
 
 							*defx-column-mark*
 mark		File selected mark.
@@ -507,8 +509,6 @@ mark		File selected mark.
 				  (default: 1)
 		readonly_icon	  the readonly file icon
 				  (default: "X")
-		root_icon	  the root directory icon
-				  (default: " ")
 		selected_icon	  the selected file icon
 				  (default: "*")
 
@@ -645,7 +645,7 @@ A: >
 COMPATIBILITY						*defx-compatibility*
 
 2019-03-10
-* Move "directory_icon" and "opened_icon" to filename column.
+* Move "directory_icon", "opened_icon" and "root_icon" to filename column.
 
 2019-02-14
 * Change column "highlight" method to "highlight_commands" method.

@@ -21,14 +21,12 @@ class Column(Base):
         self.vars = {
             'length': 1,
             'readonly_icon': 'X',
-            'root_icon': ' ',
             'selected_icon': '*',
         }
         self._syntaxes = [
             'directory',
             'opened',
             'readonly',
-            'root',
             'selected',
         ]
 
@@ -37,8 +35,6 @@ class Column(Base):
         icon: str = ' ' * self.vars['length']
         if candidate.get('is_selected', False):
             icon = self.vars['selected_icon']
-        elif candidate.get('is_root', False):
-            icon = self.vars['root_icon']
         elif not os.access(str(candidate['action__path']), os.W_OK):
             icon = self.vars['readonly_icon']
         return icon
@@ -53,7 +49,6 @@ class Column(Base):
         commands: typing.List[str] = []
         for icon, highlight in {
                 'readonly': 'Comment',
-                'root': 'Identifier',
                 'selected': 'Statement',
         }.items():
             commands.append(

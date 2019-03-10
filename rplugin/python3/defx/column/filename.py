@@ -22,6 +22,7 @@ class Column(Base):
             'indent': ' ',
             'min_width': 40,
             'max_width': 100,
+            'root_icon': ' ',
             'opened_icon': '-',
         }
 
@@ -33,6 +34,7 @@ class Column(Base):
             'marker',
             'opened_icon',
             'root',
+            'root_icon',
         ]
         self._context: Context = Context()
 
@@ -41,8 +43,10 @@ class Column(Base):
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        if candidate.get('is_opened_tree', False):
+        if candidate['is_opened_tree']:
             icon = self.vars['opened_icon']
+        elif candidate['is_root']:
+            icon = self.vars['root_icon']
         elif candidate['is_directory']:
             icon = self.vars['directory_icon']
         else:
@@ -67,6 +71,7 @@ class Column(Base):
         for icon, highlight in {
                 'directory': 'Special',
                 'opened': 'Special',
+                'root': 'Identifier',
         }.items():
             commands.append(
                 ('syntax match {0}_{1}_icon /[{2}]/ ' +
@@ -77,7 +82,8 @@ class Column(Base):
                     self.syntax_name, icon, highlight))
 
         commands.append(
-            r'syntax match {0}_{1} /\S.*[\\\/]/ contained containedin={0}'.format(
+            r'syntax match {0}_{1} /\S.*[\\\/]/ '
+            'contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +

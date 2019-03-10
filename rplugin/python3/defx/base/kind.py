@@ -183,7 +183,7 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
     for candidate in view._candidates:
-        if (not candidate.get('is_root', False) and
+        if (not candidate['is_root'] and
                 candidate['_defx_index'] == defx._index):
             candidate['is_selected'] = not candidate['is_selected']
 

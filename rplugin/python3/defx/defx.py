@@ -110,6 +110,7 @@ class Defx(object):
 
         for candidate in candidates:
             candidate['is_opened_tree'] = False
+            candidate['is_root'] = False
             candidate['is_selected'] = False
             candidate['level'] = base_level
 
