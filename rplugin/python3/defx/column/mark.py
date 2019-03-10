@@ -33,7 +33,7 @@ class Column(Base):
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
         icon: str = ' ' * self.vars['length']
-        if candidate.get('is_selected', False):
+        if candidate['is_selected']:
             icon = self.vars['selected_icon']
         elif not os.access(str(candidate['action__path']), os.W_OK):
             icon = self.vars['readonly_icon']
