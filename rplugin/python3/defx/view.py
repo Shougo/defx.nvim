@@ -33,12 +33,14 @@ class View(object):
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
              clipboard: Clipboard) -> None:
+        context['prev_bufnr'] = int(context['prev_bufnr'])
+        context['prev_winid'] = int(context['prev_winid'])
+        context['visual_start'] = int(context['visual_start'])
+        context['visual_end'] = int(context['visual_start'])
         context['wincol'] = int(context['wincol'])
         context['winheight'] = int(context['winheight'])
         context['winrow'] = int(context['winrow'])
         context['winwidth'] = int(context['winwidth'])
-        context['prev_bufnr'] = int(context['prev_bufnr'])
-        context['prev_winid'] = int(context['prev_winid'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
 

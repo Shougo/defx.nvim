@@ -117,6 +117,8 @@ function! s:internal_options() abort
         \ 'cursor': line('.'),
         \ 'prev_bufnr': bufnr('%'),
         \ 'prev_winid': win_getid(),
+        \ 'visual_start': getpos("'<")[1],
+        \ 'visual_end': getpos("'>")[1],
         \ }
 endfunction
 function! defx#init#_context(user_context) abort

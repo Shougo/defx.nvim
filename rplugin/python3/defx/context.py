@@ -27,6 +27,8 @@ class Context(typing.NamedTuple):
     split: str = 'no'
     toggle: bool = False
     targets: typing.List[typing.Dict[str, typing.Any]] = []
+    visual_start: int = 0
+    visual_end: int = 0
     wincol: int = 0
     winheight: int = 0
     winrow: int = 0
