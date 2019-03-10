@@ -202,8 +202,13 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     candidate = view.get_cursor_candidate(context.cursor)
     if not candidate:
         return
-    filename = cwd_input(view._vim,
-                         str(Path(candidate['action__path']).parent),
+
+    if candidate['is_opened_tree'] or candidate['is_root']:
+        cwd = candidate['action__path']
+    else:
+        cwd = str(Path(candidate['action__path']).parent)
+
+    filename = cwd_input(view._vim, cwd,
                          'Please input a new filename: ', '', 'file')
     if not filename:
         return
@@ -223,8 +228,13 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     candidate = view.get_cursor_candidate(context.cursor)
     if not candidate:
         return
-    filename = cwd_input(view._vim,
-                         str(Path(candidate['action__path']).parent),
+
+    if candidate['is_opened_tree'] or candidate['is_root']:
+        cwd = candidate['action__path']
+    else:
+        cwd = str(Path(candidate['action__path']).parent)
+
+    filename = cwd_input(view._vim, cwd,
                          'Please input a new filename: ', '', 'file')
     if not filename:
         return
@@ -248,7 +258,11 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
     candidate = view.get_cursor_candidate(context.cursor)
     if not candidate:
         return
-    cwd = str(Path(candidate['action__path']).parent)
+
+    if candidate['is_opened_tree'] or candidate['is_root']:
+        cwd = candidate['action__path']
+    else:
+        cwd = str(Path(candidate['action__path']).parent)
 
     save_cwd = view._vim.call('getcwd')
     view._vim.command(f'silent lcd {cwd}')
@@ -312,7 +326,11 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
     candidate = view.get_cursor_candidate(context.cursor)
     if not candidate:
         return
-    cwd = str(Path(candidate['action__path']).parent)
+
+    if candidate['is_opened_tree'] or candidate['is_root']:
+        cwd = candidate['action__path']
+    else:
+        cwd = str(Path(candidate['action__path']).parent)
 
     action = view._clipboard.action
     dest = None
