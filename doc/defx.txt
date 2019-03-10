@@ -217,6 +217,9 @@ change_vim_cwd					*change_vim_cwd*
 		Action args:
 			0. cd command(The default is |:lcd|)
 
+clear_select_all				*defx-action-clear_select_all*
+		Clear the all candidates select.
+
 close_tree					*defx-action-close_tree*
 		Close the directory tree.
 

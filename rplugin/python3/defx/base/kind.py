@@ -28,6 +28,9 @@ class Base:
                 func=_call, attr=ActionAttr.REDRAW),
             'check_redraw': ActionTable(
                 func=_nop, attr=ActionAttr.NO_TAGETS),
+            'clear_select_all': ActionTable(
+                func=_clear_select_all,
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'close_tree': ActionTable(
                 func=_close_tree, attr=ActionAttr.TREE),
             'multi': ActionTable(func=_multi),
@@ -75,6 +78,12 @@ def _call(view: View, defx: Defx, context: Context) -> None:
     dict_context['targets'] = [
         str(x['action__path']) for x in context.targets]
     view._vim.call(function, dict_context)
+
+
+def _clear_select_all(view: View, defx: Defx, context: Context) -> None:
+    for candidate in [x for x in view._candidates
+                      if x['_defx_index'] == defx._index]:
+        candidate['is_selected'] = False
 
 
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
@@ -182,10 +191,10 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
 
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
-    for candidate in view._candidates:
-        if (not candidate['is_root'] and
-                candidate['_defx_index'] == defx._index):
-            candidate['is_selected'] = not candidate['is_selected']
+    for candidate in [x for x in view._candidates
+                      if not x['is_root'] and
+                      x['_defx_index'] == defx._index]:
+        candidate['is_selected'] = not candidate['is_selected']
 
 
 def _toggle_sort(view: View, defx: Defx, context: Context) -> None:
