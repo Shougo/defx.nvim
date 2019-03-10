@@ -77,7 +77,7 @@ class Column(Base):
                     self.syntax_name, icon, highlight))
 
         commands.append(
-            r'syntax match {0}_{1} /\S.*\// contained containedin={0}'.format(
+            r'syntax match {0}_{1} /\S.*[\\\/]/ contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
