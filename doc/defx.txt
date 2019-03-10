@@ -191,6 +191,18 @@ call 						*defx-action-call*
 		nnoremap <silent><buffer><expr> f
 		\ defx#do_action('call', 'Test')
 
+		" or you can use SID hack
+		function! s:Test(context) abort
+		  echomsg string(a:context.targets)
+		endfunction
+		function! s:SID_PREFIX() abort
+		  return matchstr(expand('<sfile>'),
+		  \ '<SNR>\d\+_\zeSID_PREFIX$')
+		endfunction
+		let g:sid = s:SID_PREFIX()
+  		nnoremap <silent><buffer><expr> f
+  		\ defx#do_action('call', g:sid.'Test')
+
 cd 						*defx-action-cd*
 		Change the current directory.
 		Note: If the action args is empty, it means the home
