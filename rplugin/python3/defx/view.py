@@ -195,6 +195,7 @@ class View(object):
 
         buffer_options = self._buffer.options
         buffer_options['buftype'] = 'nofile'
+        buffer_options['bufhidden'] = 'hide'
         buffer_options['swapfile'] = False
         buffer_options['modeline'] = False
         buffer_options['filetype'] = 'defx'
