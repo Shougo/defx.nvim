@@ -204,7 +204,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
         return
 
     if candidate['is_opened_tree'] or candidate['is_root']:
-        cwd = candidate['action__path']
+        cwd = str(candidate['action__path'])
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
@@ -230,7 +230,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         return
 
     if candidate['is_opened_tree'] or candidate['is_root']:
-        cwd = candidate['action__path']
+        cwd = str(candidate['action__path'])
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
@@ -260,7 +260,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
         return
 
     if candidate['is_opened_tree'] or candidate['is_root']:
-        cwd = candidate['action__path']
+        cwd = str(candidate['action__path'])
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
@@ -328,7 +328,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         return
 
     if candidate['is_opened_tree'] or candidate['is_root']:
-        cwd = candidate['action__path']
+        cwd = str(candidate['action__path'])
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
