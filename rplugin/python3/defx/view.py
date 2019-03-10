@@ -263,7 +263,7 @@ class View(object):
         self._vim.command(' | '.join(commands))
 
     def quit(self) -> None:
-        winnr = self._vim.call('bufwinnr', self._bufname)
+        winnr = self._vim.call('bufwinnr', self._bufnr)
         if winnr < 0:
             return
 
