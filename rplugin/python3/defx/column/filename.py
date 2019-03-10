@@ -70,14 +70,14 @@ class Column(Base):
         }.items():
             commands.append(
                 ('syntax match {0}_{1}_icon /[{2}]/ ' +
-                 'contained containedin={0}').format(
+                 'contained containedin={0}_directory').format(
                     self.syntax_name, icon, self.vars[icon + '_icon']))
             commands.append(
                 'highlight default link {}_{}_icon {}'.format(
                     self.syntax_name, icon, highlight))
 
         commands.append(
-            r'syntax match {0}_{1} /\S*\// contained containedin={0}'.format(
+            r'syntax match {0}_{1} /\S.*\// contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
@@ -91,7 +91,7 @@ class Column(Base):
                 self.syntax_name, 'marker', root_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.*/ contained '
-            'containedin={0}'.format(
+            'containedin={0}_directory'.format(
                 self.syntax_name, 'root', root_marker))
         commands.append(
             'highlight default link {}_{} {}'.format(
