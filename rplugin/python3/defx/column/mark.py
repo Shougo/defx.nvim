@@ -19,9 +19,7 @@ class Column(Base):
 
         self.name = 'mark'
         self.vars = {
-            'directory_icon': '+',
             'length': 1,
-            'opened_icon': '-',
             'readonly_icon': 'X',
             'root_icon': ' ',
             'selected_icon': '*',
@@ -43,10 +41,6 @@ class Column(Base):
             icon = self.vars['root_icon']
         elif not os.access(str(candidate['action__path']), os.W_OK):
             icon = self.vars['readonly_icon']
-        elif candidate.get('is_opened_tree', False):
-            icon = self.vars['opened_icon']
-        elif candidate['is_directory']:
-            icon = self.vars['directory_icon']
         return icon
 
     def length(self, context: Context) -> int:
@@ -58,8 +52,6 @@ class Column(Base):
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
         for icon, highlight in {
-                'directory': 'Special',
-                'opened': 'Special',
                 'readonly': 'Comment',
                 'root': 'Identifier',
                 'selected': 'Statement',

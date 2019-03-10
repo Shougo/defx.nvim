@@ -99,14 +99,13 @@ defx#custom#column({column-name}, {dict})
 		separator "," in {column-name}. >
 
 	call defx#custom#column('filename', {
+	      \ 'directory_icon': '▸',
+	      \ 'opened_icon': '▾',
 	      \ 'min_width': 40,
 	      \ 'max_width': 40,
 	      \ })
 
-	" Like Textmate icons.
 	call defx#custom#column('mark', {
-	      \ 'directory_icon': '▸',
-	      \ 'opened_icon': '▾',
 	      \ 'readonly_icon': '✗',
 	      \ 'root_icon': ' ',
 	      \ 'selected_icon': '✓',
@@ -477,21 +476,21 @@ COLUMNS							*defx-columns*
 filename	File name.
 
 		variables:
+		directory_icon	  the closed directory icon
+				  (default: "+")
 		indent		  the tree indentation
 				  (default: " ")
 		min_width	  the minimum width of a defx buffer
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
 				  (default: 100)
+		opened_icon	  the opened directory icon
+				  (default: "-")
 
 							*defx-column-mark*
 mark		File selected mark.
 
 		variables:
-		directory_icon	  the closed directory icon
-				  (default: "+")
-		opened_icon	  the opened directory icon
-				  (default: "-")
 		length		  the column length
 				  (default: 1)
 		readonly_icon	  the readonly file icon
@@ -632,6 +631,9 @@ A: >
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
+
+2019-03-10
+* Move "directory_icon" and "opened_icon" to filename column.
 
 2019-02-14
 * Change column "highlight" method to "highlight_commands" method.
