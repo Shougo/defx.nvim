@@ -88,7 +88,7 @@ def _clear_select_all(view: View, defx: Defx, context: Context) -> None:
 
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
-        if target['is_directory']:
+        if target['is_directory'] and target['is_opened_tree']:
             view.close_tree(target['action__path'], defx._index)
         else:
             view.close_tree(target['action__path'].parent, defx._index)
