@@ -370,12 +370,14 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
     if not context.targets:
         return
 
-    message = 'Are you sure you want to delete {}?'.format(
-        str(context.targets[0]['action__path'])
-        if len(context.targets) == 1
-        else str(len(context.targets)) + ' files')
-    if not confirm(view._vim, message):
-        return
+    force = context.args[0] == 'force' if context.args else False
+    if not force:
+        message = 'Are you sure you want to delete {}?'.format(
+            str(context.targets[0]['action__path'])
+            if len(context.targets) == 1
+            else str(len(context.targets)) + ' files')
+        if not confirm(view._vim, message):
+            return
 
     for target in context.targets:
         path = target['action__path']
@@ -397,12 +399,14 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
         error(view._vim, '"Send2Trash" is not installed')
         return
 
-    message = 'Are you sure you want to delete {}?'.format(
-        str(context.targets[0]['action__path'])
-        if len(context.targets) == 1
-        else str(len(context.targets)) + ' files')
-    if not confirm(view._vim, message):
-        return
+    force = context.args[0] == 'force' if context.args else False
+    if not force:
+        message = 'Are you sure you want to delete {}?'.format(
+            str(context.targets[0]['action__path'])
+            if len(context.targets) == 1
+            else str(len(context.targets)) + ' files')
+        if not confirm(view._vim, message):
+            return
 
     import send2trash
     for target in context.targets:
