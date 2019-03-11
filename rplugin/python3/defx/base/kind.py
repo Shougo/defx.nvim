@@ -59,6 +59,9 @@ class Base:
             'toggle_select_all': ActionTable(
                 func=_toggle_select_all,
                 attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
+            'toggle_select_visual': ActionTable(
+                func=_toggle_select_visual,
+                attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
             'toggle_sort': ActionTable(
                 func=_toggle_sort,
                 attr=ActionAttr.MARK | ActionAttr.NO_TAGETS),
@@ -192,6 +195,18 @@ def _toggle_select(view: View, defx: Defx, context: Context) -> None:
 
 def _toggle_select_all(view: View, defx: Defx, context: Context) -> None:
     for candidate in [x for x in view._candidates
+                      if not x['is_root'] and
+                      x['_defx_index'] == defx._index]:
+        candidate['is_selected'] = not candidate['is_selected']
+
+
+def _toggle_select_visual(view: View, defx: Defx, context: Context) -> None:
+    if context.visual_start <= 0 or context.visual_end <= 0:
+        return
+
+    start = context.visual_start - 1
+    end = min([context.visual_end, len(view._candidates)])
+    for candidate in [x for x in view._candidates[start:end]
                       if not x['is_root'] and
                       x['_defx_index'] == defx._index]:
         candidate['is_selected'] = not candidate['is_selected']

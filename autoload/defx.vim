@@ -28,7 +28,7 @@ function! defx#do_action(action, ...) abort
   endif
 
   let args = defx#util#convert2list(get(a:000, 0, []))
-  return printf(":\<C-u>call defx#call_action(%s, %s)\<CR>",
+  return printf(":call defx#call_action(%s, %s)\<CR>",
         \ string(a:action), string(args))
 endfunction
 function! defx#async_action(action, ...) abort
@@ -37,7 +37,7 @@ function! defx#async_action(action, ...) abort
   endif
 
   let args = defx#util#convert2list(get(a:000, 0, []))
-  return printf(":\<C-u>call defx#call_async_action(%s, %s)\<CR>",
+  return printf(":call defx#call_async_action(%s, %s)\<CR>",
         \ string(a:action), string(args))
 endfunction
 function! defx#call_action(action, ...) abort

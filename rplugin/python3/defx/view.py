@@ -72,6 +72,8 @@ class View(object):
         Do "action" action.
         """
         cursor = new_context['cursor']
+        visual_start = new_context['visual_start']
+        visual_end = new_context['visual_end']
 
         defx_targets = {
             x._index: self.get_selected_candidates(cursor, x._index)
@@ -84,9 +86,11 @@ class View(object):
         for defx in [x for x in self._defxs
                      if not all_targets or defx_targets[x._index]]:
             context = self._context._replace(
-                targets=defx_targets[defx._index],
                 args=action_args,
-                cursor=cursor
+                cursor=cursor,
+                targets=defx_targets[defx._index],
+                visual_start=visual_start,
+                visual_end=visual_end,
             )
             ret = action.do_action(self, defx, action_name, context)
             if ret:
