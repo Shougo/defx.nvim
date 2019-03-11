@@ -29,6 +29,7 @@ class View(object):
         self._buffer: Nvim.buffer = None
         self._prev_action = ''
         self._prev_highlight_commands: typing.List[str] = []
+        self._winrestcmd = ''
 
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
@@ -43,6 +44,8 @@ class View(object):
         context['winwidth'] = int(context['winwidth'])
         self._context = Context(**context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
+        self._winrestcmd = self._vim.call('winrestcmd')
+        self._prev_wininfo = self._get_wininfo()
 
         if not self.init_buffer(paths):
             self._winid = self._vim.call('win_getid')
@@ -292,6 +295,9 @@ class View(object):
             else:
                 self._vim.command('enew')
 
+        if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
+            self._vim.command(self._winrestcmd)
+
     def init_candidates(self) -> None:
         self._candidates = []
         for defx in self._defxs:
@@ -425,6 +431,16 @@ class View(object):
                                if x[1]['is_opened_tree']]:
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
+
+    def _get_wininfo(self):
+        wininfo = self._vim.call('getwininfo',
+                                 self._vim.call('win_getid'))[0]
+        return [
+            self._vim.options['columns'], self._vim.options['lines'],
+            self._vim.call('tabpagebuflist'),
+            wininfo['bufnr'], wininfo['winnr'],
+            wininfo['winid'], wininfo['tabnr'],
+        ]
 
     def load_custom_columns(self) -> typing.List[Path]:
         rtp_list = self._vim.options['runtimepath'].split(',')
