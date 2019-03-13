@@ -115,12 +115,12 @@ class Column(Base):
 
     def _strwidth(self, word: str) -> int:
         return (int(self.vim.call('strwidth', word))
-                if len(word) != len(bytes(word, 'utf-8')) else len(word))
+                if len(word) != len(bytes(word, 'utf-8', 'surrogatepass')) else len(word))
 
     def _truncate(self, word: str) -> str:
         width = self._strwidth(word)
         if (width > self._current_length or
-                len(word) != len(bytes(word, 'utf-8'))):
+                len(word) != len(bytes(word, 'utf-8', 'surrogatepass'))):
             return str(self.vim.call(
                 'defx#util#truncate_skipping',
                 word, self._current_length,
