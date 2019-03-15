@@ -10,7 +10,7 @@ from defx.source.file import Source as File
 from defx.context import Context
 from defx.sort import sort
 from defx.util import Nvim
-from defx.util import error
+from defx.util import cd, error
 from pathlib import Path
 
 
@@ -49,7 +49,7 @@ class Defx(object):
         self._cwd = str(Path(self._cwd).joinpath(path).resolve())
 
         if self._context.auto_cd:
-            self._vim.command('silent lcd ' + path)
+            cd(self._vim, path)
 
     def get_root_candidate(self) -> Candidate:
         """

@@ -178,7 +178,7 @@ def _toggle_columns(view: View, defx: Defx, context: Context) -> None:
     if columns == current_columns:
         # Use default columns
         columns = context.columns.split(':')
-    view.init_columns(columns)
+    view._init_columns(columns)
 
 
 def _toggle_ignored_files(view: View, defx: Defx, context: Context) -> None:

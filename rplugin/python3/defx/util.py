@@ -16,11 +16,8 @@ else:
     from neovim import Nvim
 
 
-def error(vim: Nvim, expr: typing.Any) -> None:
-    """
-    Prints the error messages to Vim/Nvim's :messages buffer.
-    """
-    vim.call('defx#util#print_error', expr)
+def cd(vim: Nvim, path: str, command: str = '') -> None:
+    vim.call('defx#util#cd', command, path)
 
 
 def cwd_input(vim: Nvim, cwd: str, prompt: str,
@@ -29,16 +26,23 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     Returns the absolute input path in cwd.
     """
     save_cwd = vim.call('getcwd')
-    vim.command(f'silent lcd {cwd}')
+    cd(vim, cwd)
 
     filename: str = vim.call('input', prompt, text, completion)
 
-    vim.command(f'silent lcd {save_cwd}')
+    cd(vim, save_cwd)
 
     if not filename:
         return None
 
     return Path(cwd).joinpath(filename).resolve()
+
+
+def error(vim: Nvim, expr: typing.Any) -> None:
+    """
+    Prints the error messages to Vim/Nvim's :messages buffer.
+    """
+    vim.call('defx#util#print_error', expr)
 
 
 def confirm(vim: Nvim, question: str) -> bool:

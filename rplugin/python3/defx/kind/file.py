@@ -16,7 +16,7 @@ from defx.base.kind import Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import cwd_input, confirm, error
+from defx.util import cd, cwd_input, confirm, error
 from defx.util import readable, Nvim
 from defx.view import View
 
@@ -103,7 +103,7 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     Change the current working directory.
     """
     command = context.args[0] if context.args else 'lcd'
-    view._vim.command(f'silent {command} {defx._cwd}')
+    cd(command, defx._cwd)
 
 
 def _check_redraw(view: View, defx: Defx, context: Context) -> None:
@@ -161,7 +161,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     Execute the command.
     """
     save_cwd = view._vim.call('getcwd')
-    view._vim.command(f'silent lcd {defx._cwd}')
+    cd(view._vim, defx._cwd)
 
     command = context.args[0] if context.args else view._vim.call(
         'input', 'Command: ', '', 'shellcmd')
@@ -170,7 +170,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     if output:
         view.print_msg(output)
 
-    view._vim.command(f'silent lcd {save_cwd}')
+    cd(view._vim, save_cwd)
 
 
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
@@ -265,11 +265,11 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
         cwd = str(Path(candidate['action__path']).parent)
 
     save_cwd = view._vim.call('getcwd')
-    view._vim.command(f'silent lcd {cwd}')
+    cd(view._vim, cwd)
 
     str_filenames: str = view._vim.call(
         'input', 'Please input new filenames: ', '', 'file')
-    view._vim.command(f'silent lcd {save_cwd}')
+    cd(view._vim, save_cwd)
 
     if not str_filenames:
         return None
