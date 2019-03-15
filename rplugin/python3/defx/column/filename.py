@@ -115,7 +115,8 @@ class Column(Base):
 
     def _strwidth(self, word: str) -> int:
         return (int(self.vim.call('strwidth', word))
-                if len(word) != len(bytes(word, 'utf-8', 'surrogatepass')) else len(word))
+                if len(word) != len(bytes(word, 'utf-8',
+                                          'surrogatepass')) else len(word))
 
     def _truncate(self, word: str) -> str:
         width = self._strwidth(word)
