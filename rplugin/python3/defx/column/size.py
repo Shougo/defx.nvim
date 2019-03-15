@@ -22,9 +22,9 @@ class Column(Base):
             candidate: typing.Dict[str, typing.Any]) -> str:
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
-            return ' ' * 8
+            return ' ' * 9
         size = self._get_size(path.stat().st_size)
-        return '{:>5s}{:>3s}'.format(size[0], size[1])
+        return '{:>6s}{:>3s}'.format(size[0], size[1])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
         multiple = 1024
@@ -38,7 +38,7 @@ class Column(Base):
         return ('INF', '')
 
     def length(self, context: Context) -> int:
-        return 8
+        return 9
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
