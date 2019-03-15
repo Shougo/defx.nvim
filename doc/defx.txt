@@ -513,6 +513,9 @@ filename	File name.
 				  (default: "-")
 		root_icon	  the root directory icon
 				  (default: " ")
+		root_marker_highlight
+				the root marker highlight
+				  (default: "Constant")
 
 							*defx-column-mark*
 mark		File selected mark.
@@ -653,6 +656,16 @@ Q: I want to open file like vimfiler explorer mode.
 
 A: >
 	  nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
+
+Q: I want to disable root marker.
+
+A: >
+	call defx#custom#option('_', {
+	      \ 'root_marker': ':',
+	      \ })
+	call defx#custom#column('filename', {
+	      \ 'root_marker_highlight': 'Ignore',
+	      \ })
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

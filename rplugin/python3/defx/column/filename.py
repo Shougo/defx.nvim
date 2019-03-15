@@ -22,8 +22,9 @@ class Column(Base):
             'indent': ' ',
             'min_width': 40,
             'max_width': 100,
-            'root_icon': ' ',
             'opened_icon': '-',
+            'root_icon': ' ',
+            'root_marker_highlight': 'Constant',
         }
 
         self._current_length = 0
@@ -107,7 +108,8 @@ class Column(Base):
                 self.syntax_name, 'hidden', 'Comment'))
         commands.append(
             'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'marker', 'Constant'))
+                self.syntax_name, 'marker',
+                self.vars['root_marker_highlight']))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'root', 'Identifier'))
