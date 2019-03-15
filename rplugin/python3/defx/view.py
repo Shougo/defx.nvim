@@ -47,7 +47,7 @@ class View(object):
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
 
-        if not self.init_buffer(paths):
+        if not self._init_buffer(paths):
             self._winid = self._vim.call('win_getid')
             return
 
@@ -61,12 +61,12 @@ class View(object):
         for [index, path] in enumerate(paths):
             self._defxs.append(Defx(self._vim, self._context, path, index))
 
-        self.init_columns(self._context.columns.split(':'))
+        self._init_columns(self._context.columns.split(':'))
 
         self.redraw(True)
 
         for defx in self._defxs:
-            self.init_cursor(defx)
+            self._init_cursor(defx)
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -100,176 +100,11 @@ class View(object):
                 error(self._vim, 'Invalid action_name:' + action_name)
                 return
 
-    def init_columns(self, columns: typing.List[str]) -> None:
-        # Initialize columns
-        self._columns: typing.List[Column] = []
-        self._all_columns: typing.Dict[str, Column] = {}
-
-        for path_column in self.load_custom_columns():
-            column = import_plugin(path_column, 'column', 'Column')
-            if not column:
-                continue
-
-            column = column(self._vim)
-            if column.name not in self._all_columns:
-                self._all_columns[column.name] = column
-
-        custom = self._vim.call('defx#custom#_get')['column']
-        self._columns = [self._all_columns[x]
-                         for x in columns if x in self._all_columns]
-        for column in self._columns:
-            if column.name in custom:
-                column.vars.update(custom[column.name])
-            column.on_init(self._context)
-            column.syntax_name = 'Defx_' + column.name
-
-    def resize_window(self) -> None:
-        window_options = self._vim.current.window.options
-        if (self._context.split == 'vertical'
-                and self._context.winwidth > 0):
-            window_options['winfixwidth'] = True
-            self._vim.command(f'vertical resize {self._context.winwidth}')
-        elif (self._context.split == 'horizontal' and
-              self._context.winheight > 0):
-            window_options['winfixheight'] = True
-            self._vim.command(f'resize {self._context.winheight}')
-
-    def init_buffer(self, paths: typing.List[str]) -> bool:
-        if self._context.split == 'tab':
-            self._vim.command('tabnew')
-
-        winnr = self._vim.call('bufwinnr', self._bufnr)
-        if winnr > 0:
-            self._vim.command(f'{winnr}wincmd w')
-            if self._context.toggle:
-                self.quit()
-            else:
-                self.resize_window()
-            return False
-
-        if (self._vim.current.buffer.options['modified'] and
-                not self._vim.options['hidden'] and
-                self._context.split == 'no'):
-            self._context = self._context._replace(split='vertical')
-
-        if (self._context.split == 'floating'
-                and self._vim.call('exists', '*nvim_open_win')):
-            # Use floating window
-            self._vim.call(
-                'nvim_open_win',
-                self._vim.call('bufnr', '%'), True,
-                self._context.winwidth,
-                self._context.winheight, {
-                    'relative': 'editor',
-                    'row': self._context.winrow,
-                    'col': self._context.wincol,
-                })
-
-        # Create new buffer
-        vertical = 'vertical' if self._context.split == 'vertical' else ''
-        no_split = self._context.split in ['no', 'tab', 'floating']
-        if self._vim.call('bufexists', self._bufnr):
-            command = ('buffer' if no_split else 'sbuffer')
-            self._vim.command(
-                'silent keepalt %s %s %s %s' % (
-                    self._context.direction,
-                    vertical,
-                    command,
-                    self._bufnr,
-                )
-            )
-            if self._context.resume:
-                self.resize_window()
-                return False
-        else:
-            command = ('edit' if no_split else 'new')
-            self._vim.call(
-                'defx#util#execute_path',
-                'silent keepalt %s %s %s ' % (
-                    self._context.direction,
-                    vertical,
-                    command,
-                ),
-                self._bufname)
-
-        self._buffer = self._vim.current.buffer
-        self._bufnr = self._buffer.number
-        self._winid = self._vim.call('win_getid')
-
-        window_options = self._vim.current.window.options
-        window_options['list'] = False
-        window_options['wrap'] = False
-
-        self.resize_window()
-
-        buffer_options = self._buffer.options
-        buffer_options['buftype'] = 'nofile'
-        buffer_options['bufhidden'] = 'hide'
-        buffer_options['swapfile'] = False
-        buffer_options['modeline'] = False
-        buffer_options['filetype'] = 'defx'
-        buffer_options['modifiable'] = False
-        buffer_options['modified'] = False
-
-        self._buffer.vars['defx'] = {
-            'context': self._context._asdict(),
-            'paths': paths,
-        }
-
-        if not self._context.listed:
-            buffer_options['buflisted'] = False
-
-        self.execute_commands([
-            'silent doautocmd FileType defx',
-            'autocmd! defx * <buffer>',
-        ])
-        self._vim.command('autocmd defx '
-                          'CursorHold,WinEnter,FocusGained <buffer> '
-                          'call defx#call_async_action("check_redraw")')
-
-        self._prev_highlight_commands = []
-
-        return True
-
-    def init_length(self) -> None:
-        start = 1
-        for column in self._columns:
-            column.start = start
-            length = column.length(
-                self._context._replace(targets=self._candidates))
-            column.end = start + length
-            start += length + 1
-
-    def update_syntax(self) -> None:
-        commands: typing.List[str] = []
-        for column in self._columns:
-            commands.append(
-                'silent! syntax clear ' + column.syntax_name)
-            for syntax in column.syntaxes():
-                commands.append(
-                    'silent! syntax clear ' + syntax)
-            commands.append(
-                'syntax region ' + column.syntax_name +
-                r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                str(column.end) + 'v/ keepend oneline')
-            commands += column.highlight_commands()
-
-        if commands == self._prev_highlight_commands:
-            # Skip highlights
-            return
-
-        self._prev_highlight_commands = commands
-
-        self.execute_commands(commands)
-
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 
     def print_msg(self, expr: typing.Any) -> None:
         self._vim.call('defx#util#print_message', expr)
-
-    def execute_commands(self, commands: typing.List[str]) -> None:
-        self._vim.command(' | '.join(commands))
 
     def quit(self) -> None:
         winnr = self._vim.call('bufwinnr', self._bufnr)
@@ -298,18 +133,6 @@ class View(object):
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
 
-    def init_candidates(self) -> None:
-        self._candidates = []
-        for defx in self._defxs:
-            root = defx.get_root_candidate()
-            defx._mtime = root['action__path'].stat().st_mtime
-
-            candidates = [root]
-            candidates += defx.tree_candidates(defx._cwd, 0)
-            for candidate in candidates:
-                candidate['_defx_index'] = defx._index
-            self._candidates += candidates
-
     def redraw(self, is_force: bool = False) -> None:
         """
         Redraw defx buffer.
@@ -324,9 +147,9 @@ class View(object):
         prev = self.get_cursor_candidate(prev_linenr)
 
         if is_force:
-            self.init_candidates()
-            self.init_length()
-            self.update_syntax()
+            self._init_candidates()
+            self._init_length()
+            self._update_syntax()
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -336,7 +159,7 @@ class View(object):
 
         self._buffer.options['modifiable'] = True
         self._buffer[:] = [
-            self.get_columns_text(self._context, x)
+            self._get_columns_text(self._context, x)
             for x in self._candidates
         ]
         self._buffer.options['modifiable'] = False
@@ -349,15 +172,6 @@ class View(object):
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
-
-    def get_columns_text(self, context: Context,
-                         candidate: typing.Dict[str, typing.Any]) -> str:
-        text = ''
-        for column in self._columns:
-            if text:
-                text += ' '
-            text += column.get(context, candidate)
-        return text
 
     def get_cursor_candidate(
             self, cursor: int) -> typing.Dict[str, typing.Any]:
@@ -377,6 +191,13 @@ class View(object):
             candidates = [self.get_cursor_candidate(cursor)]
         return [x for x in candidates if x.get('_defx_index', -1) == index]
 
+    def get_candidate_pos(self, path: Path, index: int) -> int:
+        for [pos, candidate] in enumerate(self._candidates):
+            if (candidate['_defx_index'] == index and
+                    candidate['action__path'] == path):
+                return pos
+        return -1
+
     def cd(self, defx: Defx, path: str, cursor: int) -> None:
         # Save previous cursor position
         history = defx._cursor_history
@@ -388,23 +209,11 @@ class View(object):
 
         defx.cd(path)
         self.redraw(True)
-        self.init_cursor(defx)
+        self._init_cursor(defx)
         if path in history:
             self.search_file(history[path], defx._index)
 
-        self.update_paths(defx._index, path)
-
-    def update_paths(self, index: int, path: str) -> None:
-        var_defx = self._buffer.vars['defx']
-        var_defx['paths'][index] = path
-        self._buffer.vars['defx'] = var_defx
-
-    def get_candidate_pos(self, path: Path, index: int) -> int:
-        for [pos, candidate] in enumerate(self._candidates):
-            if (candidate['_defx_index'] == index and
-                    candidate['action__path'] == path):
-                return pos
-        return -1
+        self._update_paths(defx._index, path)
 
     def search_file(self, path: Path, index: int) -> bool:
         target = str(path)
@@ -417,12 +226,6 @@ class View(object):
         self._vim.call('cursor', [pos + 1, 1])
         return True
 
-    def init_cursor(self, defx: Defx) -> None:
-        self.search_file(Path(defx._cwd), defx._index)
-
-        # Move to next
-        self._vim.call('cursor', [self._vim.call('line', '.') + 1, 1])
-
     def update_opened_candidates(self) -> None:
         # Update opened state
         for defx in self._defxs:
@@ -431,24 +234,6 @@ class View(object):
                                if x[1]['is_opened_tree']]:
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
-
-    def _get_wininfo(self) -> typing.List[str]:
-        return [
-            self._vim.options['columns'], self._vim.options['lines'],
-            self._vim.call('winnr', '$'), self._vim.call('win_getid'),
-        ]
-
-    def load_custom_columns(self) -> typing.List[Path]:
-        rtp_list = self._vim.options['runtimepath'].split(',')
-        result: typing.List[Path] = []
-
-        for path in rtp_list:
-            column_path = Path(path).joinpath(
-                'rplugin', 'python3', 'defx', 'column')
-            if safe_call(column_path.is_dir):
-                result += column_path.glob('*.py')
-
-        return result
 
     def open_tree(self, path: Path, index: int, recursive: bool) -> None:
         # Search insert position
@@ -501,3 +286,218 @@ class View(object):
 
         self._candidates = (self._candidates[: start] +
                             self._candidates[end:])
+
+    def _init_columns(self, columns: typing.List[str]) -> None:
+        # Initialize columns
+        self._columns: typing.List[Column] = []
+        self._all_columns: typing.Dict[str, Column] = {}
+
+        for path_column in self._load_custom_columns():
+            column = import_plugin(path_column, 'column', 'Column')
+            if not column:
+                continue
+
+            column = column(self._vim)
+            if column.name not in self._all_columns:
+                self._all_columns[column.name] = column
+
+        custom = self._vim.call('defx#custom#_get')['column']
+        self._columns = [self._all_columns[x]
+                         for x in columns if x in self._all_columns]
+        for column in self._columns:
+            if column.name in custom:
+                column.vars.update(custom[column.name])
+            column.on_init(self._context)
+            column.syntax_name = 'Defx_' + column.name
+
+    def _resize_window(self) -> None:
+        window_options = self._vim.current.window.options
+        if (self._context.split == 'vertical'
+                and self._context.winwidth > 0):
+            window_options['winfixwidth'] = True
+            self._vim.command(f'vertical resize {self._context.winwidth}')
+        elif (self._context.split == 'horizontal' and
+              self._context.winheight > 0):
+            window_options['winfixheight'] = True
+            self._vim.command(f'resize {self._context.winheight}')
+
+    def _init_buffer(self, paths: typing.List[str]) -> bool:
+        if self._context.split == 'tab':
+            self._vim.command('tabnew')
+
+        winnr = self._vim.call('bufwinnr', self._bufnr)
+        if winnr > 0:
+            self._vim.command(f'{winnr}wincmd w')
+            if self._context.toggle:
+                self.quit()
+            else:
+                self._resize_window()
+            return False
+
+        if (self._vim.current.buffer.options['modified'] and
+                not self._vim.options['hidden'] and
+                self._context.split == 'no'):
+            self._context = self._context._replace(split='vertical')
+
+        if (self._context.split == 'floating'
+                and self._vim.call('exists', '*nvim_open_win')):
+            # Use floating window
+            self._vim.call(
+                'nvim_open_win',
+                self._vim.call('bufnr', '%'), True,
+                self._context.winwidth,
+                self._context.winheight, {
+                    'relative': 'editor',
+                    'row': self._context.winrow,
+                    'col': self._context.wincol,
+                })
+
+        # Create new buffer
+        vertical = 'vertical' if self._context.split == 'vertical' else ''
+        no_split = self._context.split in ['no', 'tab', 'floating']
+        if self._vim.call('bufexists', self._bufnr):
+            command = ('buffer' if no_split else 'sbuffer')
+            self._vim.command(
+                'silent keepalt %s %s %s %s' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                    self._bufnr,
+                )
+            )
+            if self._context.resume:
+                self._resize_window()
+                return False
+        else:
+            command = ('edit' if no_split else 'new')
+            self._vim.call(
+                'defx#util#execute_path',
+                'silent keepalt %s %s %s ' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                ),
+                self._bufname)
+
+        self._buffer = self._vim.current.buffer
+        self._bufnr = self._buffer.number
+        self._winid = self._vim.call('win_getid')
+
+        window_options = self._vim.current.window.options
+        window_options['list'] = False
+        window_options['wrap'] = False
+
+        self._resize_window()
+
+        buffer_options = self._buffer.options
+        buffer_options['buftype'] = 'nofile'
+        buffer_options['bufhidden'] = 'hide'
+        buffer_options['swapfile'] = False
+        buffer_options['modeline'] = False
+        buffer_options['filetype'] = 'defx'
+        buffer_options['modifiable'] = False
+        buffer_options['modified'] = False
+
+        self._buffer.vars['defx'] = {
+            'context': self._context._asdict(),
+            'paths': paths,
+        }
+
+        if not self._context.listed:
+            buffer_options['buflisted'] = False
+
+        self._execute_commands([
+            'silent doautocmd FileType defx',
+            'autocmd! defx * <buffer>',
+        ])
+        self._vim.command('autocmd defx '
+                          'CursorHold,WinEnter,FocusGained <buffer> '
+                          'call defx#call_async_action("check_redraw")')
+
+        self._prev_highlight_commands = []
+
+        return True
+
+    def _init_length(self) -> None:
+        start = 1
+        for column in self._columns:
+            column.start = start
+            length = column.length(
+                self._context._replace(targets=self._candidates))
+            column.end = start + length
+            start += length + 1
+
+    def _update_syntax(self) -> None:
+        commands: typing.List[str] = []
+        for column in self._columns:
+            commands.append(
+                'silent! syntax clear ' + column.syntax_name)
+            for syntax in column.syntaxes():
+                commands.append(
+                    'silent! syntax clear ' + syntax)
+            commands.append(
+                'syntax region ' + column.syntax_name +
+                r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                str(column.end) + 'v/ keepend oneline')
+            commands += column.highlight_commands()
+
+        if commands == self._prev_highlight_commands:
+            # Skip highlights
+            return
+
+        self._prev_highlight_commands = commands
+
+        self._execute_commands(commands)
+
+    def _execute_commands(self, commands: typing.List[str]) -> None:
+        self._vim.command(' | '.join(commands))
+
+    def _init_candidates(self) -> None:
+        self._candidates = []
+        for defx in self._defxs:
+            root = defx.get_root_candidate()
+            defx._mtime = root['action__path'].stat().st_mtime
+
+            candidates = [root]
+            candidates += defx.tree_candidates(defx._cwd, 0)
+            for candidate in candidates:
+                candidate['_defx_index'] = defx._index
+            self._candidates += candidates
+
+    def _get_columns_text(self, context: Context,
+                          candidate: typing.Dict[str, typing.Any]) -> str:
+        text = ''
+        for column in self._columns:
+            if text:
+                text += ' '
+            text += column.get(context, candidate)
+        return text
+
+    def _update_paths(self, index: int, path: str) -> None:
+        var_defx = self._buffer.vars['defx']
+        var_defx['paths'][index] = path
+        self._buffer.vars['defx'] = var_defx
+
+    def _init_cursor(self, defx: Defx) -> None:
+        self.search_file(Path(defx._cwd), defx._index)
+
+        # Move to next
+        self._vim.call('cursor', [self._vim.call('line', '.') + 1, 1])
+
+    def _get_wininfo(self) -> typing.List[str]:
+        return [
+            self._vim.options['columns'], self._vim.options['lines'],
+            self._vim.call('winnr', '$'), self._vim.call('win_getid'),
+        ]
+
+    def _load_custom_columns(self) -> typing.List[Path]:
+        rtp_list = self._vim.options['runtimepath'].split(',')
+        result: typing.List[Path] = []
+
+        for path in rtp_list:
+            column_path = Path(path).joinpath(
+                'rplugin', 'python3', 'defx', 'column')
+            if safe_call(column_path.is_dir):
+                result += column_path.glob('*.py')
+
+        return result
