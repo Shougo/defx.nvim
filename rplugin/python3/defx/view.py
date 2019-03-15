@@ -490,7 +490,7 @@ class View(object):
     def _get_wininfo(self) -> typing.List[str]:
         return [
             self._vim.options['columns'], self._vim.options['lines'],
-            self._vim.call('winnr', '$'), self._vim.call('win_getid'),
+            self._vim.call('win_getid'),
         ]
 
     def _load_custom_columns(self) -> typing.List[Path]:
