@@ -102,8 +102,7 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current working directory.
     """
-    command = context.args[0] if context.args else 'lcd'
-    cd(command, defx._cwd)
+    cd(view._vim, defx._cwd)
 
 
 def _check_redraw(view: View, defx: Defx, context: Context) -> None:

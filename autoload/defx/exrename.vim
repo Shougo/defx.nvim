@@ -39,7 +39,7 @@ function! defx#exrename#create_buffer(candidates, ...) abort
 
   let b:exrename = options
 
-  call defx#util#cd('lcd', b:exrename.cwd)
+  call defx#util#cd(b:exrename.cwd)
 
   nnoremap <buffer><silent> q :<C-u>call <SID>exit(bufnr('%'))<CR>
   augroup defx-exrename

@@ -214,9 +214,6 @@ cd 						*defx-action-cd*
 change_vim_cwd					*change_vim_cwd*
 		Change current working directory to the current directory.
 
-		Action args:
-			0. cd command(The default is |:lcd|)
-
 clear_select_all				*defx-action-clear_select_all*
 		Clear the all candidates select.
 

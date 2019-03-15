@@ -16,8 +16,8 @@ else:
     from neovim import Nvim
 
 
-def cd(vim: Nvim, path: str, command: str = '') -> None:
-    vim.call('defx#util#cd', command, path)
+def cd(vim: Nvim, path: str) -> None:
+    vim.call('defx#util#cd', path)
 
 
 def cwd_input(vim: Nvim, cwd: str, prompt: str,

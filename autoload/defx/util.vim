@@ -247,14 +247,13 @@ function! defx#util#open(filename) abort
   endif
 endfunction
 
-function! defx#util#cd(command, path) abort
+function! defx#util#cd(path) abort
   if exists('*nvim_set_current_dir')
     call nvim_set_current_dir(a:path)
   else
-    silent execute a:command fnameescape(a:path)
+    silent execute 'lcd' fnameescape(a:path)
   endif
 endfunction
-
 
 function! defx#util#truncate_skipping(str, max, footer_width, separator) abort
   let width = strwidth(a:str)
