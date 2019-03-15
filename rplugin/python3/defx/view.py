@@ -432,14 +432,10 @@ class View(object):
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
 
-    def _get_wininfo(self):
-        wininfo = self._vim.call('getwininfo',
-                                 self._vim.call('win_getid'))[0]
+    def _get_wininfo(self) -> typing.List[str]:
         return [
             self._vim.options['columns'], self._vim.options['lines'],
-            self._vim.call('tabpagebuflist'),
-            wininfo['bufnr'], wininfo['winnr'],
-            wininfo['winid'], wininfo['tabnr'],
+            self._vim.call('winnr', '$'), self._vim.call('win_getid'),
         ]
 
     def load_custom_columns(self) -> typing.List[Path]:
