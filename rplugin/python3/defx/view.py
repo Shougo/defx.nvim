@@ -199,9 +199,12 @@ class View(object):
         return -1
 
     def cd(self, defx: Defx, path: str, cursor: int) -> None:
-        # Save previous cursor position
         history = defx._cursor_history
-        history[defx._cwd] = self.get_cursor_candidate(cursor)['action__path']
+
+        # Save previous cursor position
+        candidate = self.get_cursor_candidate(cursor)
+        if candidate:
+            history[defx._cwd] = candidate['action__path']
 
         global_histories = self._vim.vars['defx#_histories']
         global_histories.append(defx._cwd)
