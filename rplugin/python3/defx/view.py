@@ -389,6 +389,8 @@ class View(object):
         window_options = self._vim.current.window.options
         window_options['list'] = False
         window_options['wrap'] = False
+        if self._context.split == 'floating':
+            window_options['cursorline'] = True
 
         self._resize_window()
 
