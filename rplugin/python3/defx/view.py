@@ -347,12 +347,12 @@ class View(object):
             # Use floating window
             self._vim.call(
                 'nvim_open_win',
-                self._vim.call('bufnr', '%'), True,
-                self._context.winwidth,
-                self._context.winheight, {
+                self._vim.call('bufnr', '%'), True, {
                     'relative': 'editor',
                     'row': self._context.winrow,
                     'col': self._context.wincol,
+                    'width': self._context.winwidth,
+                    'height': self._context.winheight,
                 })
 
         # Create new buffer
