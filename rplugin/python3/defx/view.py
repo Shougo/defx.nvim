@@ -49,8 +49,9 @@ class View(object):
 
         if not self._init_buffer(paths):
             self._winid = self._vim.call('win_getid')
-            self._update_defx(paths)
-            self.redraw(True)
+            if not self._context.resume:
+                self._update_defx(paths)
+                self.redraw(True)
             return
 
         self._candidates = []
