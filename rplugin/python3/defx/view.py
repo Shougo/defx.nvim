@@ -49,17 +49,17 @@ class View(object):
 
         if not self._init_buffer(paths):
             self._winid = self._vim.call('win_getid')
+            self._update_defx(paths)
+            self.redraw(True)
             return
 
         self._candidates = []
-        self._context = Context(**context)
         self._clipboard = clipboard
 
         # Initialize defx
         self._defxs = []
         self._buffer.vars['defx']['paths'] = paths
-        for [index, path] in enumerate(paths):
-            self._defxs.append(Defx(self._vim, self._context, path, index))
+        self._update_defx(paths)
 
         self._init_columns(self._context.columns.split(':'))
 
@@ -515,3 +515,13 @@ class View(object):
                 result += column_path.glob('*.py')
 
         return result
+
+    def _update_defx(self, paths: typing.List[str]) -> None:
+        self._defxs = self._defxs[:len(paths)]
+
+        for [index, path] in enumerate(paths):
+            if index >= len(self._defxs):
+                self._defxs.append(
+                    Defx(self._vim, self._context, path, index))
+            else:
+                self.cd(self._defxs[index], path, self._context.cursor)
