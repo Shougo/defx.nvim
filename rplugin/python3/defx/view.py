@@ -387,8 +387,17 @@ class View(object):
         self._winid = self._vim.call('win_getid')
 
         window_options = self._vim.current.window.options
-        window_options['list'] = False
-        window_options['wrap'] = False
+        for k, v in {
+            'colorcolumn': '',
+            'cursorcolumn': False,
+            'foldenable': False,
+            'foldcolumn': 0,
+            'list': False,
+            'number': False,
+            'relativenumber': False,
+            'wrap': False,
+        }.items():
+            window_options[k] = v
         if self._context.split == 'floating':
             window_options['cursorline'] = True
 
