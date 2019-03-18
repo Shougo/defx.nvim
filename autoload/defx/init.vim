@@ -96,6 +96,7 @@ function! defx#init#_user_options() abort
         \ 'buffer_name': 'default',
         \ 'columns': 'mark:filename:type',
         \ 'direction': '',
+        \ 'ignored_files': '.*',
         \ 'listed': v:false,
         \ 'new': v:false,
         \ 'profile': v:false,

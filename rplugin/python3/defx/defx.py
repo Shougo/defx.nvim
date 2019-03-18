@@ -28,7 +28,7 @@ class Defx(object):
         self._source: File = File(self._vim)
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
-        self._ignored_files = ['.*']
+        self._ignored_files = context.ignored_files.split(',')
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1

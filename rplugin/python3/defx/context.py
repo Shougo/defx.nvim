@@ -14,6 +14,7 @@ class Context(typing.NamedTuple):
     columns: str = ''
     cursor: int = 0
     direction: str = ''
+    ignored_files: str = ''
     listed: bool = False
     new: bool = False
     prev_bufnr: int = 0

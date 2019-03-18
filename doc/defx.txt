@@ -390,6 +390,12 @@ OPTIONS							*defx-options*
 		You can use "topleft" or "botright".
 		Default: ""
 
+						*defx-option-ignored-files*
+-ignored-files={pattern}
+		Specify the ignored files pattern.
+		The pattern is comma separated.
+		Default: ".*"
+
 							*defx-option-listed*
 -listed
 		Enable 'buflisted' option in defx buffer.
