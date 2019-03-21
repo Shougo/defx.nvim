@@ -23,6 +23,7 @@ class View(object):
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
+        self._prev_bufnr = -1
         self._winid = -1
         self._index = index
         self._bufname = '[defx]'
@@ -49,7 +50,8 @@ class View(object):
 
         if not self._init_buffer(paths):
             self._winid = self._vim.call('win_getid')
-            if not self._context.resume:
+            if (not self._context.resume and
+                    self._vim.call('bufnr', '%') == self._bufnr):
                 self._update_defx(paths)
                 self.redraw(True)
             return
@@ -120,8 +122,9 @@ class View(object):
         self._vim.command(f'{winnr}wincmd w')
 
         if self._context.split in ['no', 'tab']:
-            if self._vim.call('bufexists', self._context.prev_bufnr):
-                self._vim.command('buffer ' + str(self._context.prev_bufnr))
+            if (self._vim.call('bufexists', self._prev_bufnr) and
+                    self._prev_bufnr != self._vim.call('bufnr', '%')):
+                self._vim.command('buffer ' + str(self._prev_bufnr))
             else:
                 self._vim.command('enew')
         else:
@@ -385,6 +388,7 @@ class View(object):
 
         self._buffer = self._vim.current.buffer
         self._bufnr = self._buffer.number
+        self._prev_bufnr = self._context.prev_bufnr
         self._winid = self._vim.call('win_getid')
 
         window_options = self._vim.current.window.options
