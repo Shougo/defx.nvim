@@ -78,6 +78,7 @@ def _call(view: View, defx: Defx, context: Context) -> None:
         return
 
     dict_context = context._asdict()
+    dict_context['cwd'] = defx._cwd
     dict_context['targets'] = [
         str(x['action__path']) for x in context.targets]
     view._vim.call(function, dict_context)
