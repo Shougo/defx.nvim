@@ -46,7 +46,7 @@ class Defx(object):
         error(self._vim, expr)
 
     def cd(self, path: str) -> None:
-        self._cwd = str(Path(self._cwd).joinpath(path).resolve())
+        self._cwd = str(Path(self._cwd).joinpath(path))
 
         if self._context.auto_cd:
             cd(self._vim, path)
