@@ -87,7 +87,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     Change the current directory.
     """
     path = Path(context.args[0]) if context.args else Path.home()
-    path = Path(defx._cwd).joinpath(path).resolve()
+    path = Path(defx._cwd).joinpath(path)
     if not readable(path) or not path.is_dir():
         error(view._vim, f'{path} is not readable directory')
         return
@@ -276,7 +276,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
     for name in str_filenames.split():
         is_dir = name[-1] == '/'
 
-        filename = Path(cwd).joinpath(name).resolve()
+        filename = Path(cwd).joinpath(name)
         if filename.exists():
             error(view._vim, f'{filename} already exists')
             continue

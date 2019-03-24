@@ -35,7 +35,7 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     if not filename:
         return None
 
-    return Path(cwd).joinpath(filename).resolve()
+    return Path(cwd).joinpath(filename)
 
 
 def error(vim: Nvim, expr: typing.Any) -> None:
