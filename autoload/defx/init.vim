@@ -93,6 +93,7 @@ endfunction
 function! defx#init#_user_options() abort
   return {
         \ 'auto_cd': v:false,
+        \ 'auto_recursive_level': 0,
         \ 'buffer_name': 'default',
         \ 'columns': 'mark:filename:type',
         \ 'direction': '',

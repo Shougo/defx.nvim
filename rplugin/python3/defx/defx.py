@@ -64,9 +64,11 @@ class Defx(object):
 
         return root
 
-    def tree_candidates(self,
-                        path: str, base_level: int) -> typing.List[Candidate]:
-        gathered_candidates = self.gather_candidates(path)
+    def tree_candidates(
+            self, path: str, base_level: int, max_level: int
+    ) -> typing.List[Candidate]:
+        gathered_candidates = self.gather_candidates_recursive(
+            path, base_level, max_level)
 
         if self._opened_candidates:
             candidates = []
@@ -75,29 +77,34 @@ class Defx(object):
                 candidate['level'] = base_level
                 candidate_path = str(candidate['action__path'])
 
-                if candidate_path in self._opened_candidates:
+                if (candidate_path in self._opened_candidates and
+                        not candidate['is_opened_tree']):
                     candidate['is_opened_tree'] = True
-                    candidates += self.tree_candidates(candidate_path,
-                                                       base_level + 1)
+                    candidates += self.tree_candidates(
+                        candidate_path, base_level + 1, max_level)
         else:
             candidates = gathered_candidates
 
         return candidates
 
     def gather_candidates_recursive(
-            self, path: str,
-            base_level: int, max_level: int
+            self, path: str, base_level: int, max_level: int
     ) -> typing.List[Candidate]:
-        candidates = []
-        for candidate in self.gather_candidates(path, base_level):
-            candidates.append(candidate)
-            if candidate['is_directory'] and base_level < max_level:
-                candidate['is_opened_tree'] = True
-                candidates += self.gather_candidates_recursive(
-                    str(candidate['action__path']), base_level + 1, max_level)
-        return candidates
 
-    def gather_candidates(
+        candidates = self._gather_candidates(path, base_level)
+        if base_level >= max_level:
+            return candidates
+
+        ret = []
+        for candidate in candidates:
+            ret.append(candidate)
+            if candidate['is_directory']:
+                candidate['is_opened_tree'] = True
+                ret += self.gather_candidates_recursive(
+                    str(candidate['action__path']), base_level + 1, max_level)
+        return ret
+
+    def _gather_candidates(
             self, path: str, base_level: int = 0) -> typing.List[Candidate]:
         """
         Returns file candidates

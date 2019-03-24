@@ -10,6 +10,7 @@ import typing
 class Context(typing.NamedTuple):
     args: typing.List[str] = []
     auto_cd: bool = False
+    auto_recursive_level: int = 0
     buffer_name: str = 'default'
     columns: str = ''
     cursor: int = 0

@@ -376,6 +376,11 @@ OPTIONS							*defx-options*
 		Change the working directory while navigating with defx.
 		Default: false
 
+					*defx-option-auto-recursive-level*
+-auto-recursive-level={level}
+		The level to expand tree automatically.
+		Default: 0
+
 						*defx-option-buffer-name*
 -buffer-name={buffer-name}
 		Specify defx buffer name.

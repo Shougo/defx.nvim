@@ -36,15 +36,7 @@ class View(object):
              context: typing.Dict[str, typing.Any],
              clipboard: Clipboard
              ) -> None:
-        context['prev_bufnr'] = int(context['prev_bufnr'])
-        context['prev_winid'] = int(context['prev_winid'])
-        context['visual_start'] = int(context['visual_start'])
-        context['visual_end'] = int(context['visual_start'])
-        context['wincol'] = int(context['wincol'])
-        context['winheight'] = int(context['winheight'])
-        context['winrow'] = int(context['winrow'])
-        context['winwidth'] = int(context['winwidth'])
-        self._context = Context(**context)
+        self._context = self._init_context(context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
@@ -242,11 +234,8 @@ class View(object):
         base_level = target['level'] + 1
 
         defx = self._defxs[index]
-        if max_level > 0:
-            children = defx.gather_candidates_recursive(
-                str(path), base_level, base_level + max_level)
-        else:
-            children = defx.gather_candidates(str(path), base_level)
+        children = defx.gather_candidates_recursive(
+            str(path), base_level, base_level + max_level)
         if not children:
             return
 
@@ -278,6 +267,15 @@ class View(object):
 
         self._candidates = (self._candidates[: start] +
                             self._candidates[end:])
+
+    def _init_context(
+            self, context: typing.Dict[str, typing.Any]) -> Context:
+        # Convert to int
+        for attr in [x[0] for x in Context()._asdict().items()
+                     if isinstance(x[1], int)]:
+            context[attr] = int(context[attr])
+
+        return Context(**context)
 
     def _init_columns(self, columns: typing.List[str]) -> None:
         # Initialize columns
@@ -481,7 +479,8 @@ class View(object):
             defx._mtime = root['action__path'].stat().st_mtime
 
             candidates = [root]
-            candidates += defx.tree_candidates(defx._cwd, 0)
+            candidates += defx.tree_candidates(
+                defx._cwd, 0, self._context.auto_recursive_level)
             for candidate in candidates:
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates
