@@ -12,9 +12,6 @@ function! defx#start(paths, user_context) abort
   call defx#initialize()
   let context = defx#init#_context(a:user_context)
   let paths = a:paths
-  if empty(paths)
-    let paths = [getcwd()]
-  endif
   let paths = map(paths, "fnamemodify(v:val, ':p')")
   call defx#util#rpcrequest('_defx_start', [paths, context], v:false)
   if context['search'] !=# ''

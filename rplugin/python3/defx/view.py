@@ -34,7 +34,8 @@ class View(object):
 
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],
-             clipboard: Clipboard) -> None:
+             clipboard: Clipboard
+             ) -> None:
         context['prev_bufnr'] = int(context['prev_bufnr'])
         context['prev_winid'] = int(context['prev_winid'])
         context['visual_start'] = int(context['visual_start'])
@@ -48,28 +49,12 @@ class View(object):
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
 
-        if not self._init_buffer(paths):
+        if not self._init_defx(paths, clipboard):
+            # Skipped initialize
             self._winid = self._vim.call('win_getid')
-            if (not self._context.resume and
-                    self._vim.call('bufnr', '%') == self._bufnr):
+            if paths and self._vim.call('bufnr', '%') == self._bufnr:
                 self._update_defx(paths)
                 self.redraw(True)
-            return
-
-        self._candidates = []
-        self._clipboard = clipboard
-
-        # Initialize defx
-        self._defxs = []
-        self._buffer.vars['defx']['paths'] = paths
-        self._update_defx(paths)
-
-        self._init_columns(self._context.columns.split(':'))
-
-        self.redraw(True)
-
-        for defx in self._defxs:
-            self._init_cursor(defx)
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -328,7 +313,9 @@ class View(object):
             window_options['winfixheight'] = True
             self._vim.command(f'resize {self._context.winheight}')
 
-    def _init_buffer(self, paths: typing.List[str]) -> bool:
+    def _init_defx(self,
+                   paths: typing.List[str],
+                   clipboard: Clipboard) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
 
@@ -417,6 +404,9 @@ class View(object):
         buffer_options['modifiable'] = False
         buffer_options['modified'] = False
 
+        if not paths:
+            paths = [self._vim.call('getcwd')]
+
         self._buffer.vars['defx'] = {
             'context': self._context._asdict(),
             'paths': paths,
@@ -434,6 +424,19 @@ class View(object):
                           'call defx#call_async_action("check_redraw")')
 
         self._prev_highlight_commands = []
+
+        # Initialize defx state
+        self._candidates = []
+        self._clipboard = clipboard
+        self._defxs = []
+        self._update_defx(paths)
+
+        self._init_columns(self._context.columns.split(':'))
+
+        self.redraw(True)
+
+        for defx in self._defxs:
+            self._init_cursor(defx)
 
         return True
 
