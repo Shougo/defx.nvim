@@ -27,10 +27,11 @@ class Source(Base):
         }
 
     def get_root_candidate(
-            self, context: Context, path: str
+            self, context: Context, path: Path
     ) -> typing.Dict[str, typing.Any]:
-        word = self.vim.call('fnamemodify',
-                             path + ('/' if path != '/' else ''), ':~')
+        word = self.vim.call('fnamemodify', str(path), ':~')
+        if word[-1:] != '/':
+            word += '/'
         if self.vars['root']:
             word = self.vim.call(self.vars['root'], path)
 

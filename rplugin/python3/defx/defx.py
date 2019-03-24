@@ -55,7 +55,7 @@ class Defx(object):
         """
         Returns root candidate
         """
-        root = self._source.get_root_candidate(self._context, self._cwd)
+        root = self._source.get_root_candidate(self._context, Path(self._cwd))
         root['is_root'] = True
         root['is_opened_tree'] = False
         root['is_selected'] = False

@@ -6,14 +6,14 @@
 
 import typing
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from defx.context import Context
 from defx.util import Nvim
 from defx.util import error
 from pathlib import Path
 
 
-class Base:
+class Base(ABC):
 
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim
@@ -23,6 +23,12 @@ class Base:
         self.kind: Kind = Kind(self.vim)
 
         self.vars: typing.Dict[str, typing.Any] = {}
+
+    @abstractmethod
+    def get_root_candidate(
+            self, context: Context, path: Path
+    ) -> typing.Dict[str, typing.Any]:
+        pass
 
     @abstractmethod
     def gather_candidates(
