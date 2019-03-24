@@ -115,12 +115,13 @@ def _nop(view: View, defx: Defx, context: Context) -> None:
 
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
-        view.open_tree(target['action__path'], defx._index, False)
+        view.open_tree(target['action__path'], defx._index, 0)
 
 
 def _open_tree_recursive(view: View, defx: Defx, context: Context) -> None:
+    level = int(context.args[0]) if context.args else 20
     for target in [x for x in context.targets if x['is_directory']]:
-        view.open_tree(target['action__path'], defx._index, True)
+        view.open_tree(target['action__path'], defx._index, level)
 
 
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
@@ -161,7 +162,7 @@ def _search(view: View, defx: Defx, context: Context) -> None:
         parents.append(path)
 
     for parent in reversed(parents):
-        view.open_tree(parent, defx._index, False)
+        view.open_tree(parent, defx._index, 0)
 
     view.update_opened_candidates()
     view.redraw()

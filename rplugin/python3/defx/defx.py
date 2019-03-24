@@ -85,14 +85,16 @@ class Defx(object):
         return candidates
 
     def gather_candidates_recursive(
-            self, path: str, base_level: int) -> typing.List[Candidate]:
+            self, path: str,
+            base_level: int, max_level: int
+    ) -> typing.List[Candidate]:
         candidates = []
         for candidate in self.gather_candidates(path, base_level):
             candidates.append(candidate)
-            if candidate['is_directory']:
+            if candidate['is_directory'] and base_level < max_level:
                 candidate['is_opened_tree'] = True
                 candidates += self.gather_candidates_recursive(
-                    str(candidate['action__path']), base_level + 1)
+                    str(candidate['action__path']), base_level + 1, max_level)
         return candidates
 
     def gather_candidates(

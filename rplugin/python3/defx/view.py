@@ -227,7 +227,7 @@ class View(object):
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
 
-    def open_tree(self, path: Path, index: int, recursive: bool) -> None:
+    def open_tree(self, path: Path, index: int, max_level: int = 0) -> None:
         # Search insert position
         pos = self.get_candidate_pos(path, index)
         if pos < 0:
@@ -242,9 +242,9 @@ class View(object):
         base_level = target['level'] + 1
 
         defx = self._defxs[index]
-        if recursive:
+        if max_level > 0:
             children = defx.gather_candidates_recursive(
-                str(path), base_level)
+                str(path), base_level, base_level + max_level)
         else:
             children = defx.gather_candidates(str(path), base_level)
         if not children:

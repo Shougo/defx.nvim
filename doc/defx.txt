@@ -286,6 +286,9 @@ open_tree					*defx-action-open_tree*
 open_tree_recursive			*defx-action-open_tree_recursive*
 		Open the directory tree recursively.
 
+		Action args:
+			0. max recursive leavel(The default is "20")
+
 paste							*defx-action-paste*
 		Fire the clipboard action in the current directory.
 		Note: It is used after |defx-action-copy| or |defx-action-move|.
