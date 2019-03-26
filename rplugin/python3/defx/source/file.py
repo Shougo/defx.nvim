@@ -33,12 +33,12 @@ class Source(Base):
         if word[-1:] != '/':
             word += '/'
         if self.vars['root']:
-            word = self.vim.call(self.vars['root'], path)
+            word = self.vim.call(self.vars['root'], str(path))
 
         return {
             'word': word,
             'is_directory': True,
-            'action__path': Path(path),
+            'action__path': path,
         }
 
     def gather_candidates(
