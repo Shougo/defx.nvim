@@ -315,14 +315,13 @@ def _open_directory(view: View, defx: Defx, context: Context) -> None:
     Open the directory.
     """
     if context.args:
-        path = context.args[0]
-        view.cd(defx, str(path), context.cursor)
+        path = Path(context.args[0])
     else:
         for target in context.targets:
             path = target['action__path']
 
-            if path.is_dir():
-                view.cd(defx, str(path), context.cursor)
+    if path.is_dir():
+        view.cd(defx, str(path), context.cursor)
 
 
 def _paste(view: View, defx: Defx, context: Context) -> None:

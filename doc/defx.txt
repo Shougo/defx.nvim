@@ -276,6 +276,10 @@ open							*defx-action-open*
 open_directory					*defx-action-open_directory*
 		Open the directory.
 
+		Action args:
+			0. open file path(The default is the selected
+			directory)
+
 open_or_close_tree			*defx-action-open_or_close_tree*
 		Open the directory tree if the directory is not opened.
 		Close the directory tree if the directory is opened.
