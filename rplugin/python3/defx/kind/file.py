@@ -211,6 +211,10 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
                          'Please input a new filename: ', '', 'file')
     if not filename:
         return
+    filename = Path(cwd).joinpath(filename)
+
+    if not filename:
+        return
     if filename.exists():
         error(view._vim, f'{filename} already exists')
         return
@@ -237,14 +241,22 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
                          'Please input a new filename: ', '', 'file')
     if not filename:
         return
+    isdir = filename[-1] == '/'
+    filename = Path(cwd).joinpath(filename)
+
+    if not filename:
+        return
     if filename.exists():
         error(view._vim, f'{filename} already exists')
         return
 
-    if not filename.parent.exists():
-        filename.parent.mkdir(parents=True)
+    if isdir:
+        filename.mkdir(parents=True)
+    else:
+        if not filename.parent.exists():
+            filename.parent.mkdir(parents=True)
 
-    filename.touch()
+        filename.touch()
 
     view.redraw(True)
     view.search_file(filename, defx._index)
@@ -433,6 +445,9 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         old = target['action__path']
         new = cwd_input(
             view._vim, defx._cwd, f'New name: {old} -> ', str(old), 'file')
+        if not new:
+            return
+        new = Path(defx._cwd).joinpath(new)
         if not new or new == old:
             continue
         if new.exists():
