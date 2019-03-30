@@ -262,10 +262,12 @@ new_directory 					*defx-action-new_directory*
 
 new_file 						*defx-action-new_file*
 		Create a new file and directory if provided.
+		If the input ends with "/", it means new directory.
 
  					*defx-action-new_multiple_files*
 new_multiple_files
 		Create new files and directories if provided.
+		If the input ends with "/", it means new directory.
 
 open							*defx-action-open*
 		Open the file.
