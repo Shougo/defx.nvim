@@ -207,11 +207,11 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
-    filename = cwd_input(view._vim, cwd,
-                         'Please input a new filename: ', '', 'file')
-    if not filename:
+    new_filename = cwd_input(view._vim, cwd,
+                             'Please input a new filename: ', '', 'file')
+    if not new_filename:
         return
-    filename = Path(cwd).joinpath(filename)
+    filename = Path(cwd).joinpath(new_filename)
 
     if not filename:
         return
@@ -237,12 +237,12 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
-    filename = cwd_input(view._vim, cwd,
-                         'Please input a new filename: ', '', 'file')
-    if not filename:
+    new_filename = cwd_input(view._vim, cwd,
+                             'Please input a new filename: ', '', 'file')
+    if not new_filename:
         return
-    isdir = filename[-1] == '/'
-    filename = Path(cwd).joinpath(filename)
+    isdir = new_filename[-1] == '/'
+    filename = Path(cwd).joinpath(new_filename)
 
     if not filename:
         return
@@ -253,9 +253,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     if isdir:
         filename.mkdir(parents=True)
     else:
-        if not filename.parent.exists():
-            filename.parent.mkdir(parents=True)
-
+        filename.parent.mkdir(parents=True, exist_ok=True)
         filename.touch()
 
     view.redraw(True)
@@ -443,11 +441,11 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
 
     for target in context.targets:
         old = target['action__path']
-        new = cwd_input(
+        new_filename = cwd_input(
             view._vim, defx._cwd, f'New name: {old} -> ', str(old), 'file')
-        if not new:
+        if not new_filename:
             return
-        new = Path(defx._cwd).joinpath(new)
+        new = Path(defx._cwd).joinpath(new_filename)
         if not new or new == old:
             continue
         if new.exists():

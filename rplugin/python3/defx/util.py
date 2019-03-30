@@ -21,7 +21,7 @@ def cd(vim: Nvim, path: str) -> None:
 
 
 def cwd_input(vim: Nvim, cwd: str, prompt: str,
-              text: str = '', completion: str = '') -> typing.Optional[Path]:
+              text: str = '', completion: str = '') -> str:
     """
     Returns the absolute input path in cwd.
     """
