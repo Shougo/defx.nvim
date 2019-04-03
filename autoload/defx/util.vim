@@ -248,11 +248,7 @@ function! defx#util#open(filename) abort
 endfunction
 
 function! defx#util#cd(path) abort
-  if exists('*nvim_set_current_dir')
-    call nvim_set_current_dir(a:path)
-  else
-    silent execute 'lcd' fnameescape(a:path)
-  endif
+  silent execute 'lcd' fnameescape(a:path)
 endfunction
 
 function! defx#util#truncate_skipping(str, max, footer_width, separator) abort
