@@ -5,7 +5,6 @@
 # ============================================================================
 
 import typing
-from typing import Callable, Any
 from pathlib import Path
 
 from defx.action import ActionAttr
@@ -16,16 +15,18 @@ from defx.defx import Defx
 from defx.view import View
 from defx.util import Nvim
 
-_action_table = {}
+_action_table: typing.Dict[str, ActionTable] = {}
+
+ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
 
 
-def action(name: str, attr: ActionAttr = ActionAttr.NONE) \
-        -> Callable[..., Callable[..., Any]]:
-    def wrapper(func: Callable[..., Any]) -> Callable[..., Any]:
+def action(name: str, attr: ActionAttr = ActionAttr.NONE
+           ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
+    def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
         _action_table[name] = ActionTable(func=func, attr=attr)
 
-        def inner_wrapper(*args: Any, **kwargs: Any) -> Any:
-            return func(*args, **kwargs)
+        def inner_wrapper(view: View, defx: Defx, context: Context) -> None:
+            return func(view, defx, context)
         return inner_wrapper
     return wrapper
 
