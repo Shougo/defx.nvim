@@ -456,6 +456,7 @@ class View(object):
             column.start = start
             column.end = start + length
             column.syntax_name = f'Defx_{column.name}_{index}'
+            column.variable_length = 0
 
             if column.is_start_variable:
                 within_variable = True
@@ -474,8 +475,7 @@ class View(object):
                     # Overwrite syntax_name
                     variable_column.syntax_name = column.syntax_name
                     variable_column.is_within_variable = True
-                column.end += variable_length
-                start += variable_length
+                column.variable_length = variable_length
                 within_variable = False
 
     def _update_syntax(self) -> None:

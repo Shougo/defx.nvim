@@ -24,6 +24,7 @@ class Base:
         self.is_start_variable: bool = False
         self.is_stop_variable: bool = False
         self.is_within_variable: bool = False
+        self.variable_length: int = 0
 
     def on_init(self, context: Context) -> None:
         pass
