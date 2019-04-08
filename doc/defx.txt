@@ -543,6 +543,10 @@ icon		Basic icon.
 							*defx-column-indent*
 indent		Tree indentation.
 
+		variables:
+		indent		  the indent marker.
+				  (default: " ")
+
 							*defx-column-mark*
 mark		File selected mark.
 

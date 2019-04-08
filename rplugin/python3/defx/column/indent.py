@@ -18,15 +18,14 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'indent'
+        self.vars = {
+            'indent': ' ',
+        }
         self.is_stop_variable = True
-
-        self._current_len: int = 0
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        indent: str = ' ' * candidate['level']
-        self._current_len = len(indent)
-        return indent
+        return str(self.vars['indent'] * candidate['level'])
 
     def length(self, context: Context) -> int:
-        return self._current_len
+        return int(max([x['level'] for x in context.targets]))
