@@ -21,7 +21,7 @@ class Column(Base):
         self.vars = {
             'indent': ' ',
         }
-        self.is_stop_variable = True
+        self.is_start_variable = True
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:

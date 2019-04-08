@@ -441,14 +441,41 @@ class View(object):
         return True
 
     def _init_length(self) -> None:
+        max_variable_column = 0
+        within_variable = False
+        within_variable_columns: typing.List[Column] = []
         start = 1
         for [index, column] in enumerate(self._columns):
-            column.start = start
+            if within_variable and not column.is_stop_variable:
+                within_variable_columns.append(column)
+                continue
+
             length = column.length(
                 self._context._replace(targets=self._candidates))
+
+            if column.is_start_variable:
+                within_variable = True
+                max_variable_column = length
+                within_variable_columns.append(column)
+
+            column.start = start
             column.end = start + length
             column.syntax_name = f'Defx_{column.name}_{index}'
+            column.is_within_variable = False
             start += length + 1
+
+            if column.is_stop_variable:
+                variable_length = max_variable_column
+                for variable_column in within_variable_columns:
+                    variable_length += variable_column.length(
+                        self._context._replace(targets=self._candidates))
+
+                    # Overwrite syntax_name
+                    variable_column.syntax_name = column.syntax_name
+                    variable_column.is_within_variable = True
+                column.end += variable_length
+                start += variable_length
+                within_variable = False
 
     def _update_syntax(self) -> None:
         commands: typing.List[str] = []
@@ -461,11 +488,12 @@ class View(object):
         for column in self._columns:
             source_highlights = column.highlight_commands()
             if source_highlights:
-                commands.append(
-                    'syntax region ' + column.syntax_name +
-                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                    str(column.end) + 'v/ keepend oneline')
-                self._prev_syntaxes += [column.syntax_name]
+                if not column.is_within_variable:
+                    commands.append(
+                        'syntax region ' + column.syntax_name +
+                        r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                        str(column.end) + 'v/ keepend oneline')
+                    self._prev_syntaxes += [column.syntax_name]
 
                 commands += source_highlights
                 self._prev_syntaxes += column.syntaxes()
