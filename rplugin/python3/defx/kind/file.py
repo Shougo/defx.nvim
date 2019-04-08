@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import copy
 import importlib
 from pathlib import Path
 import shutil
@@ -12,13 +13,28 @@ import typing
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
-from defx.base.kind import Base, action
+from defx.base.kind import Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error
 from defx.util import readable, Nvim
 from defx.view import View
+
+_action_table: typing.Dict[str, ActionTable] = {}
+
+ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
+
+
+def action(name: str, attr: ActionAttr = ActionAttr.NONE
+           ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
+    def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
+        _action_table[name] = ActionTable(func=func, attr=attr)
+
+        def inner_wrapper(view: View, defx: Defx, context: Context) -> None:
+            return func(view, defx, context)
+        return inner_wrapper
+    return wrapper
 
 
 class Kind(Base):
@@ -28,7 +44,8 @@ class Kind(Base):
         self.name = 'file'
 
     def get_actions(self) -> typing.Dict[str, ActionTable]:
-        actions = super().get_actions()
+        actions = copy.copy(super().get_actions())
+        actions.update(_action_table)
         return actions
 
 
