@@ -30,6 +30,7 @@ class View(object):
         self._bufname = '[defx]'
         self._buffer: Nvim.buffer = None
         self._prev_action = ''
+        self._prev_syntaxes: typing.List[str] = []
         self._prev_highlight_commands: typing.List[str] = []
         self._winrestcmd = ''
 
@@ -454,13 +455,13 @@ class View(object):
 
     def _update_syntax(self) -> None:
         commands: typing.List[str] = []
-        for column in self._columns:
-            commands.append(
-                'silent! syntax clear ' + column.syntax_name)
-            for syntax in column.syntaxes():
-                commands.append(
-                    'silent! syntax clear ' + syntax)
 
+        for syntax in self._prev_syntaxes:
+            commands.append(
+                'silent! syntax clear ' + syntax)
+        self._prev_syntaxes = []
+
+        for column in self._columns:
             source_highlights = column.highlight_commands()
             if source_highlights:
                 commands.append(
@@ -468,6 +469,9 @@ class View(object):
                     r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                     str(column.end) + 'v/ keepend oneline')
                 commands += source_highlights
+
+                self._prev_syntaxes += [column.syntax_name]
+                self._prev_syntaxes += column.syntaxes()
 
         if commands == self._prev_highlight_commands:
             # Skip highlights
