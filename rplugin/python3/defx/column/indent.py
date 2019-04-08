@@ -1,6 +1,7 @@
 # ============================================================================
 # FILE: indent.py
 # AUTHOR: GuoPan Zhao <zgpio@qq.com>
+#         Shougo Matsushita <Shougo.Matsu at gmail.com>
 # License: MIT license
 # ============================================================================
 
@@ -15,7 +16,10 @@ class Column(Base):
 
     def __init__(self, vim: Nvim) -> None:
         super().__init__(vim)
+
         self.name = 'indent'
+        self.is_stop_variable = True
+
         self._current_len: int = 0
 
     def get(self, context: Context,

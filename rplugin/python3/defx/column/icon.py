@@ -1,6 +1,7 @@
 # ============================================================================
 # FILE: icon.py
 # AUTHOR: GuoPan Zhao <zgpio@qq.com>
+#         Shougo Matsushita <Shougo.Matsu at gmail.com>
 # License: MIT license
 # ============================================================================
 

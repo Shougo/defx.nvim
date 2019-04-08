@@ -22,6 +22,7 @@ class Column(Base):
             'max_width': 100,
             'root_marker_highlight': 'Constant',
         }
+        self.is_stop_variable = True
 
         self._current_length = 0
         self._syntaxes = [

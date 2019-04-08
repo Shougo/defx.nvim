@@ -529,7 +529,7 @@ filename	File name.
 				the root marker highlight
 				  (default: "Constant")
 
-							*defx-column-basic*
+							*defx-column-icon*
 icon		Basic icon.
 
 		variables:

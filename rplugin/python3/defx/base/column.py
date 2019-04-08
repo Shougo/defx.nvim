@@ -21,6 +21,8 @@ class Base:
         self.start: int = -1
         self.end: int = -1
         self.vars: typing.Dict[str, typing.Any] = {}
+        self.is_start_variable: bool = False
+        self.is_stop_variable: bool = False
 
     def on_init(self, context: Context) -> None:
         pass
