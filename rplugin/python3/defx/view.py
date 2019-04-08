@@ -453,16 +453,17 @@ class View(object):
             length = column.length(
                 self._context._replace(targets=self._candidates))
 
+            column.start = start
+            column.end = start + length
+            column.syntax_name = f'Defx_{column.name}_{index}'
+
             if column.is_start_variable:
                 within_variable = True
                 max_variable_column = length
                 within_variable_columns.append(column)
-
-            column.start = start
-            column.end = start + length
-            column.syntax_name = f'Defx_{column.name}_{index}'
-            column.is_within_variable = False
-            start += length + 1
+            else:
+                column.is_within_variable = False
+                start += length + 1
 
             if column.is_stop_variable:
                 variable_length = max_variable_column
