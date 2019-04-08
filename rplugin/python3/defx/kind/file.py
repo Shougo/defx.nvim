@@ -12,7 +12,7 @@ import typing
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
-from defx.base.kind import Base
+from defx.base.kind import Base, action
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
@@ -29,28 +29,6 @@ class Kind(Base):
 
     def get_actions(self) -> typing.Dict[str, ActionTable]:
         actions = super().get_actions()
-        actions.update({
-            'cd': ActionTable(func=_cd),
-            'change_vim_cwd': ActionTable(
-                func=_change_vim_cwd, attr=ActionAttr.NO_TAGETS),
-            'check_redraw': ActionTable(
-                func=_check_redraw, attr=ActionAttr.NO_TAGETS),
-            'copy': ActionTable(func=_copy),
-            'drop': ActionTable(func=_drop),
-            'execute_command': ActionTable(
-                func=_execute_command, attr=ActionAttr.NO_TAGETS),
-            'execute_system': ActionTable(func=_execute_system),
-            'move': ActionTable(func=_move),
-            'new_directory': ActionTable(func=_new_directory),
-            'new_file': ActionTable(func=_new_file),
-            'new_multiple_files': ActionTable(func=_new_multiple_files),
-            'open': ActionTable(func=_open),
-            'open_directory': ActionTable(func=_open_directory),
-            'paste': ActionTable(func=_paste, attr=ActionAttr.NO_TAGETS),
-            'remove': ActionTable(func=_remove, attr=ActionAttr.REDRAW),
-            'remove_trash': ActionTable(func=_remove_trash),
-            'rename': ActionTable(func=_rename),
-        })
         return actions
 
 
@@ -82,6 +60,7 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     return ret
 
 
+@action(name='cd')
 def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current directory.
@@ -98,6 +77,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
         view.search_file(Path(prev_cwd), defx._index)
 
 
+@action(name='change_vim_cwd', attr=ActionAttr.NO_TAGETS)
 def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current working directory.
@@ -105,6 +85,7 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
     cd(view._vim, defx._cwd)
 
 
+@action(name='check_redraw', attr=ActionAttr.NO_TAGETS)
 def _check_redraw(view: View, defx: Defx, context: Context) -> None:
     root = defx.get_root_candidate()
     mtime = root['action__path'].stat().st_mtime
@@ -112,6 +93,7 @@ def _check_redraw(view: View, defx: Defx, context: Context) -> None:
         view.redraw(True)
 
 
+@action(name='copy')
 def _copy(view: View, defx: Defx, context: Context) -> None:
     if not context.targets:
         return
@@ -126,6 +108,7 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
     view._clipboard.candidates = context.targets
 
 
+@action(name='drop')
 def _drop(view: View, defx: Defx, context: Context) -> None:
     """
     Open like :drop.
@@ -155,6 +138,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
             view._vim.call('defx#util#execute_path', command, str(path))
 
 
+@action(name='execute_command', attr=ActionAttr.NO_TAGETS)
 def _execute_command(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the command.
@@ -172,6 +156,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     cd(view._vim, save_cwd)
 
 
+@action(name='execute_system')
 def _execute_system(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the file by system associated command.
@@ -180,6 +165,7 @@ def _execute_system(view: View, defx: Defx, context: Context) -> None:
         view._vim.call('defx#util#open', str(target['action__path']))
 
 
+@action(name='move')
 def _move(view: View, defx: Defx, context: Context) -> None:
     if not context.targets:
         return
@@ -194,6 +180,7 @@ def _move(view: View, defx: Defx, context: Context) -> None:
     view._clipboard.candidates = context.targets
 
 
+@action(name='new_directory')
 def _new_directory(view: View, defx: Defx, context: Context) -> None:
     """
     Create a new directory.
@@ -224,6 +211,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     view.search_file(filename, defx._index)
 
 
+@action(name='new_file')
 def _new_file(view: View, defx: Defx, context: Context) -> None:
     """
     Create a new file and it's parent directories.
@@ -260,6 +248,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     view.search_file(filename, defx._index)
 
 
+@action(name='new_multiple_files')
 def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
     """
     Create multiple files.
@@ -302,6 +291,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
     view.search_file(filename, defx._index)
 
 
+@action(name='open')
 def _open(view: View, defx: Defx, context: Context) -> None:
     """
     Open the file.
@@ -320,6 +310,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
         view._vim.call('defx#util#execute_path', command, str(path))
 
 
+@action(name='open_directory')
 def _open_directory(view: View, defx: Defx, context: Context) -> None:
     """
     Open the directory.
@@ -334,6 +325,7 @@ def _open_directory(view: View, defx: Defx, context: Context) -> None:
         view.cd(defx, str(path), context.cursor)
 
 
+@action(name='paste', attr=ActionAttr.NO_TAGETS)
 def _paste(view: View, defx: Defx, context: Context) -> None:
     candidate = view.get_cursor_candidate(context.cursor)
     if not candidate:
@@ -375,6 +367,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         view.search_file(dest, defx._index)
 
 
+@action(name='remove', attr=ActionAttr.REDRAW)
 def _remove(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
@@ -400,6 +393,7 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
             path.unlink()
 
 
+@action(name='remove_trash')
 def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
@@ -426,6 +420,7 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
 
 
+@action(name='rename')
 def _rename(view: View, defx: Defx, context: Context) -> None:
     """
     Rename the file or directory.
