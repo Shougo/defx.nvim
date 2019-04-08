@@ -458,11 +458,14 @@ class View(object):
             for syntax in column.syntaxes():
                 commands.append(
                     'silent! syntax clear ' + syntax)
-            commands.append(
-                'syntax region ' + column.syntax_name +
-                r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                str(column.end) + 'v/ keepend oneline')
-            commands += column.highlight_commands()
+
+            source_highlights = column.highlight_commands()
+            if source_highlights:
+                commands.append(
+                    'syntax region ' + column.syntax_name +
+                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                    str(column.end) + 'v/ keepend oneline')
+                commands += source_highlights
 
         if commands == self._prev_highlight_commands:
             # Skip highlights
