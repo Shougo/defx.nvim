@@ -56,7 +56,7 @@ class Column(Base):
                 'root': 'Identifier',
         }.items():
             commands.append(
-                ('syntax match {0}_{1}_icon /[{2}]/ ' +
+                ('syntax match {0}_{1}_icon /[{2}] / ' +
                  'contained containedin={0}_directory').format(
                     self.syntax_name, icon, self.vars[icon + '_icon']))
             commands.append(
