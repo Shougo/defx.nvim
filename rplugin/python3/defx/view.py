@@ -297,11 +297,10 @@ class View(object):
             copy.copy(self._all_columns[x])
             for x in columns if x in self._all_columns
         ]
-        for [index, column] in enumerate(self._columns):
+        for column in self._columns:
             if column.name in custom:
                 column.vars.update(custom[column.name])
             column.on_init(self._context)
-            column.syntax_name = f'Defx_{column.name}_{index}'
 
     def _resize_window(self) -> None:
         window_options = self._vim.current.window.options
@@ -446,11 +445,12 @@ class View(object):
 
     def _init_length(self) -> None:
         start = 1
-        for column in self._columns:
+        for [index, column] in enumerate(self._columns):
             column.start = start
             length = column.length(
                 self._context._replace(targets=self._candidates))
             column.end = start + length
+            column.syntax_name = f'Defx_{column.name}_{index}'
             start += length + 1
 
     def _update_syntax(self) -> None:
