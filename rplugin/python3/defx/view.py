@@ -459,8 +459,8 @@ class View(object):
         for syntax in self._prev_syntaxes:
             commands.append(
                 'silent! syntax clear ' + syntax)
-        self._prev_syntaxes = []
 
+        self._prev_syntaxes = []
         for column in self._columns:
             source_highlights = column.highlight_commands()
             if source_highlights:
@@ -468,9 +468,9 @@ class View(object):
                     'syntax region ' + column.syntax_name +
                     r' start=/\%' + str(column.start) + r'v/ end=/\%' +
                     str(column.end) + 'v/ keepend oneline')
-                commands += source_highlights
-
                 self._prev_syntaxes += [column.syntax_name]
+
+                commands += source_highlights
                 self._prev_syntaxes += column.syntaxes()
 
         if commands == self._prev_highlight_commands:
