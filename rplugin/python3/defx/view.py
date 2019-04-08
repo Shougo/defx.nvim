@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import copy
 import time
 import typing
 from pathlib import Path
@@ -279,7 +280,6 @@ class View(object):
 
     def _init_columns(self, columns: typing.List[str]) -> None:
         # Initialize columns
-        self._columns: typing.List[Column] = []
         self._all_columns: typing.Dict[str, Column] = {}
 
         for path_column in self._load_custom_columns():
@@ -292,13 +292,15 @@ class View(object):
                 self._all_columns[column.name] = column
 
         custom = self._vim.call('defx#custom#_get')['column']
-        self._columns = [self._all_columns[x]
-                         for x in columns if x in self._all_columns]
-        for column in self._columns:
+        self._columns: typing.List[Column] = [
+            copy.copy(self._all_columns[x])
+            for x in columns if x in self._all_columns
+        ]
+        for [index, column] in enumerate(self._columns):
             if column.name in custom:
                 column.vars.update(custom[column.name])
             column.on_init(self._context)
-            column.syntax_name = 'Defx_' + column.name
+            column.syntax_name = f'Defx_{column.name}_{index}'
 
     def _resize_window(self) -> None:
         window_options = self._vim.current.window.options
