@@ -32,10 +32,31 @@ class Rplugin:
         views[0].init(paths, context, self._clipboard)
 
     def do_action(self, args: typing.List[typing.Any]) -> None:
-        for view in [x for x in self._views
-                     if x._bufnr == self._vim.current.buffer.number]:
-            view.do_action(args[0], args[1], args[2])
-            break
+        views = [x for x in self._views
+                 if x._bufnr == self._vim.current.buffer.number]
+        if not views:
+            return
+        view = views[0]
+
+        prev_paths = [x._cwd for x in view._defxs]
+        prev_candidates = view._candidates
+
+        view.do_action(args[0], args[1], args[2])
+
+        paths = [x._cwd for x in view._defxs]
+        if paths == prev_paths and view._candidates != prev_candidates:
+            self._redraw_other_defxs(view)
+
+    def _redraw_other_defxs(self, view: View) -> None:
+        call = self._vim.call
+        prev_winid = call('win_getid')
+        for other_view in [x for x in self._views
+                           if x != view and call('bufwinnr', x._bufnr) > 0]:
+            winnr = call('bufwinnr', other_view._bufnr)
+            self._vim.command(f'{winnr}wincmd w')
+            other_view.do_action('check_redraw', [],
+                                 call('defx#init#_context', {}))
+        call('win_gotoid', prev_winid)
 
     def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
         cursor = self._vim.call('line', '.')
