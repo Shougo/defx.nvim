@@ -93,7 +93,7 @@ class Column(Base):
 
     def _truncate(self, word: str) -> str:
         width = self._strwidth(word)
-        max_length = self._current_length - self.variable_length
+        max_length = self._current_length
         if (width > max_length or
                 len(word) != len(bytes(word, 'utf-8', 'surrogatepass'))):
             return str(self.vim.call(

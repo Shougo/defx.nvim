@@ -10,6 +10,7 @@ from abc import abstractmethod
 
 from defx.context import Context
 from defx.util import Nvim
+from defx.util import error
 
 
 class Base:
@@ -24,7 +25,6 @@ class Base:
         self.is_start_variable: bool = False
         self.is_stop_variable: bool = False
         self.is_within_variable: bool = False
-        self.variable_length: int = 0
 
     def on_init(self, context: Context) -> None:
         pass
@@ -46,3 +46,6 @@ class Base:
 
     def highlight_commands(self) -> typing.List[str]:
         return []
+
+    def debug(self, expr: typing.Any) -> None:
+        error(self.vim, expr)
