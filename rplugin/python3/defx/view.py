@@ -42,6 +42,7 @@ class View(object):
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
+        self._prev_bufnr = self._context.prev_bufnr
 
         if not self._init_defx(paths, clipboard):
             # Skipped initialize
@@ -375,7 +376,6 @@ class View(object):
 
         self._buffer = self._vim.current.buffer
         self._bufnr = self._buffer.number
-        self._prev_bufnr = self._context.prev_bufnr
         self._winid = self._vim.call('win_getid')
 
         window_options = self._vim.current.window.options
