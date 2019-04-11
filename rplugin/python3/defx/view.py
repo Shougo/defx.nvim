@@ -445,6 +445,8 @@ class View(object):
         within_variable_columns: typing.List[Column] = []
         start = 1
         for [index, column] in enumerate(self._columns):
+            column.syntax_name = f'Defx_{column.name}_{index}'
+
             if within_variable and not column.is_stop_variable:
                 within_variable_columns.append(column)
                 continue
@@ -462,7 +464,6 @@ class View(object):
 
             column.start = start
             column.end = start + length
-            column.syntax_name = f'Defx_{column.name}_{index}'
 
             if column.is_start_variable:
                 within_variable = True
@@ -489,7 +490,8 @@ class View(object):
         for column in self._columns:
             source_highlights = column.highlight_commands()
             if source_highlights:
-                if not column.is_within_variable:
+                if (not column.is_within_variable and
+                        column.start > 0 and column.end > 0):
                     commands.append(
                         'syntax region ' + column.syntax_name +
                         r' start=/\%' + str(column.start) + r'v/ end=/\%' +
