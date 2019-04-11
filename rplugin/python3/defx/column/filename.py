@@ -56,7 +56,7 @@ class Column(Base):
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
         commands.append(
-            r'syntax match {0}_{1} /\S.*[\\\/]/ '
+            r'syntax match {0}_{1} /\%(\S\|\w\s\+\)*[\\\/]/ '
             'contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
@@ -71,7 +71,7 @@ class Column(Base):
                 self.syntax_name, 'marker', root_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.*/ contained '
-            'containedin={0}_directory'.format(
+            'containedin={0}'.format(
                 self.syntax_name, 'root', root_marker))
         commands.append(
             'highlight default link {}_{} {}'.format(

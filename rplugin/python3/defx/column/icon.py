@@ -56,9 +56,11 @@ class Column(Base):
                 'root': 'Identifier',
         }.items():
             commands.append(
-                ('syntax match {0}_{1}_icon /[{2}] / ' +
-                 'contained containedin={0}_directory').format(
-                    self.syntax_name, icon, self.vars[icon + '_icon']))
+                ('syntax match {0}_{1}_icon /[{2}]{3}/ ' +
+                 'contained containedin={0}').format(
+                     self.syntax_name, icon, self.vars[icon + '_icon'],
+                     ' ' if self.is_within_variable else ''
+                 ))
             commands.append(
                 'highlight default link {}_{}_icon {}'.format(
                     self.syntax_name, icon, highlight))
