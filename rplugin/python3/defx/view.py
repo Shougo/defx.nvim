@@ -529,7 +529,6 @@ class View(object):
                           candidate: typing.Dict[str, typing.Any]) -> str:
         texts: typing.List[str] = []
         variable_texts: typing.List[str] = []
-        within_variable = False
         for column in self._columns:
             if column.is_stop_variable:
                 if variable_texts:
@@ -538,14 +537,12 @@ class View(object):
                     context, ' '.join(variable_texts), candidate)
                 texts.append(text)
 
-                within_variable = False
                 variable_texts = []
             else:
                 text = column.get(context, candidate)
-                if column.is_start_variable or within_variable:
+                if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
-                    within_variable = True
                 else:
                     texts.append(text)
         return ' '.join(texts)
