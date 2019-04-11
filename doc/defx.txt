@@ -542,6 +542,7 @@ icon		Basic icon.
 
 							*defx-column-indent*
 indent		Tree indentation.
+		Note: It depends on |defx-column-filename|.
 
 		variables:
 		indent		  the indent marker.
