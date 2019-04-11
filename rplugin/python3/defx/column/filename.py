@@ -36,13 +36,15 @@ class Column(Base):
     def on_init(self, context: Context) -> None:
         self._context = context
 
-    def get(self, context: Context,
+    def get_with_variable_text(
+            self, context: Context, variable_text: str,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        return self._truncate(candidate['word'])
+        return self._truncate(variable_text + candidate['word'])
 
     def length(self, context: Context) -> int:
         max_fnamewidth = max([self._strwidth(x['word'])
                               for x in context.targets])
+        max_fnamewidth += context.variable_length
         self._current_length = max(
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))

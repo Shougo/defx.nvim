@@ -275,7 +275,7 @@ class View(object):
             self, context: typing.Dict[str, typing.Any]) -> Context:
         # Convert to int
         for attr in [x[0] for x in Context()._asdict().items()
-                     if isinstance(x[1], int)]:
+                     if isinstance(x[1], int) and x[0] in context]:
             context[attr] = int(context[attr])
 
         return Context(**context)
@@ -441,7 +441,6 @@ class View(object):
         return True
 
     def _init_length(self) -> None:
-        max_variable_column = 0
         within_variable = False
         within_variable_columns: typing.List[Column] = []
         start = 1
@@ -450,32 +449,33 @@ class View(object):
                 within_variable_columns.append(column)
                 continue
 
+            # Calculate variable_length
+            variable_length = 0
+            if column.is_stop_variable:
+                for variable_column in within_variable_columns:
+                    variable_length += variable_column.length(
+                        self._context._replace(targets=self._candidates))
+
             length = column.length(
-                self._context._replace(targets=self._candidates))
+                self._context._replace(targets=self._candidates,
+                                       variable_length=variable_length))
 
             column.start = start
             column.end = start + length
             column.syntax_name = f'Defx_{column.name}_{index}'
-            column.variable_length = 0
 
             if column.is_start_variable:
                 within_variable = True
-                max_variable_column = length
                 within_variable_columns.append(column)
             else:
                 column.is_within_variable = False
                 start += length + 1
 
             if column.is_stop_variable:
-                variable_length = max_variable_column
                 for variable_column in within_variable_columns:
-                    variable_length += variable_column.length(
-                        self._context._replace(targets=self._candidates))
-
                     # Overwrite syntax_name
                     variable_column.syntax_name = column.syntax_name
                     variable_column.is_within_variable = True
-                column.variable_length = variable_length
                 within_variable = False
 
     def _update_syntax(self) -> None:
@@ -525,12 +525,28 @@ class View(object):
 
     def _get_columns_text(self, context: Context,
                           candidate: typing.Dict[str, typing.Any]) -> str:
-        text = ''
+        texts: typing.List[str] = []
+        variable_texts: typing.List[str] = []
+        within_variable = False
         for column in self._columns:
-            if text:
-                text += ' '
-            text += column.get(context, candidate)
-        return text
+            if column.is_stop_variable:
+                if variable_texts:
+                    variable_texts.append('')
+                text = column.get_with_variable_text(
+                    context, ' '.join(variable_texts), candidate)
+                texts.append(text)
+
+                within_variable = False
+                variable_texts = []
+            else:
+                text = column.get(context, candidate)
+                if column.is_start_variable or within_variable:
+                    if text:
+                        variable_texts.append(text)
+                    within_variable = True
+                else:
+                    texts.append(text)
+        return ' '.join(texts)
 
     def _update_paths(self, index: int, path: str) -> None:
         var_defx = self._buffer.vars['defx']

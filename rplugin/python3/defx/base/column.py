@@ -32,10 +32,14 @@ class Base:
     def on_redraw(self, context: Context) -> None:
         pass
 
-    @abstractmethod
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        pass
+        return ''
+
+    def get_with_variable_text(
+            self, context: Context, variable_text: str,
+            candidate: typing.Dict[str, typing.Any]) -> str:
+        return ''
 
     @abstractmethod
     def length(self, context: Context) -> int:
