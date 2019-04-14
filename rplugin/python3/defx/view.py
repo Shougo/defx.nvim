@@ -49,7 +49,8 @@ class View(object):
             self._winid = self._vim.call('win_getid')
             if paths and self._vim.call('bufnr', '%') == self._bufnr:
                 self._update_defx(paths)
-                self.redraw(True)
+            self._init_columns(self._context.columns.split(':'))
+            self.redraw(True)
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -132,8 +133,8 @@ class View(object):
 
         if is_force:
             self._init_candidates()
-            self._init_length()
-            self._update_syntax()
+            self._init_column_length()
+            self._init_column_syntax()
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -280,29 +281,6 @@ class View(object):
 
         return Context(**context)
 
-    def _init_columns(self, columns: typing.List[str]) -> None:
-        # Initialize columns
-        self._all_columns: typing.Dict[str, Column] = {}
-
-        for path_column in self._load_custom_columns():
-            column = import_plugin(path_column, 'column', 'Column')
-            if not column:
-                continue
-
-            column = column(self._vim)
-            if column.name not in self._all_columns:
-                self._all_columns[column.name] = column
-
-        custom = self._vim.call('defx#custom#_get')['column']
-        self._columns: typing.List[Column] = [
-            copy.copy(self._all_columns[x])
-            for x in columns if x in self._all_columns
-        ]
-        for column in self._columns:
-            if column.name in custom:
-                column.vars.update(custom[column.name])
-            column.on_init(self._context)
-
     def _resize_window(self) -> None:
         window_options = self._vim.current.window.options
         if (self._context.split == 'vertical'
@@ -431,6 +409,7 @@ class View(object):
         self._defxs = []
         self._update_defx(paths)
 
+        self._init_all_columns()
         self._init_columns(self._context.columns.split(':'))
 
         self.redraw(True)
@@ -440,7 +419,30 @@ class View(object):
 
         return True
 
-    def _init_length(self) -> None:
+    def _init_all_columns(self) -> None:
+        self._all_columns: typing.Dict[str, Column] = {}
+
+        for path_column in self._load_custom_columns():
+            column = import_plugin(path_column, 'column', 'Column')
+            if not column:
+                continue
+
+            column = column(self._vim)
+            if column.name not in self._all_columns:
+                self._all_columns[column.name] = column
+
+    def _init_columns(self, columns: typing.List[str]) -> None:
+        custom = self._vim.call('defx#custom#_get')['column']
+        self._columns: typing.List[Column] = [
+            copy.copy(self._all_columns[x])
+            for x in columns if x in self._all_columns
+        ]
+        for column in self._columns:
+            if column.name in custom:
+                column.vars.update(custom[column.name])
+            column.on_init(self._context)
+
+    def _init_column_length(self) -> None:
         within_variable = False
         within_variable_columns: typing.List[Column] = []
         start = 1
@@ -479,7 +481,7 @@ class View(object):
                     variable_column.is_within_variable = True
                 within_variable = False
 
-    def _update_syntax(self) -> None:
+    def _init_column_syntax(self) -> None:
         commands: typing.List[str] = []
 
         for syntax in self._prev_syntaxes:
