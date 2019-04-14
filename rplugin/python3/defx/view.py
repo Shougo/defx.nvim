@@ -275,7 +275,7 @@ class View(object):
             self, context: typing.Dict[str, typing.Any]) -> Context:
         # Convert to int
         for attr in [x[0] for x in Context()._asdict().items()
-                     if isinstance(x[1], int)]:
+                     if isinstance(x[1], int) and x[0] in context]:
             context[attr] = int(context[attr])
 
         return Context(**context)
@@ -441,14 +441,43 @@ class View(object):
         return True
 
     def _init_length(self) -> None:
+        within_variable = False
+        within_variable_columns: typing.List[Column] = []
         start = 1
         for [index, column] in enumerate(self._columns):
-            column.start = start
-            length = column.length(
-                self._context._replace(targets=self._candidates))
-            column.end = start + length
             column.syntax_name = f'Defx_{column.name}_{index}'
-            start += length + 1
+
+            if within_variable and not column.is_stop_variable:
+                within_variable_columns.append(column)
+                continue
+
+            # Calculate variable_length
+            variable_length = 0
+            if column.is_stop_variable:
+                for variable_column in within_variable_columns:
+                    variable_length += variable_column.length(
+                        self._context._replace(targets=self._candidates))
+
+            length = column.length(
+                self._context._replace(targets=self._candidates,
+                                       variable_length=variable_length))
+
+            column.start = start
+            column.end = start + length
+
+            if column.is_start_variable:
+                within_variable = True
+                within_variable_columns.append(column)
+            else:
+                column.is_within_variable = False
+                start += length + 1
+
+            if column.is_stop_variable:
+                for variable_column in within_variable_columns:
+                    # Overwrite syntax_name
+                    variable_column.syntax_name = column.syntax_name
+                    variable_column.is_within_variable = True
+                within_variable = False
 
     def _update_syntax(self) -> None:
         commands: typing.List[str] = []
@@ -461,11 +490,13 @@ class View(object):
         for column in self._columns:
             source_highlights = column.highlight_commands()
             if source_highlights:
-                commands.append(
-                    'syntax region ' + column.syntax_name +
-                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                    str(column.end) + 'v/ keepend oneline')
-                self._prev_syntaxes += [column.syntax_name]
+                if (not column.is_within_variable and
+                        column.start > 0 and column.end > 0):
+                    commands.append(
+                        'syntax region ' + column.syntax_name +
+                        r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                        str(column.end) + 'v/ keepend oneline')
+                    self._prev_syntaxes += [column.syntax_name]
 
                 commands += source_highlights
                 self._prev_syntaxes += column.syntaxes()
@@ -496,12 +527,25 @@ class View(object):
 
     def _get_columns_text(self, context: Context,
                           candidate: typing.Dict[str, typing.Any]) -> str:
-        text = ''
+        texts: typing.List[str] = []
+        variable_texts: typing.List[str] = []
         for column in self._columns:
-            if text:
-                text += ' '
-            text += column.get(context, candidate)
-        return text
+            if column.is_stop_variable:
+                if variable_texts:
+                    variable_texts.append('')
+                text = column.get_with_variable_text(
+                    context, ' '.join(variable_texts), candidate)
+                texts.append(text)
+
+                variable_texts = []
+            else:
+                text = column.get(context, candidate)
+                if column.is_start_variable or column.is_within_variable:
+                    if text:
+                        variable_texts.append(text)
+                else:
+                    texts.append(text)
+        return ' '.join(texts)
 
     def _update_paths(self, index: int, path: str) -> None:
         var_defx = self._buffer.vars['defx']

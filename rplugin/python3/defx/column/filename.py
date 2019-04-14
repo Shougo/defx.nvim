@@ -18,47 +18,33 @@ class Column(Base):
 
         self.name = 'filename'
         self.vars = {
-            'directory_icon': '+',
-            'indent': ' ',
             'min_width': 40,
             'max_width': 100,
-            'opened_icon': '-',
-            'root_icon': ' ',
             'root_marker_highlight': 'Constant',
         }
+        self.is_stop_variable = True
 
         self._current_length = 0
         self._syntaxes = [
             'directory',
-            'directory_icon',
             'hidden',
             'marker',
-            'opened_icon',
             'root',
-            'root_icon',
         ]
         self._context: Context = Context()
 
     def on_init(self, context: Context) -> None:
         self._context = context
 
-    def get(self, context: Context,
+    def get_with_variable_text(
+            self, context: Context, variable_text: str,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        if candidate['is_opened_tree']:
-            icon = self.vars['opened_icon']
-        elif candidate['is_root']:
-            icon = self.vars['root_icon']
-        elif candidate['is_directory']:
-            icon = self.vars['directory_icon']
-        else:
-            icon = ' '
-        return self._truncate(
-            self.vars['indent'] * candidate['level'] +
-            icon + ' ' + candidate['word'])
+        return self._truncate(variable_text + candidate['word'])
 
     def length(self, context: Context) -> int:
         max_fnamewidth = max([self._strwidth(x['word'])
                               for x in context.targets])
+        max_fnamewidth += context.variable_length
         self._current_length = max(
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))
@@ -69,21 +55,8 @@ class Column(Base):
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
-        for icon, highlight in {
-                'directory': 'Special',
-                'opened': 'Special',
-                'root': 'Identifier',
-        }.items():
-            commands.append(
-                ('syntax match {0}_{1}_icon /[{2}]/ ' +
-                 'contained containedin={0}_directory').format(
-                    self.syntax_name, icon, self.vars[icon + '_icon']))
-            commands.append(
-                'highlight default link {}_{}_icon {}'.format(
-                    self.syntax_name, icon, highlight))
-
         commands.append(
-            r'syntax match {0}_{1} /\S.*[\\\/]/ '
+            r'syntax match {0}_{1} /\%(\S\|\w\s\+\)*[\\\/]/ '
             'contained containedin={0}'.format(
                 self.syntax_name, 'directory'))
         commands.append(
@@ -98,7 +71,7 @@ class Column(Base):
                 self.syntax_name, 'marker', root_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.*/ contained '
-            'containedin={0}_directory'.format(
+            'containedin={0}'.format(
                 self.syntax_name, 'root', root_marker))
         commands.append(
             'highlight default link {}_{} {}'.format(
@@ -122,11 +95,11 @@ class Column(Base):
 
     def _truncate(self, word: str) -> str:
         width = self._strwidth(word)
-        if (width > self._current_length or
+        max_length = self._current_length
+        if (width > max_length or
                 len(word) != len(bytes(word, 'utf-8', 'surrogatepass'))):
             return str(self.vim.call(
                 'defx#util#truncate_skipping',
-                word, self._current_length,
-                int(self._current_length / 3), '...'))
+                word, max_length, int(max_length / 3), '...'))
 
-        return word + ' ' * (self._current_length - width)
+        return word + ' ' * (max_length - width)

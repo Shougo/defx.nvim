@@ -98,10 +98,13 @@ defx#custom#column({column-name}, {dict})
 		to {value}.  You may specify multiple sources with the
 		separator "," in {column-name}. >
 
-	call defx#custom#column('filename', {
+	call defx#custom#column('icon', {
 	      \ 'directory_icon': '▸',
 	      \ 'opened_icon': '▾',
 	      \ 'root_icon': ' ',
+	      \ })
+
+	call defx#custom#column('filename', {
 	      \ 'min_width': 40,
 	      \ 'max_width': 40,
 	      \ })
@@ -123,7 +126,7 @@ defx#custom#option({buffer-name}, {dict})
 		substituted to "_", and "-" prefix is removed. >
 
 	call defx#custom#option('_', {
-	      \ 'columns': 'mark:filename:type:size:time',
+	      \ 'columns': 'mark:indent:icon:filename:type:size:time',
 	      \ })
 <
 							*defx#custom#source()*
@@ -395,7 +398,7 @@ OPTIONS							*defx-options*
 							*defx-option-columns*
 -columns={columns1:columns2,...}
 		Specify defx columns.
-		Default: "mark:filename:type"
+		Default: "mark:indent:icon:filename:type"
 
 						*defx-option-direction*
 -direction={direction}
@@ -518,21 +521,32 @@ COLUMNS							*defx-columns*
 filename	File name.
 
 		variables:
-		directory_icon	  the closed directory icon
-				  (default: "+")
-		indent		  the tree indentation
-				  (default: " ")
 		min_width	  the minimum width of a defx buffer
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
 				  (default: 100)
+		root_marker_highlight
+				the root marker highlight
+				  (default: "Constant")
+
+							*defx-column-icon*
+icon		Basic icon.
+
+		variables:
+		directory_icon	  the closed directory icon
+				  (default: "+")
 		opened_icon	  the opened directory icon
 				  (default: "-")
 		root_icon	  the root directory icon
 				  (default: " ")
-		root_marker_highlight
-				the root marker highlight
-				  (default: "Constant")
+
+							*defx-column-indent*
+indent		Tree indentation.
+		Note: It depends on |defx-column-filename|.
+
+		variables:
+		indent		  the indent marker.
+				  (default: " ")
 
 							*defx-column-mark*
 mark		File selected mark.
@@ -617,7 +631,7 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('new_multiple_files')
 	  nnoremap <silent><buffer><expr> C
 	  \ defx#do_action('toggle_columns',
-	  \                'mark:filename:type:size:time')
+	  \                'mark:indent:icon:filename:type:size:time')
 	  nnoremap <silent><buffer><expr> S
 	  \ defx#do_action('toggle_sort', 'time')
 	  nnoremap <silent><buffer><expr> d
