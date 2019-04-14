@@ -328,7 +328,7 @@ class View(object):
         # Create new buffer
         vertical = 'vertical' if self._context.split == 'vertical' else ''
         no_split = self._context.split in ['no', 'tab', 'floating']
-        if self._vim.call('buflisted', self._bufnr):
+        if self._vim.call('bufloaded', self._bufnr):
             command = ('buffer' if no_split else 'sbuffer')
             self._vim.command(
                 'silent keepalt %s %s %s %s' % (
