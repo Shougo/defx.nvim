@@ -109,3 +109,4 @@ If Defx was installed prior to Python support being added to Neovim,
 ![Defx on kitty](https://user-images.githubusercontent.com/8403993/51080184-d29e6b80-16b5-11e9-802b-7c2f56705e2e.png)
 ![Defx in SpaceVim](https://user-images.githubusercontent.com/13142418/54086225-85233f80-4382-11e9-8091-7f387319b90a.png)
 ![Variable column](https://user-images.githubusercontent.com/19503791/56090130-58f26580-5ed0-11e9-8b66-e684cb11b0d1.png)
+![Denite action call](https://user-images.githubusercontent.com/41671631/56280845-a6bfd580-613d-11e9-857a-d81f2633eeab.png)
