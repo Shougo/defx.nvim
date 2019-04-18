@@ -365,6 +365,7 @@ class View(object):
             'list': False,
             'number': False,
             'relativenumber': False,
+            'spell': False,
             'wrap': False,
         }.items():
             window_options[k] = v
