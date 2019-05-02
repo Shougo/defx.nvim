@@ -27,11 +27,13 @@ class Column(Base):
         self._current_length = 0
         self._syntaxes = [
             'directory',
+            'directory_marker',
             'hidden',
-            'marker',
             'root',
+            'root_marker',
         ]
         self._context: Context = Context()
+        self._directory_marker = '?'
 
     def on_init(self, context: Context) -> None:
         self._context = context
@@ -39,10 +41,13 @@ class Column(Base):
     def get_with_variable_text(
             self, context: Context, variable_text: str,
             candidate: typing.Dict[str, typing.Any]) -> str:
-        return self._truncate(variable_text + candidate['word'])
+        marker = (self._directory_marker
+                  if candidate['is_directory'] and not candidate['is_root']
+                  else '')
+        return self._truncate(variable_text + marker + candidate['word'])
 
     def length(self, context: Context) -> int:
-        max_fnamewidth = max([self._strwidth(x['word'])
+        max_fnamewidth = max([self._strwidth(x['word']) + 1
                               for x in context.targets])
         max_fnamewidth += context.variable_length
         self._current_length = max(
@@ -55,24 +60,34 @@ class Column(Base):
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
+
+        directory_marker = self.vim.call(
+            'escape', self._directory_marker, r'~/\.^$[]*')
         commands.append(
-            r'syntax match {0}_{1} /\%(\S\|\w\s\+\)*[\\\/]/ '
+            r'syntax match {0}_{1} /{2}/ conceal contained '
+            'containedin={0}_directory'.format(
+                self.syntax_name, 'directory_marker', directory_marker))
+        commands.append(
+            r'syntax match {0}_{1} /{2}.{3}[\\\/]/ '
             'contained containedin={0}'.format(
-                self.syntax_name, 'directory'))
+                self.syntax_name, 'directory', directory_marker, '\{-}'))
+
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
              ' contained containedin={0}').format(
                  self.syntax_name, 'hidden', self.start))
-        root_marker = self.vim.call('escape',
-                                    self._context.root_marker, r'~/\.^$[]*')
+
+        root_marker = self.vim.call(
+            'escape', self._context.root_marker, r'~/\.^$[]*')
         commands.append(
             r'syntax match {0}_{1} /{2}/ contained '
             'containedin={0}_root'.format(
-                self.syntax_name, 'marker', root_marker))
+                self.syntax_name, 'root_marker', root_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.*/ contained '
             'containedin={0}'.format(
                 self.syntax_name, 'root', root_marker))
+
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'directory', 'PreProc'))
@@ -81,11 +96,12 @@ class Column(Base):
                 self.syntax_name, 'hidden', 'Comment'))
         commands.append(
             'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'marker',
+                self.syntax_name, 'root_marker',
                 self.vars['root_marker_highlight']))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'root', 'Identifier'))
+
         return commands
 
     def _strwidth(self, word: str) -> int:
