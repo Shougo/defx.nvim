@@ -360,6 +360,8 @@ class View(object):
         window_options = self._vim.current.window.options
         for k, v in {
             'colorcolumn': '',
+            'conceallevel': 2,
+            'concealcursor': 'nc',
             'cursorcolumn': False,
             'foldenable': False,
             'foldcolumn': 0,
