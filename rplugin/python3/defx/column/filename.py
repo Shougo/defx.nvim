@@ -70,7 +70,7 @@ class Column(Base):
         commands.append(
             r'syntax match {0}_{1} /{2}.{3}[\\\/]/ '
             'contained containedin={0}'.format(
-                self.syntax_name, 'directory', directory_marker, '\{-}'))
+                self.syntax_name, 'directory', directory_marker, r'\{-}'))
 
         commands.append(
             (r'syntax match {0}_{1} /\%{2}c\..*/' +
