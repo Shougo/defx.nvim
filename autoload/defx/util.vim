@@ -248,7 +248,11 @@ function! defx#util#open(filename) abort
 endfunction
 
 function! defx#util#cd(path) abort
-  silent execute 'lcd' fnameescape(a:path)
+  if exists('*chdir')
+    call chdir(a:path)
+  else
+    silent execute 'lcd' fnameescape(a:path)
+  endif
 endfunction
 
 function! defx#util#truncate_skipping(str, max, footer_width, separator) abort
