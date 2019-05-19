@@ -33,7 +33,7 @@ class Column(Base):
             'root_marker',
         ]
         self._context: Context = Context()
-        self._directory_marker = '?'
+        self._directory_marker = ':'
 
     def on_init(self, context: Context) -> None:
         self._context = context
