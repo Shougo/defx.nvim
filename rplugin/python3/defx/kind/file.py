@@ -212,7 +212,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
         cwd = str(Path(candidate['action__path']).parent)
 
     new_filename = cwd_input(view._vim, cwd,
-                             'Please input a new filename: ', '', 'file')
+                             'Please input a new directory name: ', '', 'file')
     if not new_filename:
         return
     filename = Path(cwd).joinpath(new_filename)
