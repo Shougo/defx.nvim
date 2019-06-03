@@ -200,6 +200,9 @@ class View(object):
 
         defx.cd(path)
         self.redraw(True)
+
+        self._check_session(defx._index, path)
+
         self._init_cursor(defx)
         if path in history:
             self.search_file(history[path], defx._index)
@@ -295,6 +298,17 @@ class View(object):
             window_options['winfixheight'] = True
             self._vim.command(f'resize {self._context.winheight}')
 
+    def _check_session(self, index: int, path: str) -> None:
+        if path not in self._sessions:
+            return
+
+        # restore opened_candidates
+        session = self._sessions[path]
+        for opened_path in session.opened_candidates:
+            self.open_tree(Path(opened_path), index)
+        self.update_opened_candidates()
+        self.redraw()
+
     def _init_defx(self,
                    paths: typing.List[str],
                    clipboard: Clipboard) -> bool:
@@ -365,6 +379,12 @@ class View(object):
         self._init_columns(self._context.columns.split(':'))
 
         self.redraw(True)
+
+        if self._context.session_file:
+            self.do_action('load_session', [],
+                           self._vim.call('defx#init#_context', {}))
+            for [index, path] in enumerate(paths):
+                self._check_session(index, path)
 
         for defx in self._defxs:
             self._init_cursor(defx)

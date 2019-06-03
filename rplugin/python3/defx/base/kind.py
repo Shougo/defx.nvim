@@ -15,7 +15,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
 from defx.util import Nvim
-from defx.util import error, vim_input
+from defx.util import vim_input
 from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}
@@ -48,9 +48,18 @@ class Base:
 def _add_session(view: View, defx: Defx, context: Context) -> None:
     name = vim_input(view._vim, 'Please input session name: ',
                      Path(defx._cwd).name)
+    if name == '':
+        return
+
+    path = context.args[0] if context.args else defx._cwd
+    if path[-1] == '/':
+        # Remove the last slash
+        path = path[: -1]
+
+    opened_candidates = [] if context.args else list(defx._opened_candidates)
+
     session: Session = Session(
-        name=name, path=defx._cwd,
-        opened_candidates=list(defx._opened_candidates))
+        name=name, path=defx._cwd, opened_candidates=opened_candidates)
     view._sessions[session.path] = session
 
     _save_session(view, defx, context)
@@ -101,7 +110,7 @@ def _load_session(view: View, defx: Defx, context: Context) -> None:
 
     view._sessions = {}
     for path, session in loaded_session['sessions'].items():
-        view._sessions[path] = Session(session)
+        view._sessions[path] = Session(**session)
 
 
 @action(name='multi')
@@ -166,7 +175,6 @@ def _repeat(view: View, defx: Defx, context: Context) -> None:
 @action(name='save_session', attr=ActionAttr.REDRAW)
 def _save_session(view: View, defx: Defx, context: Context) -> None:
     if not context.session_file:
-        error(view._vim, f'session_file option is empty')
         return
 
     session_file = Path(context.session_file)
