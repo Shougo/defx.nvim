@@ -44,7 +44,7 @@ class Base:
         return _action_table
 
 
-@action(name='add_session', attr=ActionAttr.REDRAW)
+@action(name='add_session', attr=ActionAttr.NO_TAGETS)
 def _add_session(view: View, defx: Defx, context: Context) -> None:
     name = vim_input(view._vim, 'Please input session name: ',
                      Path(defx._cwd).name)
@@ -98,7 +98,20 @@ def _close_tree(view: View, defx: Defx, context: Context) -> None:
             view.search_file(target['action__path'].parent, defx._index)
 
 
-@action(name='load_session', attr=ActionAttr.REDRAW)
+@action(name='delete_session', attr=ActionAttr.NO_TAGETS)
+def _delete_session(view: View, defx: Defx, context: Context) -> None:
+    if not context.args:
+        return
+
+    session_name = context.args[0]
+    if session_name not in view._sessions:
+        return
+    view._sessions.pop(session_name)
+
+    _save_session(view, defx, context)
+
+
+@action(name='load_session', attr=ActionAttr.NO_TAGETS)
 def _load_session(view: View, defx: Defx, context: Context) -> None:
     session_file = Path(context.session_file)
     if not context.session_file or not session_file.exists():
@@ -172,7 +185,7 @@ def _repeat(view: View, defx: Defx, context: Context) -> None:
     do_action(view, defx, view._prev_action, context)
 
 
-@action(name='save_session', attr=ActionAttr.REDRAW)
+@action(name='save_session', attr=ActionAttr.NO_TAGETS)
 def _save_session(view: View, defx: Defx, context: Context) -> None:
     if not context.session_file:
         return

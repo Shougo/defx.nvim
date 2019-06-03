@@ -622,6 +622,9 @@ DENITE SOURCES						*defx-denite-sources*
 						*denite-source-defx/history*
 defx/history	Gather defx histories.
 
+						*denite-source-defx/session*
+defx/session	Gather defx sessions.
+
 ==============================================================================
 EXAMPLES						*defx-examples*
 >
