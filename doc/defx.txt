@@ -452,6 +452,13 @@ OPTIONS							*defx-options*
 
 		Default: ""
 
+						*defx-option-session-file*
+-session-file={path}
+		Session file {path}.
+		Note: It must be full path.
+
+		Default: ""
+
 							*defx-option-show-ignored-files*
 -show-ignored-files
 		Show ignored files by default.

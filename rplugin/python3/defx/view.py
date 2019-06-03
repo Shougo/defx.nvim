@@ -13,6 +13,7 @@ from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
+from defx.session import Session
 from defx.util import error, import_plugin, safe_call, Nvim
 
 
@@ -33,6 +34,8 @@ class View(object):
         self._prev_syntaxes: typing.List[str] = []
         self._prev_highlight_commands: typing.List[str] = []
         self._winrestcmd = ''
+        self._session_version = '1.0'
+        self._sessions: typing.Dict[str, Session] = {}
 
     def init(self, paths: typing.List[str],
              context: typing.Dict[str, typing.Any],

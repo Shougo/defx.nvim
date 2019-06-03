@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+import json
 import typing
 from pathlib import Path
 
@@ -12,8 +13,10 @@ from defx.action import ActionTable
 from defx.action import do_action
 from defx.context import Context
 from defx.defx import Defx
-from defx.view import View
+from defx.session import Session
 from defx.util import Nvim
+from defx.util import error, vim_input
+from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}
 
@@ -41,7 +44,18 @@ class Base:
         return _action_table
 
 
-# <=> _call = action(name='call', attr=ActionAttr.REDRAW)(_call)
+@action(name='add_session', attr=ActionAttr.REDRAW)
+def _add_session(view: View, defx: Defx, context: Context) -> None:
+    name = vim_input(view._vim, 'Please input session name: ',
+                     Path(defx._cwd).name)
+    session: Session = Session(
+        name=name, path=defx._cwd,
+        opened_candidates=list(defx._opened_candidates))
+    view._sessions[session.path] = session
+
+    _save_session(view, defx, context)
+
+
 @action(name='call', attr=ActionAttr.REDRAW)
 def _call(view: View, defx: Defx, context: Context) -> None:
     """
@@ -73,6 +87,21 @@ def _close_tree(view: View, defx: Defx, context: Context) -> None:
         else:
             view.close_tree(target['action__path'].parent, defx._index)
             view.search_file(target['action__path'].parent, defx._index)
+
+
+@action(name='load_session', attr=ActionAttr.REDRAW)
+def _load_session(view: View, defx: Defx, context: Context) -> None:
+    session_file = Path(context.session_file)
+    if not context.session_file or not session_file.exists():
+        return
+
+    loaded_session = json.loads(session_file.read_text())
+    if 'sessions' not in loaded_session:
+        return
+
+    view._sessions = {}
+    for path, session in loaded_session['sessions'].items():
+        view._sessions[path] = Session(session)
 
 
 @action(name='multi')
@@ -132,6 +161,19 @@ def _redraw(view: View, defx: Defx, context: Context) -> None:
 @action(name='repeat', attr=ActionAttr.MARK)
 def _repeat(view: View, defx: Defx, context: Context) -> None:
     do_action(view, defx, view._prev_action, context)
+
+
+@action(name='save_session', attr=ActionAttr.REDRAW)
+def _save_session(view: View, defx: Defx, context: Context) -> None:
+    if not context.session_file:
+        error(view._vim, f'session_file option is empty')
+        return
+
+    session_file = Path(context.session_file)
+    session_file.write_text(json.dumps({
+        'version': view._session_version,
+        'sessions': {x: y._asdict() for x, y in view._sessions.items()}
+    }))
 
 
 @action(name='search', attr=ActionAttr.NO_TAGETS)

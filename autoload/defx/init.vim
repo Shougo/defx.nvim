@@ -104,6 +104,7 @@ function! defx#init#_user_options() abort
         \ 'resume': v:false,
         \ 'root_marker': '[in]: ',
         \ 'search': '',
+        \ 'session_file': '',
         \ 'show_ignored_files': v:false,
         \ 'split': 'no',
         \ 'sort': 'filename',
