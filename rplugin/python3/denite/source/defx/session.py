@@ -8,15 +8,10 @@ import json
 import typing
 
 from defx.session import Session
+from defx.util import Nvim
 from denite.kind.command import Kind as Command
 from denite.source.base import Base
 from pathlib import Path
-
-from importlib import find_loader
-if find_loader('pynvim'):
-    from pynvim import Nvim
-else:
-    from neovim import Nvim
 
 
 class Source(Base):
