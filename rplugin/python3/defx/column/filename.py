@@ -33,7 +33,8 @@ class Column(Base):
             'root_marker',
         ]
         self._context: Context = Context()
-        self._directory_marker = ':'
+        self._directory_marker = '**'
+        self._file_marker = '||'
 
     def on_init(self, context: Context) -> None:
         self._context = context
@@ -43,7 +44,7 @@ class Column(Base):
             candidate: typing.Dict[str, typing.Any]) -> str:
         marker = (self._directory_marker
                   if candidate['is_directory'] and not candidate['is_root']
-                  else '')
+                  else self._file_marker)
         return self._truncate(variable_text + marker + candidate['word'])
 
     def length(self, context: Context) -> int:
@@ -72,10 +73,16 @@ class Column(Base):
             'contained containedin={0}'.format(
                 self.syntax_name, 'directory', directory_marker, r'\{-}'))
 
+        file_marker = self.vim.call(
+            'escape', self._file_marker, r'~/\.^$[]*')
         commands.append(
-            (r'syntax match {0}_{1} /\%{2}c\..*/' +
-             ' contained containedin={0}').format(
-                 self.syntax_name, 'hidden', self.start))
+            r'syntax match {0}_{1} /{2}/ conceal contained '
+            'containedin={0}_file'.format(
+                self.syntax_name, 'file_marker', file_marker))
+        commands.append(
+            r'syntax match {0}_{1} /{2}.{3}/ '
+            'contained containedin={0}'.format(
+                self.syntax_name, 'file', file_marker, r'\{-}'))
 
         root_marker = self.vim.call(
             'escape', self._context.root_marker, r'~/\.^$[]*')
