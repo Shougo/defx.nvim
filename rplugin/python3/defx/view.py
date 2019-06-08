@@ -295,63 +295,8 @@ class View(object):
     def _init_defx(self,
                    paths: typing.List[str],
                    clipboard: Clipboard) -> bool:
-        if self._context.split == 'tab':
-            self._vim.command('tabnew')
-
-        winnr = self._vim.call('bufwinnr', self._bufnr)
-        if winnr > 0:
-            self._vim.command(f'{winnr}wincmd w')
-            if self._context.toggle:
-                self.quit()
-            else:
-                self._resize_window()
+        if not self._switch_buffer():
             return False
-
-        if (self._vim.current.buffer.options['modified'] and
-                not self._vim.options['hidden'] and
-                self._context.split == 'no'):
-            self._context = self._context._replace(split='vertical')
-
-        if (self._context.split == 'floating'
-                and self._vim.call('exists', '*nvim_open_win')):
-            # Use floating window
-            self._vim.call(
-                'nvim_open_win',
-                self._vim.call('bufnr', '%'), True, {
-                    'relative': 'editor',
-                    'row': self._context.winrow,
-                    'col': self._context.wincol,
-                    'width': self._context.winwidth,
-                    'height': self._context.winheight,
-                })
-            self._vim.command('highlight NormalFloat guibg=None')
-
-        # Create new buffer
-        vertical = 'vertical' if self._context.split == 'vertical' else ''
-        no_split = self._context.split in ['no', 'tab', 'floating']
-        if self._vim.call('bufloaded', self._bufnr):
-            command = ('buffer' if no_split else 'sbuffer')
-            self._vim.command(
-                'silent keepalt %s %s %s %s' % (
-                    self._context.direction,
-                    vertical,
-                    command,
-                    self._bufnr,
-                )
-            )
-            if self._context.resume:
-                self._resize_window()
-                return False
-        else:
-            command = ('edit' if no_split else 'new')
-            self._vim.call(
-                'defx#util#execute_path',
-                'silent keepalt %s %s %s ' % (
-                    self._context.direction,
-                    vertical,
-                    command,
-                ),
-                self._bufname)
 
         self._buffer = self._vim.current.buffer
         self._bufnr = self._buffer.number
@@ -421,6 +366,66 @@ class View(object):
         for defx in self._defxs:
             self._init_cursor(defx)
 
+        return True
+
+    def _switch_buffer(self) -> bool:
+        if self._context.split == 'tab':
+            self._vim.command('tabnew')
+
+        winnr = self._vim.call('bufwinnr', self._bufnr)
+        if winnr > 0:
+            self._vim.command(f'{winnr}wincmd w')
+            if self._context.toggle:
+                self.quit()
+            else:
+                self._resize_window()
+            return False
+
+        if (self._vim.current.buffer.options['modified'] and
+                not self._vim.options['hidden'] and
+                self._context.split == 'no'):
+            self._context = self._context._replace(split='vertical')
+
+        if (self._context.split == 'floating'
+                and self._vim.call('exists', '*nvim_open_win')):
+            # Use floating window
+            self._vim.call(
+                'nvim_open_win',
+                self._vim.call('bufnr', '%'), True, {
+                    'relative': 'editor',
+                    'row': self._context.winrow,
+                    'col': self._context.wincol,
+                    'width': self._context.winwidth,
+                    'height': self._context.winheight,
+                })
+            self._vim.command('highlight NormalFloat guibg=None')
+
+        # Create new buffer
+        vertical = 'vertical' if self._context.split == 'vertical' else ''
+        no_split = self._context.split in ['no', 'tab', 'floating']
+        if self._vim.call('bufloaded', self._bufnr):
+            command = ('buffer' if no_split else 'sbuffer')
+            self._vim.command(
+                'silent keepalt %s %s %s %s' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                    self._bufnr,
+                )
+            )
+            if self._context.resume:
+                self._resize_window()
+                return False
+        else:
+            command = ('edit' if no_split else 'new')
+            self._vim.call(
+                'defx#util#execute_path',
+                'silent keepalt %s %s %s ' % (
+                    self._context.direction,
+                    vertical,
+                    command,
+                ),
+                self._bufname)
         return True
 
     def _init_all_columns(self) -> None:
