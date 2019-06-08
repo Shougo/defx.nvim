@@ -44,8 +44,11 @@ class Source(Base):
             self._sessions[path] = Session(**session)
 
     def gather_candidates(self, context: dict):
+        max_name = max([self.vim.call('strwidth', x.name)
+                        for x in self._sessions.values()])
+        word_format = '{0:<' + str(max_name) + '} - {1}'
         return [{
-            'word': x.name,
+            'word': word_format.format(x.name, x.path),
             'action__command': f"call defx#call_action('cd', ['{x.path}'])",
             'source__path': x.path,
         } for x in self._sessions.values()]
