@@ -40,7 +40,7 @@ endfunction
 
 function! defx#util#execute_path(command, path) abort
   try
-    execute a:command escape(s:expand(a:path), '[]$')
+    execute a:command fnameescape(s:expand(a:path))
     if &l:filetype ==# ''
       filetype detect
     endif
