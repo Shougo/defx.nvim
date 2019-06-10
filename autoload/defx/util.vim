@@ -23,6 +23,9 @@ endfunction
 function! defx#util#print_message(string) abort
   echo '[defx] ' . defx#util#string(a:string)
 endfunction
+function! defx#util#is_windows() abort
+  return s:is_windows
+endfunction
 
 function! defx#util#convert2list(expr) abort
   return type(a:expr) ==# type([]) ? a:expr : [a:expr]

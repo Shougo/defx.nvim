@@ -30,6 +30,8 @@ class Source(Base):
             self, context: Context, path: Path
     ) -> typing.Dict[str, typing.Any]:
         word = self.vim.call('fnamemodify', str(path), ':~')
+        if self.vim.call('defx#util#is_windows'):
+            word = word.replace('\\', '/')
         if word[-1:] != '/':
             word += '/'
         if self.vars['root']:
