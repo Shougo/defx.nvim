@@ -21,37 +21,25 @@ class Source(Base):
 
         self.name = 'defx/session'
         self.kind = Kind(vim)
-        self._sessions: typing.Dict[str, Session] = {}
 
     def on_init(self, context: dict):
-        self._sessions = {}
-
-        options = self.vim.current.buffer.options
-        bufvars = self.vim.current.buffer.vars
-        if 'defx' not in bufvars or options['filetype'] != 'defx':
-            return
-
-        session_file = bufvars['defx']['context']['session_file']
-        session_path = Path(session_file)
-        if not session_file or not session_path.exists():
-            return
-
-        loaded_session = json.loads(session_path.read_text())
-        if 'sessions' not in loaded_session:
-            return
-
-        for path, session in loaded_session['sessions'].items():
-            self._sessions[path] = Session(**session)
+        self._winid = self.vim.call('win_getid')
 
     def gather_candidates(self, context: dict):
-        max_name = max([self.vim.call('strwidth', x.name)
-                        for x in self._sessions.values()])
+        sessions = self.vim.current.buffer.vars.get('defx#_sessions', [])
+        if not sessions:
+            return []
+
+        max_name = max([self.vim.call('strwidth', x['name'])
+                        for x in sessions])
         word_format = '{0:<' + str(max_name) + '} - {1}'
         return [{
-            'word': word_format.format(x.name, x.path),
-            'action__command': f"call defx#call_action('cd', ['{x.path}'])",
-            'source__path': x.path,
-        } for x in self._sessions.values()]
+            'word': word_format.format(x['name'], x['path']),
+            'action__command': "call defx#call_action('cd', '{}')".format(
+                x['path']),
+            'action__path': x['path'],
+            'source__winid': self._winid,
+        } for x in sessions]
 
 
 class Kind(Command):
@@ -59,8 +47,15 @@ class Kind(Command):
         super().__init__(vim)
 
         self.name = 'defx/session'
+        self.persist_actions += ['delete']
+        self.redraw_actions += ['delete']
 
     def action_delete(self, context):
+        winid = self.vim.call('win_getid')
+
         for candidate in context['targets']:
+            self.vim.call('win_gotoid', candidate['source__winid'])
             self.vim.call('defx#call_action', 'delete_session',
-                          candidate['source__path'])
+                          candidate['action__path'])
+
+        self.vim.call('win_gotoid', winid)

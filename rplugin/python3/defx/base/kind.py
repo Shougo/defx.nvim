@@ -192,6 +192,10 @@ def _repeat(view: View, defx: Defx, context: Context) -> None:
 
 @action(name='save_session', attr=ActionAttr.NO_TAGETS)
 def _save_session(view: View, defx: Defx, context: Context) -> None:
+    view._vim.current.buffer.vars['defx#_sessions'] = [
+        x._asdict() for x in view._sessions.values()
+    ]
+
     if not context.session_file:
         return
 
