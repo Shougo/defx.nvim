@@ -67,6 +67,7 @@ class Rplugin:
                 'word': candidate['word'],
                 'is_directory': candidate['is_directory'],
                 'is_opened_tree': candidate['is_opened_tree'],
+                'level': candidate['level'],
                 'action__path': str(candidate['action__path']),
             }
         return {}
