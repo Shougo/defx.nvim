@@ -140,7 +140,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
             view.cd(defx, str(path), context.cursor)
             continue
 
-        bufnr = view._vim.call('bufnr', str(path))
+        bufnr = view._vim.call('bufnr', f'^{path}$')
         winids = view._vim.call('win_findbuf', bufnr)
 
         if winids:
