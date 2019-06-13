@@ -130,6 +130,10 @@ def _load_session(view: View, defx: Defx, context: Context) -> None:
     for path, session in loaded_session['sessions'].items():
         view._sessions[path] = Session(**session)
 
+    view._vim.current.buffer.vars['defx#_sessions'] = [
+        x._asdict() for x in view._sessions.values()
+    ]
+
 
 @action(name='multi')
 def _multi(view: View, defx: Defx, context: Context) -> None:
