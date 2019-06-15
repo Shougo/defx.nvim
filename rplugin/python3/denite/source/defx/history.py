@@ -4,13 +4,8 @@
 # License: MIT license
 # ============================================================================
 
+from defx.util import Nvim
 from denite.source.base import Base
-
-from importlib import find_loader
-if find_loader('pynvim'):
-    from pynvim import Nvim
-else:
-    from neovim import Nvim
 
 
 class Source(Base):
@@ -33,5 +28,6 @@ class Source(Base):
         return [{
             'word': x,
             'abbr': x + '/',
-            'action__command': f"call defx#call_action('cd', ['{x}'])"
+            'action__command': f"call defx#call_action('cd', ['{x}'])",
+            'action__path': x,
         } for x in self._histories]

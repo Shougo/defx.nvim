@@ -28,7 +28,7 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     save_cwd = vim.call('getcwd')
     cd(vim, cwd)
 
-    filename: str = vim.call('input', prompt, text, completion)
+    filename: str = vim_input(vim, prompt, text, completion)
 
     cd(vim, save_cwd)
 
@@ -81,3 +81,23 @@ def safe_call(fn: typing.Callable[..., typing.Any],
         return fn()
     except OSError:
         return fallback
+
+
+# XXX: It override the builtin 'input()' function.
+def vim_input(vim: Nvim, prompt: str = '',
+              text: str = '', completion: str = '') -> str:
+    try:
+        if completion != '':
+            return str(vim.call('input', prompt, text, completion))
+        else:
+            return str(vim.call('input', prompt, text))
+    except vim.error as e:
+        # NOTE:
+        # neovim raise nvim.error instead of KeyboardInterrupt when Ctrl-C
+        # has pressed so treat it as a real KeyboardInterrupt exception.
+        if str(e) != "b'Keyboard interrupt'":
+            raise e
+    except KeyboardInterrupt:
+        pass
+    # Ignore the interrupt
+    return ''

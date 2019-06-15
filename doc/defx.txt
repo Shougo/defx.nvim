@@ -177,6 +177,20 @@ You need to define original key mappings by |defx#do_action()|.
 ------------------------------------------------------------------------------
 ACTIONS 						*defx-actions*
 
+add_session 					*defx-action-add_session*
+		Add the current directory in current sessions and save to
+		|defx-option-session-file|.
+		Note: You must set to |defx-option-session-file| save current
+		sessions.
+
+		Current session feature saves below states.
+
+		* current path
+		* opened tree state
+
+		Action args:
+			0. session directory path
+
 call 						*defx-action-call*
 		Call the function.
 		You can get the files path as "a:context.targets".
@@ -452,6 +466,13 @@ OPTIONS							*defx-options*
 
 		Default: ""
 
+						*defx-option-session-file*
+-session-file={path}
+		Session file {path}.
+		Note: It must be full path.
+
+		Default: ""
+
 							*defx-option-show-ignored-files*
 -show-ignored-files
 		Show ignored files by default.
@@ -600,6 +621,9 @@ DENITE SOURCES						*defx-denite-sources*
 
 						*denite-source-defx/history*
 defx/history	Gather defx histories.
+
+						*denite-source-defx/session*
+defx/session	Gather defx sessions.
 
 ==============================================================================
 EXAMPLES						*defx-examples*
