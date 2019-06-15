@@ -19,9 +19,11 @@ class Source(Base):
 
     def on_init(self, context: dict):
         self._winid = self.vim.call('win_getid')
+        self._bufnr = self.vim.call('bufnr', '%')
 
     def gather_candidates(self, context: dict):
-        sessions = self.vim.current.buffer.vars.get('defx#_sessions', [])
+        sessions = self.vim.call(
+            'getbufvar', self._bufnr, 'defx#_sessions', [])
         if not sessions:
             return []
 
