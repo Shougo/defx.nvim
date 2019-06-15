@@ -521,6 +521,13 @@ OPTIONS							*defx-options*
 
 		Default: 30
 
+						*defx-option-winrelative*
+-winrelative={direction}
+		Specify the relative position in floating window.
+		|nvim_open_win|
+
+		Default: "editor"
+
 						*defx-option-winrow*
 -winrow={window-row}
 		Set the row position of the Defx window if

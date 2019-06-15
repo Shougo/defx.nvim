@@ -415,7 +415,7 @@ class View(object):
             self._vim.call(
                 'nvim_open_win',
                 self._vim.call('bufnr', '%'), True, {
-                    'relative': 'editor',
+                    'relative': self._context.winrelative,
                     'row': self._context.winrow,
                     'col': self._context.wincol,
                     'width': self._context.winwidth,

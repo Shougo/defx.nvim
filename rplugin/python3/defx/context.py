@@ -35,5 +35,6 @@ class Context(typing.NamedTuple):
     visual_end: int = 0
     wincol: int = 0
     winheight: int = 0
+    winrelative: str = 'editor'
     winrow: int = 0
     winwidth: int = 0

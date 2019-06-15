@@ -111,6 +111,7 @@ function! defx#init#_user_options() abort
         \ 'toggle': v:false,
         \ 'wincol': &columns / 4,
         \ 'winheight': 30,
+        \ 'winrelative': 'editor',
         \ 'winrow': &lines / 3,
         \ 'winwidth': 90,
         \ }
