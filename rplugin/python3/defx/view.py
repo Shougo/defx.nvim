@@ -421,7 +421,6 @@ class View(object):
                     'width': self._context.winwidth,
                     'height': self._context.winheight,
                 })
-            self._vim.command('highlight NormalFloat guibg=None')
 
         # Create new buffer
         vertical = 'vertical' if self._context.split == 'vertical' else ''
