@@ -1,7 +1,7 @@
 import pytest
 
 from defx.view import View
-from neovim import Nvim
+from pynvim import Nvim
 from unittest.mock import create_autospec
 from unittest.mock import MagicMock
 

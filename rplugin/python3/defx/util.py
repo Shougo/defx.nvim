@@ -8,12 +8,7 @@ import importlib.util
 import os
 import typing
 from pathlib import Path
-
-from importlib import find_loader
-if find_loader('pynvim'):
-    from pynvim import Nvim
-else:
-    from neovim import Nvim
+from pynvim import Nvim
 
 
 def cd(vim: Nvim, path: str) -> None:

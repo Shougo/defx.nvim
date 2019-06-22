@@ -12,12 +12,9 @@ from defx.rplugin import Rplugin
 
 if find_spec('yarp'):
     import vim
-elif find_spec('pynvim'):
+else:
     import pynvim
     vim = pynvim
-else:
-    import neovim
-    vim = neovim
 
 if hasattr(vim, 'plugin'):
     # Neovim only

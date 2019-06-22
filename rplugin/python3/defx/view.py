@@ -7,6 +7,7 @@
 import copy
 import time
 import typing
+from pynvim.api import Buffer
 from pathlib import Path
 
 from defx.base.column import Base as Column
@@ -29,7 +30,7 @@ class View(object):
         self._winid = -1
         self._index = index
         self._bufname = '[defx]'
-        self._buffer: Nvim.buffer = None
+        self._buffer: Buffer = None
         self._prev_action = ''
         self._prev_syntaxes: typing.List[str] = []
         self._prev_highlight_commands: typing.List[str] = []
