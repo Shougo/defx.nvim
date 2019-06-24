@@ -104,7 +104,7 @@ If Defx was installed prior to Python support being added to Neovim,
 ![Defx -split=vertical](https://user-images.githubusercontent.com/2835826/45823772-7190f900-bcbc-11e8-9727-3dda3ce4c07c.png)
 ![Defx -new](https://user-images.githubusercontent.com/3047695/45927914-7f07e680-bf3b-11e8-9b36-755e1eec2a8f.png)
 ![Defx + neovim-qt](https://user-images.githubusercontent.com/1314340/48659914-0b4a0c00-ea9c-11e8-9953-2f2d5ca7f24a.png)
-![custom icon](https://user-images.githubusercontent.com/10108377/48677132-6e619e80-eb81-11e8-96bc-7d99fdb58995.png)
+![custom icon](https://user-images.githubusercontent.com/10108377/59982828-ac93d480-9620-11e9-8c10-51909cfeaf94.png)
 ![custom icon2](https://user-images.githubusercontent.com/3021667/55260000-95ba2d80-523d-11e9-877c-756a080a9a28.png)
 ![custom icon3](https://user-images.githubusercontent.com/10397021/57774111-3f04a680-774c-11e9-852a-53c394f672ef.png)
 ![custom icon4](https://user-images.githubusercontent.com/12205650/58801907-d9346d80-85d9-11e9-8a2d-de4635aa1eba.png)
