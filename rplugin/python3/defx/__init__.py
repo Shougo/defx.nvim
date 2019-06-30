@@ -16,6 +16,8 @@ else:
     import pynvim
     vim = pynvim
 
+Args = typing.List[typing.Any]
+
 if hasattr(vim, 'plugin'):
     # Neovim only
 
@@ -26,24 +28,24 @@ if hasattr(vim, 'plugin'):
             self._rplugin = Rplugin(vim)
 
         @vim.function('_defx_init', sync=True)  # type: ignore
-        def init_channel(self, args: typing.List[typing.Any]) -> None:
+        def init_channel(self, args: Args) -> None:
             self._rplugin.init_channel()
 
         @vim.rpc_export('_defx_start', sync=True)  # type: ignore
-        def start(self, args: typing.List[typing.Any]) -> None:
+        def start(self, args: Args) -> None:
             self._rplugin.start(args)
 
         @vim.rpc_export('_defx_do_action', sync=True)  # type: ignore
-        def do_action(self, args: typing.List[typing.Any]) -> None:
+        def do_action(self, args: Args) -> None:
             self._rplugin.do_action(args)
 
         @vim.rpc_export('_defx_async_action', sync=False)  # type: ignore
-        def async_action(self, args: typing.List[typing.Any]) -> None:
+        def async_action(self, args: Args) -> None:
             self._rplugin.do_action(args)
 
         @vim.rpc_export('_defx_get_candidate', sync=True)  # type: ignore
-        def get_candidate(self, args: typing.List[
-                typing.Any]) -> typing.Dict[str, typing.Union[str, bool]]:
+        def get_candidate(self, args: Args
+                          ) -> typing.Dict[str, typing.Union[str, bool]]:
             return self._rplugin.get_candidate()
 
 if find_spec('yarp'):
@@ -53,15 +55,15 @@ if find_spec('yarp'):
     def _defx_init() -> None:
         pass
 
-    def _defx_start(args: typing.List[typing.Any]) -> None:
+    def _defx_start(args: Args) -> None:
         global_defx.start(args)
 
-    def _defx_do_action(args: typing.List[typing.Any]) -> None:
+    def _defx_do_action(args: Args) -> None:
         global_defx.do_action(args)
 
-    def _defx_async_action(args: typing.List[typing.Any]) -> None:
+    def _defx_async_action(args: Args) -> None:
         global_defx.do_action(args)
 
-    def _defx_get_candidate(args: typing.List[
-            typing.Any]) -> typing.Dict[str, typing.Union[str, bool]]:
+    def _defx_get_candidate(args: Args
+                            ) -> typing.Dict[str, typing.Union[str, bool]]:
         return global_defx.get_candidate()
