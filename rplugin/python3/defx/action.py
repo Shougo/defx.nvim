@@ -16,6 +16,7 @@ class ActionAttr(IntFlag):
     REDRAW = auto()
     MARK = auto()
     NO_TAGETS = auto()
+    CURSOR_TARGET = auto()
     TREE = auto()
     NONE = 0
 
@@ -43,6 +44,15 @@ def do_action(view: View, defx: Defx,
         for candidate in selected_candidates:
             candidate['is_selected'] = False
         view.redraw()
+
+    if ActionAttr.CURSOR_TARGET in action.attr:
+        # Use cursor candidate only
+        cursor_candidate = view.get_cursor_candidate(context.cursor)
+        if not cursor_candidate:
+            return True
+        context = context._replace(
+            targets=[cursor_candidate],
+        )
 
     action.func(view, defx, context)
 

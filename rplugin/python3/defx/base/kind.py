@@ -93,7 +93,7 @@ def _clear_select_all(view: View, defx: Defx, context: Context) -> None:
         candidate['is_selected'] = False
 
 
-@action(name='close_tree', attr=ActionAttr.TREE)
+@action(name='close_tree', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         if target['is_directory'] and target['is_opened_tree']:
@@ -151,20 +151,20 @@ def _nop(view: View, defx: Defx, context: Context) -> None:
     pass
 
 
-@action(name='open_tree', attr=ActionAttr.TREE)
+@action(name='open_tree', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
     for target in [x for x in context.targets if x['is_directory']]:
         view.open_tree(target['action__path'], defx._index, 0)
 
 
-@action(name='open_tree_recursive', attr=ActionAttr.TREE)
+@action(name='open_tree_recursive', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_tree_recursive(view: View, defx: Defx, context: Context) -> None:
     level = int(context.args[0]) if context.args else 20
     for target in [x for x in context.targets if x['is_directory']]:
         view.open_tree(target['action__path'], defx._index, level)
 
 
-@action(name='open_or_close_tree', attr=ActionAttr.TREE)
+@action(name='open_or_close_tree', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         if not target['is_directory'] or target['is_opened_tree']:
