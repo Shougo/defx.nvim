@@ -157,14 +157,16 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
         view.open_tree(target['action__path'], defx._index, 0)
 
 
-@action(name='open_tree_recursive', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
+@action(name='open_tree_recursive',
+        attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_tree_recursive(view: View, defx: Defx, context: Context) -> None:
     level = int(context.args[0]) if context.args else 20
     for target in [x for x in context.targets if x['is_directory']]:
         view.open_tree(target['action__path'], defx._index, level)
 
 
-@action(name='open_or_close_tree', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
+@action(name='open_or_close_tree',
+        attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_or_close_tree(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         if not target['is_directory'] or target['is_opened_tree']:
