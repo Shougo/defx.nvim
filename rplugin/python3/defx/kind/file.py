@@ -104,8 +104,10 @@ def _change_vim_cwd(view: View, defx: Defx, context: Context) -> None:
 
 @action(name='check_redraw', attr=ActionAttr.NO_TAGETS)
 def _check_redraw(view: View, defx: Defx, context: Context) -> None:
-    root = defx.get_root_candidate()
-    mtime = root['action__path'].stat().st_mtime
+    root = defx.get_root_candidate()['action__path']
+    if not root.exists():
+        return
+    mtime = root.stat().st_mtime
     if mtime != defx._mtime:
         view.redraw(True)
 
