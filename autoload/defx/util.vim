@@ -251,7 +251,7 @@ function! defx#util#cd(path) abort
   if exists('*chdir')
     call chdir(a:path)
   else
-    silent execute 'lcd' fnameescape(a:path)
+    silent execute (haslocaldir() ? 'lcd' : 'cd') fnameescape(a:path)
   endif
 endfunction
 
