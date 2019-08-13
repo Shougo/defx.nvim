@@ -24,6 +24,7 @@ def cwd_input(vim: Nvim, cwd: str, prompt: str,
     cd(vim, cwd)
 
     filename: str = vim_input(vim, prompt, text, completion)
+    filename = filename.strip()
 
     cd(vim, save_cwd)
 
