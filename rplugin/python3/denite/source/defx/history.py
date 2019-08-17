@@ -4,27 +4,29 @@
 # License: MIT license
 # ============================================================================
 
-from defx.util import Nvim
+import typing
+
+from defx.util import Nvim, UserContext, Candidates
 from denite.source.base import Base
 
 
 class Source(Base):
 
-    def __init__(self, vim: Nvim):
+    def __init__(self, vim: Nvim) -> None:
         super().__init__(vim)
 
         self.name = 'defx/history'
         self.kind = 'command'
-        self._histories = []
+        self._histories: typing.List[str] = []
 
-    def on_init(self, context: dict):
+    def on_init(self, context: UserContext) -> None:
         options = self.vim.current.buffer.options
         if 'filetype' not in options or options['filetype'] != 'defx':
             return
 
         self._histories = reversed(self.vim.vars['defx#_histories'])
 
-    def gather_candidates(self, context: dict):
+    def gather_candidates(self, context: UserContext) -> Candidates:
         return [{
             'word': x,
             'abbr': x + '/',

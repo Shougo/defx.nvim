@@ -10,6 +10,10 @@ import typing
 from pathlib import Path
 from pynvim import Nvim
 
+UserContext = typing.Dict[str, typing.Any]
+Candidate = typing.Dict[str, typing.Any]
+Candidates = typing.List[Candidate]
+
 
 def cd(vim: Nvim, path: str) -> None:
     vim.call('defx#util#cd', path)

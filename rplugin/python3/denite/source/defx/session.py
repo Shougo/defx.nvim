@@ -4,24 +4,24 @@
 # License: MIT license
 # ============================================================================
 
-from defx.util import Nvim
+from defx.util import Nvim, UserContext, Candidates
 from denite.kind.command import Kind as Command
 from denite.source.base import Base
 
 
 class Source(Base):
 
-    def __init__(self, vim: Nvim):
+    def __init__(self, vim: Nvim) -> None:
         super().__init__(vim)
 
         self.name = 'defx/session'
         self.kind = Kind(vim)
 
-    def on_init(self, context: dict):
+    def on_init(self, context: UserContext) -> None:
         self._winid = self.vim.call('win_getid')
         self._bufnr = self.vim.call('bufnr', '%')
 
-    def gather_candidates(self, context: dict):
+    def gather_candidates(self, context: UserContext) -> Candidates:
         sessions = self.vim.call(
             'getbufvar', self._bufnr, 'defx#_sessions', [])
         if not sessions:
@@ -40,14 +40,14 @@ class Source(Base):
 
 
 class Kind(Command):
-    def __init__(self, vim):
+    def __init__(self, vim: Nvim) -> None:
         super().__init__(vim)
 
         self.name = 'defx/session'
         self.persist_actions += ['delete']
         self.redraw_actions += ['delete']
 
-    def action_delete(self, context):
+    def action_delete(self, context: UserContext) -> Candidates:
         winid = self.vim.call('win_getid')
 
         for candidate in context['targets']:
