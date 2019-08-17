@@ -36,6 +36,7 @@ class Source(Base):
             word += '/'
         if self.vars['root']:
             word = self.vim.call(self.vars['root'], str(path))
+        word = word.replace('\n', '\\n')
 
         return {
             'word': word,
@@ -52,8 +53,8 @@ class Source(Base):
             return []
         for entry in path.iterdir():
             candidates.append({
-                'word': entry.name + ('/' if safe_call(entry.is_dir, False)
-                                      else ''),
+                'word': entry.name.replace('\n', '\\n') + (
+                    '/' if safe_call(entry.is_dir, False) else ''),
                 'is_directory': safe_call(entry.is_dir, False),
                 'action__path': entry,
             })
