@@ -15,6 +15,7 @@ class Context(typing.NamedTuple):
     columns: str = ''
     cursor: int = 0
     direction: str = ''
+    drives: typing.List[str] = []
     ignored_files: str = ''
     listed: bool = False
     new: bool = False

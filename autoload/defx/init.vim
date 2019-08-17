@@ -119,6 +119,7 @@ endfunction
 function! s:internal_options() abort
   return {
         \ 'cursor': line('.'),
+        \ 'drives': [],
         \ 'prev_bufnr': bufnr('%'),
         \ 'prev_winid': win_getid(),
         \ 'visual_start': getpos("'<")[1],

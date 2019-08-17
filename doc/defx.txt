@@ -626,6 +626,15 @@ file		File
 ==============================================================================
 DENITE SOURCES						*defx-denite-sources*
 
+						*denite-source-defx/drive*
+defx/drive	Gather defx drives.
+
+		Note: You can set drives like this:
+>
+	call defx#custom#option('_', 'drives', [
+	\ expand('~/Downloads'), expand('~')
+	\ ])
+<
 						*denite-source-defx/history*
 defx/history	Gather defx histories.
 

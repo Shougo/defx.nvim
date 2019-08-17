@@ -390,6 +390,8 @@ class View(object):
         for defx in self._defxs:
             self._init_cursor(defx)
 
+        self._vim.vars['defx#_drives'] = self._context.drives
+
         return True
 
     def _switch_buffer(self) -> bool:
