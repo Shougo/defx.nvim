@@ -113,3 +113,4 @@ If Defx was installed prior to Python support being added to Neovim,
 ![Variable column](https://user-images.githubusercontent.com/19503791/56090130-58f26580-5ed0-11e9-8b66-e684cb11b0d1.png)
 ![Denite action call](https://user-images.githubusercontent.com/41671631/56280845-a6bfd580-613d-11e9-857a-d81f2633eeab.png)
 ![Defx floating window](https://user-images.githubusercontent.com/24732170/59892964-1c823f00-9416-11e9-8369-2e21910e168c.png)
+![Horizon colorscheme](https://user-images.githubusercontent.com/324519/63241202-a4fb4100-c207-11e9-9060-c3c04608ea7b.png)
