@@ -49,14 +49,9 @@ class Rplugin:
 
     def _redraw_other_defxs(self, view: View) -> None:
         call = self._vim.call
-        prev_winid = call('win_getid')
         for other_view in [x for x in self._views
                            if x != view and call('bufwinnr', x._bufnr) > 0]:
-            winnr = call('bufwinnr', other_view._bufnr)
-            self._vim.command(f'{winnr}wincmd w')
-            other_view.do_action('check_redraw', [],
-                                 call('defx#init#_context', {}))
-        call('win_gotoid', prev_winid)
+            other_view.redraw(True)
 
     def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
         cursor = self._vim.call('line', '.')
