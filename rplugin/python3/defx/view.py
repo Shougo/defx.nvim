@@ -127,12 +127,10 @@ class View(object):
         Redraw defx buffer.
         """
 
-        if self._buffer != self._vim.current.buffer:
-            return
-
         start = time.time()
 
-        prev_linenr = self._vim.call('line', '.')
+        [info] = self._vim.call('getbufinfo', self._bufnr)
+        prev_linenr = info['lnum']
         prev = self.get_cursor_candidate(prev_linenr)
 
         if is_force:
@@ -143,9 +141,6 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self._context)
 
-        if self._buffer != self._vim.current.buffer:
-            return
-
         self._buffer.options['modifiable'] = True
         self._buffer[:] = [
             self._get_columns_text(self._context, x)
@@ -154,10 +149,12 @@ class View(object):
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
 
-        self._vim.call('cursor', [prev_linenr, 0])
-
-        if prev:
-            self.search_file(prev['action__path'], prev['_defx_index'])
+        # TODO: How to set cursor position for other buffer when
+        #   stay in current buffer
+        if self._buffer == self._vim.current.buffer:
+            self._vim.call('cursor', [prev_linenr, 0])
+            if prev:
+                self.search_file(prev['action__path'], prev['_defx_index'])
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
