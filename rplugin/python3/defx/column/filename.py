@@ -48,9 +48,10 @@ class Column(Base):
         return self._truncate(variable_text + marker + candidate['word'])
 
     def length(self, context: Context) -> int:
-        max_fnamewidth = max([self._strwidth(x['word']) + 1
+        max_fnamewidth = max([self._strwidth(x['word'])
                               for x in context.targets])
         max_fnamewidth += context.variable_length
+        max_fnamewidth += len(self._file_marker)
         self._current_length = max(
             min(max_fnamewidth, int(self.vars['max_width'])),
             int(self.vars['min_width']))
