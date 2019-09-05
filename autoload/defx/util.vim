@@ -68,8 +68,14 @@ function! s:substitute_path_separator(path) abort
 endfunction
 
 function! defx#util#call_defx(command, args) abort
-  let [paths, context] = defx#util#_parse_options_args(a:args)
-  call defx#start(paths, context)
+  if &number
+    let [paths, context] = defx#util#_parse_options_args(a:args)
+    call defx#start(paths, context)
+    set number
+  else
+    let [paths, context] = defx#util#_parse_options_args(a:args)
+    call defx#start(paths, context)
+  endif
 endfunction
 
 function! defx#util#_parse_options_args(cmdline) abort
@@ -262,7 +268,7 @@ function! defx#util#truncate_skipping(str, max, footer_width, separator) abort
   else
     let header_width = a:max - strwidth(a:separator) - a:footer_width
     let ret = s:strwidthpart(a:str, header_width) . a:separator
-         \ . s:strwidthpart_reverse(a:str, a:footer_width)
+          \ . s:strwidthpart_reverse(a:str, a:footer_width)
   endif
   return s:truncate(ret, a:max)
 endfunction
