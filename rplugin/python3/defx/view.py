@@ -326,22 +326,22 @@ class View(object):
         self._winid = self._vim.call('win_getid')
 
         window_options = self._vim.current.window.options
-        for k, v in {
-            'colorcolumn': '',
-            'conceallevel': 2,
-            'concealcursor': 'nc',
-            'cursorcolumn': False,
-            'foldenable': False,
-            'foldcolumn': 0,
-            'list': False,
-            'number': False,
-            'relativenumber': False,
-            'spell': False,
-            'wrap': False,
-        }.items():
-            window_options[k] = v
+        # Note: Have to use setlocal instead of "current.window.options"
+        # "current.window.options" changes global value instead of local in
+        # neovim.
+        self._vim.command('setlocal colorcolumn=')
+        self._vim.command('setlocal conceallevel=2')
+        self._vim.command('setlocal concealcursor=nc')
+        self._vim.command('setlocal nocursorcolumn')
+        self._vim.command('setlocal nofoldenable')
+        self._vim.command('setlocal foldcolumn=0')
+        self._vim.command('setlocal nolist')
+        self._vim.command('setlocal nonumber')
+        self._vim.command('setlocal norelativenumber')
+        self._vim.command('setlocal nospell')
+        self._vim.command('setlocal nowrap')
         if self._context.split == 'floating':
-            window_options['cursorline'] = True
+            self._vim.command('setlocal nocursorline')
 
         self._resize_window()
 
