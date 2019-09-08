@@ -325,7 +325,6 @@ class View(object):
         self._bufnr = self._buffer.number
         self._winid = self._vim.call('win_getid')
 
-        window_options = self._vim.current.window.options
         # Note: Have to use setlocal instead of "current.window.options"
         # "current.window.options" changes global value instead of local in
         # neovim.
