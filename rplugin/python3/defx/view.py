@@ -136,7 +136,6 @@ class View(object):
         if is_force:
             self._init_candidates()
             self._init_column_length()
-            self._init_column_syntax()
 
         for column in self._columns:
             column.on_redraw(self._context)
@@ -163,6 +162,8 @@ class View(object):
             self._vim.call('cursor', [prev_linenr, 0])
             if prev:
                 self.search_file(prev['action__path'], prev['_defx_index'])
+            if is_force:
+                self._init_column_syntax()
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
