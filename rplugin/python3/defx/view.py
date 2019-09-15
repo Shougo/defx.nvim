@@ -372,6 +372,8 @@ class View(object):
         self._vim.command('autocmd defx '
                           'CursorHold,FocusGained <buffer> '
                           'call defx#call_async_action("check_redraw")')
+        self._vim.command('autocmd defx FileType <buffer> '
+                          'call defx#call_action("redraw")')
 
         self._prev_highlight_commands = []
 
@@ -555,13 +557,14 @@ class View(object):
                 commands += source_highlights
                 self._prev_syntaxes += column.syntaxes()
 
-        if commands == self._prev_highlight_commands:
+        if self._vim.call(
+            'execute', 'syntax list') == self._prev_highlight_commands:
             # Skip highlights
             return
 
-        self._prev_highlight_commands = commands
-
         self._execute_commands(commands)
+        self._prev_highlight_commands = self._vim.call(
+            'execute', 'syntax list')
 
     def _execute_commands(self, commands: typing.List[str]) -> None:
         self._vim.command(' | '.join(commands))
