@@ -557,8 +557,8 @@ class View(object):
                 commands += source_highlights
                 self._prev_syntaxes += column.syntaxes()
 
-        if self._vim.call(
-            'execute', 'syntax list') == self._prev_highlight_commands:
+        syntax_list = self._vim.call('execute', 'syntax list')
+        if syntax_list == self._prev_highlight_commands:
             # Skip highlights
             return
 
