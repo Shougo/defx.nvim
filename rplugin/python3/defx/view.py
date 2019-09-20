@@ -511,8 +511,10 @@ class View(object):
                 for variable_column in within_variable_columns:
                     variable_length += variable_column.length(
                         self._context._replace(targets=self._candidates))
+
                 # Note: for "' '.join(variable_texts)" length
-                variable_length += len(within_variable_columns) - 1
+                if within_variable_columns:
+                    variable_length += len(within_variable_columns) - 1
 
             length = column.length(
                 self._context._replace(targets=self._candidates,
