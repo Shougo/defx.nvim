@@ -559,7 +559,9 @@ filename	File name.
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
 				  If it is negative value, it means "winwidth *
-				  max_width / 100".
+				  -max_width / 100".
+				  Example: "-120" max_width means 120 percent
+				  winwidth.
 				  (default: 100)
 		root_marker_highlight
 				the root marker highlight
