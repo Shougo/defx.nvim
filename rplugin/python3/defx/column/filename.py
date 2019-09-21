@@ -52,8 +52,11 @@ class Column(Base):
                               for x in context.targets])
         max_fnamewidth += context.variable_length
         max_fnamewidth += len(self._file_marker)
+        max_width = int(self.vars['max_width'])
+        if max_width < 0:
+            max_width = int(-max_width * context.winwidth / 100)
         self._current_length = max(
-            min(max_fnamewidth, int(self.vars['max_width'])),
+            min(max_fnamewidth, max_width),
             int(self.vars['min_width']))
         return self._current_length
 

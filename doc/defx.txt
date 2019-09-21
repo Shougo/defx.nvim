@@ -351,6 +351,12 @@ remove_trash					*defx-action-remove_trash*
 		Action args:
 			0. If it is "true", suppress the confirmation.
 
+resize						      *defx-action-resize*
+		Resize the current window.
+
+		Action args:
+			0. Resized window size.
+
 search						      *defx-action-search*
 		Search the path.
 
@@ -552,6 +558,8 @@ filename	File name.
 		min_width	  the minimum width of a defx buffer
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
+				  If it is negative value, it means "winwidth *
+				  max_width / 100".
 				  (default: 100)
 		root_marker_highlight
 				the root marker highlight

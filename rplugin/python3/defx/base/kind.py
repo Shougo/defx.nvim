@@ -196,6 +196,16 @@ def _repeat(view: View, defx: Defx, context: Context) -> None:
     do_action(view, defx, view._prev_action, context)
 
 
+@action(name='resize', attr=ActionAttr.NO_TAGETS)
+def _resize(view: View, defx: Defx, context: Context) -> None:
+    if not context.args:
+        return
+
+    view._context = view._context._replace(winwidth=context.args[0])
+    view._resize_window()
+    view.redraw(True)
+
+
 @action(name='save_session', attr=ActionAttr.NO_TAGETS)
 def _save_session(view: View, defx: Defx, context: Context) -> None:
     view._vim.current.buffer.vars['defx#_sessions'] = [
