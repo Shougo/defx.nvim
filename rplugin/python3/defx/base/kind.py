@@ -201,7 +201,7 @@ def _resize(view: View, defx: Defx, context: Context) -> None:
     if not context.args:
         return
 
-    view._context = view._context._replace(winwidth=context.args[0])
+    view._context = view._context._replace(winwidth=int(context.args[0]))
     view._resize_window()
     view.redraw(True)
 
