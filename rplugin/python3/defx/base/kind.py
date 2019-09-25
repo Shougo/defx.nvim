@@ -201,13 +201,9 @@ def _resize(view: View, defx: Defx, context: Context) -> None:
     if not context.args:
         return
 
-    view.debug(view._context.winwidth)
     view._context = view._context._replace(winwidth=int(context.args[0]))
-    view.debug(view._context.winwidth)
     view._resize_window()
-    view.debug(view._context.winwidth)
     view.redraw(True)
-    view.debug(view._context.winwidth)
 
 
 @action(name='save_session', attr=ActionAttr.NO_TAGETS)
