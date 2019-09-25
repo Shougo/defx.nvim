@@ -66,3 +66,9 @@ class Rplugin:
                 'action__path': str(candidate['action__path']),
             }
         return {}
+
+    def get_context(self) -> typing.Dict[str, typing.Any]:
+        for view in [x for x in self._views
+                     if x._bufnr == self._vim.current.buffer.number]:
+            return view._context._asdict()
+        return {}

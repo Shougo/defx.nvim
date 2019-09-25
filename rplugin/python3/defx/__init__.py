@@ -48,6 +48,10 @@ if hasattr(vim, 'plugin'):
                           ) -> typing.Dict[str, typing.Union[str, bool]]:
             return self._rplugin.get_candidate()
 
+        @vim.rpc_export('_defx_get_context', sync=True)  # type: ignore
+        def get_context(self, args: Args) -> typing.Dict[str, typing.Any]:
+            return self._rplugin.get_context()
+
 if find_spec('yarp'):
 
     global_defx = Rplugin(vim)
@@ -67,3 +71,6 @@ if find_spec('yarp'):
     def _defx_get_candidate(args: Args
                             ) -> typing.Dict[str, typing.Union[str, bool]]:
         return global_defx.get_candidate()
+
+    def _defx_get_context(args: Args) -> typing.Dict[str, typing.Any]:
+        return global_defx.get_context()

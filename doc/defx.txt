@@ -153,6 +153,9 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 defx#get_candidate()					*defx#get_candidate()*
 		Returns the current cursor candidate as |Dictionary|.
 
+defx#get_context()					*defx#get_context()*
+		Returns the current context as |Dictionary|.
+
 defx#is_directory()					*defx#is_directory()*
 		Returns |v:true| if the current cursor candidate is directory.
 
@@ -736,7 +739,7 @@ A: >
 Q: I want to open file like vimfiler explorer mode.
 
 A: >
-	  nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
+	nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
 
 Q: I want to disable root marker.
 
@@ -747,6 +750,14 @@ A: >
 	call defx#custom#column('filename', {
 	      \ 'root_marker_highlight': 'Ignore',
 	      \ })
+
+Q: I want to resize defx window dynamically.
+
+A: >
+	nnoremap <silent><buffer><expr> > defx#do_action('resize',
+	\ defx#get_context().winwidth + 10)
+	nnoremap <silent><buffer><expr> < defx#do_action('resize',
+	\ defx#get_context().winwidth - 10)
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

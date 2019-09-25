@@ -71,3 +71,10 @@ endfunction
 function! defx#is_opened_tree() abort
   return get(defx#get_candidate(), 'is_opened_tree', v:false)
 endfunction
+function! defx#get_context() abort
+  if &l:filetype !=# 'defx'
+    return {}
+  endif
+
+  return defx#util#rpcrequest('_defx_get_context', [], v:false)
+endfunction
