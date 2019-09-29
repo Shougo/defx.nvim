@@ -51,6 +51,7 @@ def _add_session(view: View, defx: Defx, context: Context) -> None:
         path = path[: -1]
 
     opened_candidates = [] if context.args else list(defx._opened_candidates)
+    opened_candidates.sort()
 
     session: Session
     if path in view._sessions:
