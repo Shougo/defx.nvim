@@ -18,8 +18,8 @@ class Column(Base):
 
         self.name = 'filename'
         self.vars = {
-            'min_width': 40,
-            'max_width': 100,
+            'min_width': 200,
+            'max_width': 400,
             'root_marker_highlight': 'Constant',
         }
         self.is_stop_variable = True

@@ -341,6 +341,9 @@ class View(object):
         self._vim.command('setlocal nospell')
         self._vim.command('setlocal nowrap')
         self._vim.command('setlocal signcolumn=no')
+        if self._context.show_number:
+            self._vim.command('setlocal number')
+
         if self._context.split == 'floating':
             self._vim.command('setlocal nocursorline')
 

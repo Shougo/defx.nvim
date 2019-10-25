@@ -39,3 +39,4 @@ class Context(typing.NamedTuple):
     winrelative: str = 'editor'
     winrow: int = 0
     winwidth: int = 0
+    show_number:bool = False
