@@ -57,6 +57,9 @@ function! defx#call_async_action(action, ...) abort
   call defx#util#rpcrequest(
         \ '_defx_async_action', [a:action, args, context], v:true)
 endfunction
+function! defx#redraw() abort
+  call defx#util#rpcrequest('_defx_redraw', [], v:false)
+endfunction
 
 function! defx#get_candidate() abort
   if &l:filetype !=# 'defx'

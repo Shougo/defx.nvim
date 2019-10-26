@@ -171,6 +171,9 @@ defx#is_opened_tree()					*defx#is_opened_tree()*
 		Returns |v:true| if the current cursor candidate is opened
 		directory tree.
 
+defx#redraw()						*defx#redraw()*
+		Redraw all defx windows.
+
 ------------------------------------------------------------------------------
 KEY MAPPINGS 						*defx-key-mappings*
 
@@ -758,6 +761,12 @@ A: >
 	\ defx#get_context().winwidth + 10)
 	nnoremap <silent><buffer><expr> < defx#do_action('resize',
 	\ defx#get_context().winwidth - 10)
+
+
+Q: I want to update defx status automatically when changing file.
+
+A: >
+	autocmd BufWritePost * call defx#redraw()
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

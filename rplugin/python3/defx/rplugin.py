@@ -45,13 +45,7 @@ class Rplugin:
 
         paths = [x._cwd for x in view._defxs]
         if paths == prev_paths and view._candidates != prev_candidates:
-            self._redraw_other_defxs(view)
-
-    def _redraw_other_defxs(self, view: View) -> None:
-        call = self._vim.call
-        for other_view in [x for x in self._views
-                           if x != view and call('bufwinnr', x._bufnr) > 0]:
-            other_view.redraw(True)
+            self.redraw([x for x in self._views if x != view])
 
     def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
         cursor = self._vim.call('line', '.')
@@ -72,3 +66,9 @@ class Rplugin:
                      if x._bufnr == self._vim.current.buffer.number]:
             return view._context._asdict()
         return {}
+
+    def redraw(self, views: typing.List[View]) -> None:
+        call = self._vim.call
+        for view in [x for x in views
+                     if call('bufwinnr', x._bufnr) > 0]:
+            view.redraw(True)
