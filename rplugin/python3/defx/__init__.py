@@ -13,8 +13,7 @@ from defx.rplugin import Rplugin
 if find_spec('yarp'):
     import vim
 else:
-    import pynvim
-    vim = pynvim
+    import pynvim as vim
 
 Args = typing.List[typing.Any]
 
