@@ -52,25 +52,32 @@ if hasattr(vim, 'plugin'):
         def get_context(self, args: Args) -> typing.Dict[str, typing.Any]:
             return self._rplugin.get_context()
 
+        @vim.rpc_export('_defx_redraw', sync=True)  # type: ignore
+        def redraw(self, args: Args) -> None:
+            return self._rplugin.redraw(self._rplugin._views)
+
 if find_spec('yarp'):
 
-    global_defx = Rplugin(vim)
+    global_rplugin = Rplugin(vim)
 
     def _defx_init() -> None:
         pass
 
     def _defx_start(args: Args) -> None:
-        global_defx.start(args)
+        global_rplugin.start(args)
 
     def _defx_do_action(args: Args) -> None:
-        global_defx.do_action(args)
+        global_rplugin.do_action(args)
 
     def _defx_async_action(args: Args) -> None:
-        global_defx.do_action(args)
+        global_rplugin.do_action(args)
 
     def _defx_get_candidate(args: Args
                             ) -> typing.Dict[str, typing.Union[str, bool]]:
-        return global_defx.get_candidate()
+        return global_rplugin.get_candidate()
 
     def _defx_get_context(args: Args) -> typing.Dict[str, typing.Any]:
-        return global_defx.get_context()
+        return global_rplugin.get_context()
+
+    def _defx_redraw(args: Args) -> None:
+        return global_rplugin.redraw(global_rplugin._views)
