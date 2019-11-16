@@ -72,6 +72,15 @@ function! defx#util#call_defx(command, args) abort
   call defx#start(paths, context)
 endfunction
 
+function! defx#util#input(prompt, text, completion) abort
+  try
+    return input(a:prompt, a:text, a:completion)
+  catch
+    " Ignore the errors
+    return ''
+  endtry
+endfunction
+
 function! defx#util#_parse_options_args(cmdline) abort
   return s:parse_options(a:cmdline)
 endfunction
