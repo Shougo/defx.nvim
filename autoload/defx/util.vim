@@ -72,11 +72,17 @@ function! defx#util#call_defx(command, args) abort
   call defx#start(paths, context)
 endfunction
 
-function! defx#util#input(prompt, text, completion) abort
+function! defx#util#input(prompt, ...) abort
+  let text = get(a:000, 0, '')
+  let completion = get(a:000, 1, '')
   try
-    return input(a:prompt, a:text, a:completion)
+    if completion !=# ''
+      return input(a:prompt, text, completion)
+    else
+      return input(a:prompt, text)
+    endif
   catch
-    " Ignore the errors
+    " ignore the errors
     return ''
   endtry
 endfunction
