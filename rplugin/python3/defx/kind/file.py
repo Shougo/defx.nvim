@@ -148,7 +148,8 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
         if winids:
             view._vim.call('win_gotoid', winids[0])
         else:
-            if context.prev_winid != view._winid:
+            if context.prev_winid != view._winid and view._vim.call(
+                    'win_id2win', context.prev_winid):
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
