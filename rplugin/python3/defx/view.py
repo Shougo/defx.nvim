@@ -140,11 +140,13 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self._context)
 
-        self._buffer.options['modifiable'] = True
         lines = [
             self._get_columns_text(self._context, x)
             for x in self._candidates
         ]
+
+        self._buffer.options['modifiable'] = True
+
         # NOTE: Different len of buffer line replacement cause cursor jump
         if len(lines) >= len(self._buffer):
             self._buffer[:] = lines[:len(self._buffer)]
