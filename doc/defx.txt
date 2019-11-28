@@ -163,9 +163,8 @@ defx#is_directory()					*defx#is_directory()*
 
 		nnoremap <silent><buffer><expr> <CR>
 		\ defx#is_directory() ?
-		\ defx#do_action('open') :
+		\ defx#do_action('open_directory') :
 		\ defx#do_action('multi', ['drop', 'quit'])
-
 
 defx#is_opened_tree()					*defx#is_opened_tree()*
 		Returns |v:true| if the current cursor candidate is opened
@@ -293,7 +292,9 @@ new_multiple_files
 		If the input ends with "/", it means new directory.
 
 open							*defx-action-open*
-		Open the file.
+		Open the selected candidates.
+		Note: If the candidate is directory, it is same with
+		|defx-action-open_directory|.
 
 		Action args:
 			0. open command(The default is |:edit|)
