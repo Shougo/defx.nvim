@@ -59,7 +59,7 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     view.print_msg(f'dest: {dest} {d_stat.st_size} bytes')
     view.print_msg(f'      {time.strftime("%c", time.localtime(d_mtime))}')
 
-    choice: int = view._vim.call('confirm',
+    choice: int = view._vim.call('defx#util#confirm',
                                  f'{dest} already exists.  Overwrite?',
                                  '&Force\n&No\n&Rename\n&Time\n&Underbar', 0)
     ret: Path = Path('')

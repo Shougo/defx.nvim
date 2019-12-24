@@ -46,7 +46,8 @@ def confirm(vim: Nvim, question: str) -> bool:
     """
     Confirm action
     """
-    option: int = vim.call('confirm', question, '&Yes\n&No\n&Cancel')
+    option: int = vim.call('defx#util#confirm',
+                           question, '&Yes\n&No\n&Cancel', 2)
     return option == 1
 
 

@@ -86,6 +86,15 @@ function! defx#util#input(prompt, ...) abort
     return ''
   endtry
 endfunction
+function! defx#util#confirm(msg, choices, default) abort
+  try
+    return confirm(a:msg, a:choices, a:default)
+  catch
+    " ignore the errors
+  endtry
+
+  return a:default
+endfunction
 
 function! defx#util#_parse_options_args(cmdline) abort
   return s:parse_options(a:cmdline)
