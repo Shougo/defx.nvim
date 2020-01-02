@@ -29,11 +29,16 @@ class Column(Base):
 
     def get(self, context: Context,
             candidate: typing.Dict[str, typing.Any]) -> str:
+        default = str(' ' * self._length)
         path = candidate['action__path']
         if not readable(path):
-            return str(' ' * self._length)
-        return time.strftime(self.vars['format'],
-                             time.localtime(path.stat().st_mtime))
+            return default
+        try:
+            return time.strftime(self.vars['format'],
+                                 time.localtime(path.stat().st_mtime))
+        except Exception:
+            pass
+        return default
 
     def length(self, context: Context) -> int:
         return self._length
