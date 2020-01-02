@@ -70,7 +70,10 @@ def readable(path: Path) -> bool:
     """
     Check {path} is readable.
     """
-    return os.access(str(path), os.R_OK)
+    try:
+        return os.access(str(path), os.R_OK) and path.stat()
+    except Exception:
+        return False
 
 
 def safe_call(fn: typing.Callable[..., typing.Any],
