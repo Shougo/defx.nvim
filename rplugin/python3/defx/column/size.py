@@ -23,7 +23,11 @@ class Column(Base):
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
             return ' ' * 9
-        size = self._get_size(path.stat().st_size)
+        size = ('?', 'B')
+        try:
+            size = self._get_size(path.stat().st_size)
+        except Exception:
+            pass
         return '{:>6s}{:>3s}'.format(size[0], size[1])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
