@@ -328,6 +328,14 @@ class View(object):
         self._bufnr = self._buffer.number
         self._winid = self._vim.call('win_getid')
 
+        if not paths:
+            paths = [self._vim.call('getcwd')]
+
+        self._buffer.vars['defx'] = {
+            'context': self._context._asdict(),
+            'paths': paths,
+        }
+
         # Note: Have to use setlocal instead of "current.window.options"
         # "current.window.options" changes global value instead of local in
         # neovim.
@@ -349,24 +357,15 @@ class View(object):
         self._resize_window()
 
         buffer_options = self._buffer.options
+        if not self._context.listed:
+            buffer_options['buflisted'] = False
         buffer_options['buftype'] = 'nofile'
         buffer_options['bufhidden'] = 'hide'
         buffer_options['swapfile'] = False
         buffer_options['modeline'] = False
-        buffer_options['filetype'] = 'defx'
         buffer_options['modifiable'] = False
         buffer_options['modified'] = False
-
-        if not paths:
-            paths = [self._vim.call('getcwd')]
-
-        self._buffer.vars['defx'] = {
-            'context': self._context._asdict(),
-            'paths': paths,
-        }
-
-        if not self._context.listed:
-            buffer_options['buflisted'] = False
+        buffer_options['filetype'] = 'defx'
 
         self._execute_commands([
             'silent doautocmd FileType defx',
