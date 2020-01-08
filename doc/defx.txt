@@ -166,7 +166,7 @@ defx#is_directory()					*defx#is_directory()*
 		\ defx#do_action('open_directory') :
 		\ defx#do_action('multi', ['drop', 'quit'])
 
-defx#is_opened_tree()					*defx#is_opened_tree()*
+defx#is_opened_tree()				*defx#is_opened_tree()*
 		Returns |v:true| if the current cursor candidate is opened
 		directory tree.
 
@@ -202,7 +202,7 @@ call 						*defx-action-call*
 
 		Action args:
 			0. function name
-			Note: It must be string.  You cannot use |funcref| or
+			Note: It must be string.  You cannot use |Funcref| or
 			|lambda|.
 
 		Example: >
@@ -251,7 +251,7 @@ drop							*defx-action-drop*
 		Action args:
 			0. open command(The default is |:edit|)
 
-execute_command 					*defx-action-execute_command*
+execute_command 				*defx-action-execute_command*
 		Execute the command.
 
 		Action args:
@@ -321,7 +321,8 @@ open_tree_recursive			*defx-action-open_tree_recursive*
 
 paste							*defx-action-paste*
 		Fire the clipboard action in the current directory.
-		Note: It is used after |defx-action-copy| or |defx-action-move|.
+		Note: It is used after |defx-action-copy| or
+		|defx-action-move|.
 
 print 						*defx-action-print*
 		Print the filename.
@@ -388,7 +389,7 @@ toggle_ignored_files			*defx-action-toggle_ignored_files*
 toggle_select					*defx-action-toggle_select*
 		Toggle the cursor candidate select.
 
-toggle_select_all				*defx-action-toggle_select_all*
+toggle_select_all			*defx-action-toggle_select_all*
 		Toggle the all candidates select.
 
 toggle_select_visual
@@ -486,7 +487,7 @@ OPTIONS							*defx-options*
 
 		Default: ""
 
-							*defx-option-show-ignored-files*
+					*defx-option-show-ignored-files*
 -show-ignored-files
 		Show ignored files by default.
 		Default: false
@@ -537,7 +538,7 @@ OPTIONS							*defx-options*
 						*defx-option-winrelative*
 -winrelative={direction}
 		Specify the relative position in floating window.
-		|nvim_open_win|
+		|nvim_open_win()|
 
 		Default: "editor"
 
@@ -565,8 +566,8 @@ filename	File name.
 		min_width	  the minimum width of a defx buffer
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
-				  If it is negative value, it means "winwidth *
-				  -max_width / 100".
+				  If it is negative value, it means:
+				  "winwidth -max_width / 100".
 				  Example: "-120" max_width means 120 percent
 				  winwidth.
 				  (default: 100)
@@ -621,7 +622,7 @@ type		File type.
 		types		  the types definition
 				  (default: complicated)
 
-EXTERNAL COLUMNS					*defx-external-columns*
+EXTERNAL COLUMNS				*defx-external-columns*
 
 git 		Git status.
 		https://github.com/kristijanhusak/defx-git
@@ -637,7 +638,7 @@ file		File
 		variables:
 		root		  root function name
 				  Note: It must be string.  You cannot use
-				  |funcref| or |lambda|.
+				  |Funcref| or |lambda|.
 				  (default is v:null)
 
 ==============================================================================
