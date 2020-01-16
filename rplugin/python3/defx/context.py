@@ -6,8 +6,6 @@
 
 import typing
 
-from defx.clipboard import Clipboard
-
 
 class Context(typing.NamedTuple):
     args: typing.List[str] = []
