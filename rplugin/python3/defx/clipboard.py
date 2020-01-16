@@ -20,3 +20,15 @@ class Clipboard():
                  typing.List[typing.Dict[str, typing.Any]] = []) -> None:
         self.action = action
         self.candidates = candidates
+
+    def _asdict(self) -> typing.Dict[str, typing.Any]:
+        return {
+            'action': str(self.action),
+            'candidates': [{
+                'word': x['word'],
+                'is_directory': x['is_directory'],
+                'is_opened_tree': x['is_opened_tree'],
+                'level': x['level'],
+                'action__path': str(x['action__path']),
+            } for x in self.candidates]
+        }
