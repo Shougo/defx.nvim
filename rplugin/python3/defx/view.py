@@ -10,7 +10,6 @@ import typing
 from pynvim.api import Buffer
 from pathlib import Path
 
-from defx.base.column import Base as Column
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
@@ -474,6 +473,7 @@ class View(object):
         return True
 
     def _init_all_columns(self) -> None:
+        from defx.base.column import Base as Column
         self._all_columns: typing.Dict[str, Column] = {}
 
         for path_column in self._load_custom_columns():
@@ -486,6 +486,7 @@ class View(object):
                 self._all_columns[column.name] = column
 
     def _init_columns(self, columns: typing.List[str]) -> None:
+        from defx.base.column import Base as Column
         custom = self._vim.call('defx#custom#_get')['column']
         self._columns: typing.List[Column] = [
             copy.copy(self._all_columns[x])
@@ -497,6 +498,7 @@ class View(object):
             column.on_init(self, self._context)
 
     def _init_column_length(self) -> None:
+        from defx.base.column import Base as Column
         within_variable = False
         within_variable_columns: typing.List[Column] = []
         start = 1
