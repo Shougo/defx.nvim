@@ -6,7 +6,7 @@
 
 from defx.base.column import Base
 from defx.context import Context
-from defx.util import Nvim, View
+from defx.util import Nvim
 from defx.view import View
 
 import re
