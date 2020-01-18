@@ -7,6 +7,7 @@
 from defx.base.column import Base
 from defx.context import Context
 from defx.util import Nvim
+from defx.view import View
 
 import typing
 
@@ -36,7 +37,7 @@ class Column(Base):
         self._directory_marker = '**'
         self._file_marker = '||'
 
-    def on_init(self, context: Context) -> None:
+    def on_init(self, view: View, context: Context) -> None:
         self._context = context
 
     def get_with_variable_text(

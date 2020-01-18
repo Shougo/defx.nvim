@@ -6,7 +6,8 @@
 
 from defx.base.column import Base
 from defx.context import Context
-from defx.util import Nvim
+from defx.util import Nvim, View
+from defx.view import View
 
 import re
 import typing
@@ -41,7 +42,7 @@ class Column(Base):
         }
         self._length: int = 0
 
-    def on_init(self, context: Context) -> None:
+    def on_init(self, view: View, context: Context) -> None:
         self._length = max([self.vim.call('strwidth', x['icon'])
                             for x in self.vars['types']])
 

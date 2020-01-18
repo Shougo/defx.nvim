@@ -13,7 +13,6 @@ class Context(typing.NamedTuple):
     auto_recursive_level: int = 0
     buffer_name: str = 'default'
     columns: str = ''
-    clipboard: typing.Dict[str, typing.Any] = {}
     cursor: int = 0
     direction: str = ''
     drives: typing.List[str] = []

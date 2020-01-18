@@ -137,11 +137,8 @@ class View(object):
             self._init_candidates()
             self._init_column_length()
 
-        self._context = self._context._replace(
-            clipboard=self._clipboard._asdict())
-
         for column in self._columns:
-            column.on_redraw(self._context)
+            column.on_redraw(self, self._context)
 
         lines = [
             self._get_columns_text(self._context, x)
@@ -385,7 +382,6 @@ class View(object):
         # Initialize defx state
         self._candidates = []
         self._clipboard = clipboard
-        self._context = self._context._replace(clipboard=clipboard._asdict())
         self._defxs = []
         self._update_defx(paths)
 
@@ -498,7 +494,7 @@ class View(object):
         for column in self._columns:
             if column.name in custom:
                 column.vars.update(custom[column.name])
-            column.on_init(self._context)
+            column.on_init(self, self._context)
 
     def _init_column_length(self) -> None:
         within_variable = False

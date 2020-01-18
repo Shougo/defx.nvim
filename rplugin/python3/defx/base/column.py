@@ -11,6 +11,7 @@ from abc import abstractmethod
 from defx.context import Context
 from defx.util import Nvim
 from defx.util import error
+from defx.view import View
 
 
 class Base:
@@ -26,10 +27,10 @@ class Base:
         self.is_stop_variable: bool = False
         self.is_within_variable: bool = False
 
-    def on_init(self, context: Context) -> None:
+    def on_init(self, view: View, context: Context) -> None:
         pass
 
-    def on_redraw(self, context: Context) -> None:
+    def on_redraw(self, view: View, context: Context) -> None:
         pass
 
     def get(self, context: Context,

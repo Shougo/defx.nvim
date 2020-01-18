@@ -7,6 +7,7 @@
 from defx.base.column import Base
 from defx.context import Context
 from defx.util import Nvim, readable
+from defx.view import View
 
 import time
 import typing
@@ -23,7 +24,7 @@ class Column(Base):
             'format': '%y.%m.%d %H:%M',
         }
 
-    def on_init(self, context: Context) -> None:
+    def on_init(self, view: View, context: Context) -> None:
         self._length = self.vim.call('strwidth',
                                      time.strftime(self.vars['format']))
 
