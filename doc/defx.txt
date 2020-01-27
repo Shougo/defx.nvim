@@ -770,6 +770,10 @@ Q: I want to update defx status automatically when changing file.
 A: >
 	autocmd BufWritePost * call defx#redraw()
 
+Q: I want to open defx when running `:e /some/directory/` like netrw.
+
+A: https://github.com/Shougo/defx.nvim/issues/175
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
