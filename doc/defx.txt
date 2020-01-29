@@ -608,6 +608,9 @@ mark		File selected mark.
 							*defx-column-size*
 size		File size.
 
+							*defx-column-space*
+space		One space column for padding.
+
 							*defx-column-time*
 time		File modified time.
 
