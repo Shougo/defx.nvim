@@ -33,6 +33,7 @@ class Defx(object):
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
         self._opened_candidates: typing.Set[str] = set()
+        self._selected_candidates: typing.Set[str] = set()
 
         self._init_source()
 

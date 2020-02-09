@@ -228,14 +228,19 @@ class View(object):
         self._vim.call('cursor', [pos + 1, 1])
         return True
 
-    def update_opened_candidates(self) -> None:
-        # Update opened state
+    def update_candidates(self) -> None:
+        # Update opened/selected state
         for defx in self._defxs:
             defx._opened_candidates = set()
+            defx._selected_candidates = set()
         for [i, candidate] in [x for x in enumerate(self._candidates)
                                if x[1]['is_opened_tree']]:
             defx = self._defxs[candidate['_defx_index']]
             defx._opened_candidates.add(str(candidate['action__path']))
+        for [i, candidate] in [x for x in enumerate(self._candidates)
+                               if x[1]['is_selected']]:
+            defx = self._defxs[candidate['_defx_index']]
+            defx._selected_candidates.add(str(candidate['action__path']))
 
     def open_tree(self, path: Path, index: int, max_level: int = 0) -> None:
         # Search insert position
@@ -314,7 +319,7 @@ class View(object):
         session = self._sessions[path]
         for opened_path in session.opened_candidates:
             self.open_tree(Path(opened_path), index)
-        self.update_opened_candidates()
+        self.update_candidates()
         self.redraw()
 
     def _init_defx(self,

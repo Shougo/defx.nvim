@@ -239,7 +239,7 @@ def _search(view: View, defx: Defx, context: Context) -> None:
     for parent in reversed(parents):
         view.open_tree(parent, defx._index, 0)
 
-    view.update_opened_candidates()
+    view.update_candidates()
     view.redraw()
     view.search_file(Path(search_path), defx._index)
 
