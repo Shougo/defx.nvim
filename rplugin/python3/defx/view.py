@@ -110,13 +110,19 @@ class View(object):
                     self._prev_bufnr != self._vim.call('bufnr', '%')):
                 self._vim.command('buffer ' + str(self._prev_bufnr))
             else:
-                self._vim.command('enew')
+                # go to last buffer if previous buffer doesn't exist
+                # anymore, intead of creating a new buffer
+                if self._vim.call('bufnr', '$') != -1:
+                    self._vim.command('buffer $')
         else:
             if self._vim.call('winnr', '$') != 1:
                 self._vim.command('close')
                 self._vim.call('win_gotoid', self._context.prev_winid)
             else:
-                self._vim.command('enew')
+                # go to last buffer if previous buffer doesn't exist
+                # anymore, intead of creating a new buffer
+                if self._vim.call('bufnr', '$') != -1:
+                    self._vim.command('buffer $')
 
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
