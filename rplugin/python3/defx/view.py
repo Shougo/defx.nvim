@@ -105,18 +105,17 @@ class View(object):
 
         self._vim.command(f'{winnr}wincmd w')
 
-        if self._context.split in ['no', 'tab']:
-            if (self._vim.call('bufexists', self._prev_bufnr) and
-                    self._prev_bufnr != self._vim.call('bufnr', '%')):
-                self._vim.command('buffer ' + str(self._prev_bufnr))
-            else:
-                self._vim.command('enew')
+        if (self._context.split not in ['no', 'tab'] and
+                self._vim.call('winnr', '$') != 1):
+            self._vim.command('close')
+            self._vim.call('win_gotoid', self._context.prev_winid)
+        elif self._check_bufnr(self._prev_bufnr):
+            self._vim.command('buffer ' + str(self._prev_bufnr))
+        elif self._check_bufnr(self._context.prev_last_bufnr):
+            self._vim.command('buffer ' +
+                              str(self._context.prev_last_bufnr))
         else:
-            if self._vim.call('winnr', '$') != 1:
-                self._vim.command('close')
-                self._vim.call('win_gotoid', self._context.prev_winid)
-            else:
-                self._vim.command('enew')
+            self._vim.command('enew')
 
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
@@ -657,3 +656,7 @@ class View(object):
             else:
                 self.cd(self._defxs[index], path, self._context.cursor)
             self._update_paths(index, path)
+
+    def _check_bufnr(self, bufnr: int) -> bool:
+        return (bool(self._vim.call('bufexists', bufnr)) and
+                bufnr != self._vim.call('bufnr', '%'))

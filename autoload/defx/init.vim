@@ -121,6 +121,7 @@ function! s:internal_options() abort
         \ 'cursor': line('.'),
         \ 'drives': [],
         \ 'prev_bufnr': bufnr('%'),
+        \ 'prev_last_bufnr': bufnr('#'),
         \ 'prev_winid': win_getid(),
         \ 'visual_start': getpos("'<")[1],
         \ 'visual_end': getpos("'>")[1],

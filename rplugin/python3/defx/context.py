@@ -20,6 +20,7 @@ class Context(typing.NamedTuple):
     listed: bool = False
     new: bool = False
     prev_bufnr: int = 0
+    prev_last_bufnr: int = 0
     prev_winid: int = 0
     profile: bool = False
     resume: bool = False
