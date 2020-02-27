@@ -235,6 +235,9 @@ cd 						*defx-action-cd*
 
 change_vim_cwd					*change_vim_cwd*
 		Change current working directory to the current directory.
+		Note: It changes global current directory if the window has
+		not local current directory.  If you don't like the behavior,
+		you need to set local current directory.
 
 clear_select_all				*defx-action-clear_select_all*
 		Clear the all candidates select.
@@ -411,6 +414,10 @@ OPTIONS							*defx-options*
 							*defx-option-auto-cd*
 -auto-cd
 		Change the working directory while navigating with defx.
+		Note: It changes global current directory if the window has
+		not local current directory.  If you don't like the behavior,
+		you need to set local current directory.
+
 		Default: false
 
 					*defx-option-auto-recursive-level*
