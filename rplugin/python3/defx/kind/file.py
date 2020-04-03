@@ -153,8 +153,10 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
-            if path.match(cwd):
+            try:
                 path = path.relative_to(cwd)
+            except ValueError:
+                pass
             view._vim.call('defx#util#execute_path', command, str(path))
 
 
