@@ -325,8 +325,10 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             view.cd(defx, str(path), context.cursor)
             continue
 
-        if path.match(cwd):
+        try:
             path = path.relative_to(cwd)
+        except ValueError:
+            pass
         view._vim.call('defx#util#execute_path', command, str(path))
 
 
