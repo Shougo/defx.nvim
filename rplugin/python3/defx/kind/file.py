@@ -216,8 +216,9 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
-    new_filename = cwd_input(view._vim, cwd,
-                             'Please input a new directory name: ', '', 'file')
+    new_filename = cwd_input(
+        view._vim, cwd,
+        'Please input a new directory name: ', '', 'file')
     if not new_filename:
         return
     filename = Path(cwd).joinpath(new_filename)
@@ -247,8 +248,9 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
     else:
         cwd = str(Path(candidate['action__path']).parent)
 
-    new_filename = cwd_input(view._vim, cwd,
-                             'Please input a new filename: ', '', 'file')
+    new_filename = cwd_input(
+        view._vim, cwd,
+        'Please input a new filename: ', '', 'file')
     if not new_filename:
         return
     isdir = new_filename[-1] == '/'
@@ -461,7 +463,8 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
     for target in context.targets:
         old = target['action__path']
         new_filename = cwd_input(
-            view._vim, defx._cwd, f'New name: {old} -> ', str(old), 'file')
+            view._vim, defx._cwd,
+            f'Old name: {old}\nNew name: ', str(old), 'file')
         if not new_filename:
             return
         new = Path(defx._cwd).joinpath(new_filename)
