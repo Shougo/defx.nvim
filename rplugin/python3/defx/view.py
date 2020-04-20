@@ -370,10 +370,10 @@ class View(object):
         buffer_options['modified'] = False
         buffer_options['filetype'] = 'defx'
 
-        self._execute_commands([
-            'silent doautocmd FileType defx',
-            'autocmd! defx * <buffer>',
-        ])
+        if self._vim.call('exists', '#FileType#defx'):
+            self._vim.command('doautocmd FileType defx')
+
+        self._vim.command('autocmd! defx * <buffer>')
         self._vim.command('autocmd defx '
                           'CursorHold,FocusGained <buffer> '
                           'call defx#call_async_action("check_redraw")')
