@@ -261,7 +261,7 @@ class View(object):
         if not children:
             return
 
-        if len(children) == 1:
+        if len(children) == 1 and children[0]['is_directory']:
             # Merge child.
             target['action__path'] = children[0]['action__path']
             target['word'] += children[0]['word']
