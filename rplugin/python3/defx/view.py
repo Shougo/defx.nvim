@@ -262,11 +262,12 @@ class View(object):
             return
 
         if len(children) == 1:
-            # Merge child.
-            target['action__path'] = children[0]['action__path']
-            target['word'] += children[0]['word']
-            target['is_opened_tree'] = False
-            return self.open_tree(target['action__path'], index, max_level)
+            if children[0]["is_directory"]:
+                # Merge child.
+                target['action__path'] = children[0]['action__path']
+                target['word'] += children[0]['word']
+                target['is_opened_tree'] = False
+                return self.open_tree(target['action__path'], index, max_level)
 
         for candidate in children:
             candidate['_defx_index'] = index
