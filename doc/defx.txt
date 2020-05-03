@@ -313,8 +313,18 @@ open_or_close_tree			*defx-action-open_or_close_tree*
 		Open the directory tree if the directory is not opened.
 		Close the directory tree if the directory is opened.
 
+		Action args:
+			0. open tree option.  The supported values are:
+			"nested": enable nested directory view if it has
+				  one directory only.
+
 open_tree					*defx-action-open_tree*
 		Open the directory tree.
+
+		Action args:
+			0. open tree option.  The supported values are:
+			"nested": enable nested directory view if it has
+				  one directory only.
 
 open_tree_recursive			*defx-action-open_tree_recursive*
 		Open the directory tree recursively.

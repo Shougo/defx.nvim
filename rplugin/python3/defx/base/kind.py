@@ -154,8 +154,9 @@ def _nop(view: View, defx: Defx, context: Context) -> None:
 
 @action(name='open_tree', attr=ActionAttr.TREE | ActionAttr.CURSOR_TARGET)
 def _open_tree(view: View, defx: Defx, context: Context) -> None:
+    enable_nested = context.args[0] == 'nested' if context.args else False
     for target in [x for x in context.targets if x['is_directory']]:
-        view.open_tree(target['action__path'], defx._index, 0)
+        view.open_tree(target['action__path'], defx._index, enable_nested, 0)
 
 
 @action(name='open_tree_recursive',
@@ -163,7 +164,7 @@ def _open_tree(view: View, defx: Defx, context: Context) -> None:
 def _open_tree_recursive(view: View, defx: Defx, context: Context) -> None:
     level = int(context.args[0]) if context.args else 20
     for target in [x for x in context.targets if x['is_directory']]:
-        view.open_tree(target['action__path'], defx._index, level)
+        view.open_tree(target['action__path'], defx._index, False, level)
 
 
 @action(name='open_or_close_tree',
@@ -237,7 +238,7 @@ def _search(view: View, defx: Defx, context: Context) -> None:
         parents.append(path)
 
     for parent in reversed(parents):
-        view.open_tree(parent, defx._index, 0)
+        view.open_tree(parent, defx._index, False, 0)
 
     view.update_candidates()
     view.redraw()

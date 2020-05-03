@@ -241,7 +241,8 @@ class View(object):
             defx = self._defxs[candidate['_defx_index']]
             defx._selected_candidates.add(str(candidate['action__path']))
 
-    def open_tree(self, path: Path, index: int, max_level: int = 0) -> None:
+    def open_tree(self, path: Path, index: int, enable_nested: bool,
+                  max_level: int = 0) -> None:
         # Search insert position
         pos = self.get_candidate_pos(path, index)
         if pos < 0:
@@ -261,12 +262,14 @@ class View(object):
         if not children:
             return
 
-        if len(children) == 1 and children[0]['is_directory']:
+        if (enable_nested and len(children) == 1
+                and children[0]['is_directory']):
             # Merge child.
             target['action__path'] = children[0]['action__path']
             target['word'] += children[0]['word']
             target['is_opened_tree'] = False
-            return self.open_tree(target['action__path'], index, max_level)
+            return self.open_tree(target['action__path'],
+                                  index, enable_nested, max_level)
 
         for candidate in children:
             candidate['_defx_index'] = index
@@ -324,7 +327,7 @@ class View(object):
         # restore opened_candidates
         session = self._sessions[path]
         for opened_path in session.opened_candidates:
-            self.open_tree(Path(opened_path), index)
+            self.open_tree(Path(opened_path), index, False)
         self.update_candidates()
         self.redraw()
 
