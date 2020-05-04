@@ -310,27 +310,33 @@ open_directory					*defx-action-open_directory*
 			directory)
 
 open_or_close_tree			*defx-action-open_or_close_tree*
-		Open the directory tree if the directory is not opened.
-		Close the directory tree if the directory is opened.
-
-		Action args:
-			0. open tree option.  The supported values are:
-			"nested": enable nested directory view if it has
-				  one directory only.
+		It is the same with |defx-action-open_tree| with "toggle"
+		arg.
+		Note: The action is deprecated.
 
 open_tree					*defx-action-open_tree*
 		Open the directory tree.
 
 		Action args:
-			0. open tree option.  The supported values are:
-			"nested": enable nested directory view if it has
-				  one directory only.
+			0-n. options.  The supported values are:
+
+			"nested":
+				enable nested directory view if it has one
+				directory only.
+			"recursive":
+				open the directory tree recursively.
+			"recursive[:{level}]":
+				open the directory tree recursively by
+				max recursive {level}.
+			"toggle":
+				close the directory tree if the directory is
+				opened.
+
 
 open_tree_recursive			*defx-action-open_tree_recursive*
-		Open the directory tree recursively.
-
-		Action args:
-			0. max recursive leavel(The default is "20")
+		It is the same with |defx-action-open_tree| with "recursive"
+		arg.
+		Note: The action is deprecated.
 
 paste							*defx-action-paste*
 		Fire the clipboard action in the current directory.
@@ -700,7 +706,7 @@ EXAMPLES						*defx-examples*
 	  nnoremap <silent><buffer><expr> P
 	  \ defx#do_action('open', 'pedit')
 	  nnoremap <silent><buffer><expr> o
-	  \ defx#do_action('open_or_close_tree')
+	  \ defx#do_action('open_tree', 'toggle')
 	  nnoremap <silent><buffer><expr> K
 	  \ defx#do_action('new_directory')
 	  nnoremap <silent><buffer><expr> N
@@ -796,6 +802,9 @@ A: https://github.com/Shougo/defx.nvim/issues/175
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
+
+2020-05-04
+* "open_tree_recursive" and "open_or_close_tree" actions are deprecated.
 
 2019-03-10
 * Move "directory_icon", "opened_icon" and "root_icon" to filename column.
