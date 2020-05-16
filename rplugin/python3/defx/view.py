@@ -380,8 +380,9 @@ class View(object):
         buffer_options['modified'] = False
         buffer_options['filetype'] = 'defx'
 
-        if self._vim.call('exists', '#FileType#defx'):
-            self._vim.command('doautocmd FileType defx')
+        if not self._vim.call('has', 'nvim'):
+            # In Vim8, FileType autocmd is not fired after set filetype option.
+            self._vim.command('silent doautocmd FileType defx')
 
         self._vim.command('autocmd! defx * <buffer>')
         self._vim.command('autocmd defx '
