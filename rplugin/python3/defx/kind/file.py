@@ -465,12 +465,13 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         new_filename = cwd_input(
             view._vim, defx._cwd,
             f'Old name: {old}\nNew name: ', str(old), 'file')
+        view._vim.command('redraw')
         if not new_filename:
             return
         new = Path(defx._cwd).joinpath(new_filename)
         if not new or new == old:
             continue
-        if new.exists():
+        if str(new).lower() != str(old).lower() and new.exists():
             error(view._vim, f'{new} already exists')
             continue
 
