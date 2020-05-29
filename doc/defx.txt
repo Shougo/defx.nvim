@@ -800,6 +800,11 @@ Q: I want to open defx when running `:e /some/directory/` like netrw.
 
 A: https://github.com/Shougo/defx.nvim/issues/175
 
+Q: I want to open file by double click.
+
+A: >
+	nnoremap <silent><buffer><expr> <2-LeftMouse> defx#do_action('open')
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
