@@ -592,7 +592,7 @@ class View(object):
         threshold = 15
         cnt = 0
         while cnt < len(commands):
-            self._vim.command(' | '.join(commands[cnt : cnt + threshold]))
+            self._vim.command(' | '.join(commands[cnt: cnt + threshold]))
             cnt += threshold
 
     def _init_candidates(self) -> None:
