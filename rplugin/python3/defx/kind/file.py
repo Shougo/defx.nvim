@@ -477,5 +477,9 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
 
         old.rename(new)
 
+        # Check rename
+        view._vim.call('defx#util#buffer_rename',
+                       view._vim.call('bufnr', str(old)), str(new))
+
         view.redraw(True)
         view.search_file(new, defx._index)

@@ -141,6 +141,8 @@ function! s:do_rename() abort
         continue
       endif
 
+      call defx#util#buffer_rename(bufnr(old_file), new_file)
+
       " update b:exrename
       let b:exrename.filenames[linenr - 1] = getline(linenr)
       let b:exrename.candidates[linenr - 1].action__path = new_file
