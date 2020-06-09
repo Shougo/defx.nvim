@@ -333,7 +333,7 @@ function! defx#util#buffer_rename(bufnr, new_filename) abort
 
   set hidden
   let bufnr_save = bufnr('%')
-  noautocmd silent execute 'buffer' a:bufnr
+  noautocmd silent! execute 'buffer' a:bufnr
   silent execute (&l:buftype ==# '' ? 'saveas!' : 'file')
         \ fnameescape(a:new_filename)
   if &l:buftype ==# ''
@@ -343,4 +343,23 @@ function! defx#util#buffer_rename(bufnr, new_filename) abort
 
   noautocmd silent execute 'buffer' bufnr_save
   let &hidden = hidden
+endfunction
+
+function! defx#util#buffer_delete(bufnr) abort
+  if a:bufnr < 0
+    return
+  endif
+
+  let winid = get(win_findbuf(a:bufnr), 0, -1)
+  if winid > 0
+    let winid_save = win_getid()
+    call win_gotoid(winid)
+
+    noautocmd silent enew
+    execute 'silent! bdelete!' a:bufnr
+
+    call win_gotoid(winid_save)
+  else
+    execute 'silent! bdelete!' a:bufnr
+  endif
 endfunction

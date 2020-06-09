@@ -418,8 +418,11 @@ def _remove(view: View, defx: Defx, context: Context) -> None:
         else:
             path.unlink()
 
+        view._vim.call('defx#util#buffer_delete',
+                       view._vim.call('bufnr', str(path)))
 
-@action(name='remove_trash')
+
+@action(name='remove_trash', attr=ActionAttr.REDRAW)
 def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     """
     Delete the file or directory.
@@ -443,7 +446,9 @@ def _remove_trash(view: View, defx: Defx, context: Context) -> None:
     import send2trash
     for target in context.targets:
         send2trash.send2trash(str(target['action__path']))
-    view.redraw(True)
+
+        view._vim.call('defx#util#buffer_delete',
+                       view._vim.call('bufnr', str(target['action__path'])))
 
 
 @action(name='rename')
