@@ -243,19 +243,7 @@ def _search(view: View, defx: Defx, context: Context) -> None:
         return
 
     search_path = context.args[0]
-    path = Path(search_path)
-    parents: typing.List[Path] = []
-    while view.get_candidate_pos(
-            path, defx._index) < 0 and path.parent != path:
-        path = path.parent
-        parents.append(path)
-
-    for parent in reversed(parents):
-        view.open_tree(parent, defx._index, False, 0)
-
-    view.update_candidates()
-    view.redraw()
-    view.search_file(Path(search_path), defx._index)
+    view.search_recursive(Path(search_path), defx._index)
 
 
 @action(name='toggle_columns', attr=ActionAttr.REDRAW)

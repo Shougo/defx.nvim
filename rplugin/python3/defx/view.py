@@ -227,6 +227,21 @@ class View(object):
         self._vim.call('cursor', [pos + 1, 1])
         return True
 
+    def search_recursive(self, path: Path, index: int) -> None:
+        parents: typing.List[Path] = []
+        tmppath: Path = path
+        while self.get_candidate_pos(
+                tmppath, index) < 0 and tmppath.parent != path:
+            tmppath = tmppath.parent
+            parents.append(tmppath)
+
+        for parent in reversed(parents):
+            self.open_tree(parent, index, False, 0)
+
+        self.update_candidates()
+        self.redraw()
+        self.search_file(path, index)
+
     def update_candidates(self) -> None:
         # Update opened/selected state
         for defx in self._defxs:

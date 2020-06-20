@@ -231,7 +231,7 @@ def _new_directory(view: View, defx: Defx, context: Context) -> None:
 
     filename.mkdir(parents=True)
     view.redraw(True)
-    view.search_file(filename, defx._index)
+    view.search_recursive(filename, defx._index)
 
 
 @action(name='new_file')
@@ -269,7 +269,7 @@ def _new_file(view: View, defx: Defx, context: Context) -> None:
         filename.touch()
 
     view.redraw(True)
-    view.search_file(filename, defx._index)
+    view.search_recursive(filename, defx._index)
 
 
 @action(name='new_multiple_files')
@@ -312,7 +312,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
             filename.touch()
 
     view.redraw(True)
-    view.search_file(filename, defx._index)
+    view.search_recursive(filename, defx._index)
 
 
 @action(name='open')
@@ -390,7 +390,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
 
     view.redraw(True)
     if dest:
-        view.search_file(dest, defx._index)
+        view.search_recursive(dest, defx._index)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
@@ -487,4 +487,4 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
                        view._vim.call('bufnr', str(old)), str(new))
 
         view.redraw(True)
-        view.search_file(new, defx._index)
+        view.search_recursive(new, defx._index)
