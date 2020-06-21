@@ -13,7 +13,17 @@ function! defx#start(paths, user_context) abort
   let context = defx#init#_context(a:user_context)
   let paths = a:paths
   let paths = map(paths, "fnamemodify(v:val, ':p')")
-  call defx#util#rpcrequest('_defx_start', [paths, context], v:false)
+  call defx#util#rpcrequest('_defx_start',
+        \ [paths, context], v:false)
+  if context['search'] !=# ''
+    call defx#call_action('search', [context['search']])
+  endif
+endfunction
+function! defx#start_candidates(candidates, user_context) abort
+  call defx#initialize()
+  let context = defx#init#_context(a:user_context)
+  call defx#util#rpcrequest('_defx_start_candidates',
+        \ [a:candidates, context], v:false)
   if context['search'] !=# ''
     call defx#call_action('search', [context['search']])
   endif

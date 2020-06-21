@@ -60,6 +60,12 @@ class View(object):
         self._init_columns(self._context.columns.split(':'))
         self.redraw(True)
 
+    def init_candidates(self, candidates: typing.List[typing.Any],
+                        context: typing.Dict[str, typing.Any],
+                        clipboard: Clipboard
+                        ) -> None:
+        self.init(context)
+
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
                   new_context: typing.Dict[str, typing.Any]) -> None:
