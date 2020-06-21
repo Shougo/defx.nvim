@@ -37,23 +37,28 @@ class View(object):
         self._session_version = '1.0'
         self._sessions: typing.Dict[str, Session] = {}
 
-    def init(self, paths: typing.List[str],
-             context: typing.Dict[str, typing.Any],
-             clipboard: Clipboard
-             ) -> None:
+    def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)
         self._bufname = f'[defx] {self._context.buffer_name}-{self._index}'
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
         self._prev_bufnr = self._context.prev_bufnr
 
-        if not self._init_defx(paths, clipboard):
+    def init_paths(self, paths: typing.List[str],
+             context: typing.Dict[str, typing.Any],
+             clipboard: Clipboard
+             ) -> None:
+        self.init(context)
+
+        if self._init_defx(paths, clipboard):
             # Skipped initialize
-            self._winid = self._vim.call('win_getid')
-            if paths and self._vim.call('bufnr', '%') == self._bufnr:
-                self._update_defx(paths)
-            self._init_columns(self._context.columns.split(':'))
-            self.redraw(True)
+            return
+
+        self._winid = self._vim.call('win_getid')
+        if paths and self._vim.call('bufnr', '%') == self._bufnr:
+            self._update_defx(paths)
+        self._init_columns(self._context.columns.split(':'))
+        self.redraw(True)
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],

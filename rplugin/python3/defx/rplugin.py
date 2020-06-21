@@ -29,7 +29,7 @@ class Rplugin:
             view = View(self._vim, len(self._views))
             views = [view]
             self._views.append(view)
-        views[0].init(paths, context, self._clipboard)
+        views[0].init_paths(paths, context, self._clipboard)
 
     def do_action(self, args: typing.List[typing.Any]) -> None:
         views = [x for x in self._views
