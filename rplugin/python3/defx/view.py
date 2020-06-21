@@ -45,9 +45,9 @@ class View(object):
         self._prev_bufnr = self._context.prev_bufnr
 
     def init_paths(self, paths: typing.List[str],
-             context: typing.Dict[str, typing.Any],
-             clipboard: Clipboard
-             ) -> None:
+                   context: typing.Dict[str, typing.Any],
+                   clipboard: Clipboard
+                   ) -> None:
         self.init(context)
 
         if self._init_defx(paths, clipboard):
@@ -56,7 +56,7 @@ class View(object):
 
         self._winid = self._vim.call('win_getid')
         if paths and self._vim.call('bufnr', '%') == self._bufnr:
-            self._update_defx(paths)
+            self._update_defx_paths(paths)
         self._init_columns(self._context.columns.split(':'))
         self.redraw(True)
 
@@ -417,7 +417,7 @@ class View(object):
         self._candidates = []
         self._clipboard = clipboard
         self._defxs = []
-        self._update_defx(paths)
+        self._update_defx_paths(paths)
 
         self._init_all_columns()
         self._init_columns(self._context.columns.split(':'))
@@ -682,7 +682,7 @@ class View(object):
 
         return result
 
-    def _update_defx(self, paths: typing.List[str]) -> None:
+    def _update_defx_paths(self, paths: typing.List[str]) -> None:
         self._defxs = self._defxs[:len(paths)]
 
         for [index, path] in enumerate(paths):
