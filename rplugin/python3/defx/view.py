@@ -690,4 +690,5 @@ class View(object):
 
     def _check_bufnr(self, bufnr: int) -> bool:
         return (bool(self._vim.call('bufexists', bufnr)) and
-                bufnr != self._vim.call('bufnr', '%'))
+                bufnr != self._vim.call('bufnr', '%') and
+                self._vim.call('getbufvar', bufnr, '&filetype') != 'defx')
