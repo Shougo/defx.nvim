@@ -8,6 +8,7 @@ from pathlib import Path
 import typing
 
 from defx.base.source import Base
+from defx.source.file import Source as File
 from defx.context import Context
 from defx.util import error, readable, safe_call, Nvim
 
@@ -47,16 +48,20 @@ class Source(Base):
     def gather_candidates(
             self, context: Context, path: Path
     ) -> typing.List[typing.Dict[str, typing.Any]]:
-        candidates = []
-        if not readable(path) or not path.is_file():
+        if not readable(path):
             error(self.vim, f'"{path}" is not readable file.')
             return []
 
+        if path.is_dir():
+            # Fallback to file source
+            return File(self.vim).gather_candidates(context, path)
+
+        candidates = []
         with path.open() as f:
             for line in f:
-                entry = Path(line)
+                entry = Path(line.rstrip('\n'))
                 candidates.append({
-                    'word': entry.name.replace('\n', '\\n') + (
+                    'word': str(entry) + (
                         '/' if safe_call(entry.is_dir, False) else ''),
                     'is_directory': safe_call(entry.is_dir, False),
                     'action__path': entry,

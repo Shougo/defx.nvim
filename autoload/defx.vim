@@ -24,7 +24,7 @@ function! defx#start_candidates(candidates, user_context) abort
   let context = defx#init#_context(a:user_context)
   let listfile = tempname()
   call writefile(a:candidates, listfile)
-  let paths = ['file/list', listfile]
+  let paths = [['file/list', listfile]]
   call defx#util#rpcrequest('_defx_start',
         \ [paths, context], v:false)
   if context['search'] !=# ''
