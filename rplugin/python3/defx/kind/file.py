@@ -85,7 +85,7 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current directory.
     """
-    source_name = 'file'
+    source_name = defx._source.name
     if context.args:
         if len(context.args) > 1:
             source_name = context.args[0]

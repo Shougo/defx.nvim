@@ -68,7 +68,8 @@ class Defx(object):
         root['is_opened_tree'] = False
         root['is_selected'] = False
         root['level'] = 0
-        root['word'] = self._context.root_marker + root['word']
+        root['word'] = '{}{}:{}'.format(self._context.root_marker,
+                                        self._source.name, root['word'])
 
         return root
 

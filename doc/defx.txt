@@ -494,7 +494,7 @@ OPTIONS							*defx-options*
 -root-marker={marker}
 		Root marker.
 
-		Default: "[in]: "
+		Default: "[in] "
 
 							*defx-option-search*
 -search={path}

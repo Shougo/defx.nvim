@@ -102,7 +102,7 @@ function! defx#init#_user_options() abort
         \ 'new': v:false,
         \ 'profile': v:false,
         \ 'resume': v:false,
-        \ 'root_marker': '[in]: ',
+        \ 'root_marker': '[in] ',
         \ 'search': '',
         \ 'session_file': '',
         \ 'show_ignored_files': v:false,
