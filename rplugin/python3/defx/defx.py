@@ -6,6 +6,7 @@
 
 import typing
 
+from defx.base.source import Base as Source
 from defx.source.file import Source as File
 from defx.context import Context
 from defx.sort import sort
@@ -25,7 +26,7 @@ class Defx(object):
         self._context = context
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
-        self._source: File = File(self._vim)
+        self._source: typing.Optional[Source] = None
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
         self._ignored_files = context.ignored_files.split(',')
@@ -35,9 +36,11 @@ class Defx(object):
         self._opened_candidates: typing.Set[str] = set()
         self._selected_candidates: typing.Set[str] = set()
 
-        self._init_source()
+        self._init_source(cwd)
 
-    def _init_source(self) -> None:
+    def _init_source(self, cwd: str) -> None:
+        self._source = File(self._vim)
+
         custom = self._vim.call('defx#custom#_get')['source']
         name = self._source.name
         if name in custom:
@@ -49,13 +52,16 @@ class Defx(object):
     def cd(self, path: str) -> None:
         self._cwd = str(Path(self._cwd).joinpath(path))
 
-        if self._context.auto_cd:
+        if self._context.auto_cd and Path(path).is_dir():
             cd(self._vim, path)
 
     def get_root_candidate(self) -> Candidate:
         """
         Returns root candidate
         """
+        if not self._source:
+            return {}
+
         root = self._source.get_root_candidate(self._context, Path(self._cwd))
         root['is_root'] = True
         root['is_opened_tree'] = False
@@ -110,6 +116,9 @@ class Defx(object):
         """
         Returns file candidates
         """
+        if not self._source:
+            return []
+
         candidates = self._source.gather_candidates(
             self._context, Path(path))
 

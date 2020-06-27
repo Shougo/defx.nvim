@@ -454,7 +454,19 @@ class View(object):
     def _init_defx_candidates(self,
                               candidates: typing.List[typing.Any],
                               clipboard: Clipboard) -> bool:
-        pass
+        if not self._init_defx(clipboard):
+            return False
+
+        path = 'candidates:'
+        self._defxs.append(
+            Defx(self._vim, self._context, path, 0))
+
+        self.redraw(True)
+
+        for defx in self._defxs:
+            self._init_cursor(defx)
+
+        return True
 
     def _switch_buffer(self) -> bool:
         if self._context.split == 'tab':
