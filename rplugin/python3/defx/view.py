@@ -211,6 +211,12 @@ class View(object):
         global_histories.append([defx._source.name, defx._cwd])
         self._vim.vars['defx#_histories'] = global_histories
 
+        if source_name != defx._source.name:
+            # Replace with new defx
+            self._defxs[defx._index] = Defx(self._vim, self._context,
+                                            source_name, path, defx._index)
+            defx = self._defxs[defx._index]
+
         defx.cd(path)
         self.redraw(True)
 
