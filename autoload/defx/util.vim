@@ -127,8 +127,16 @@ function! s:parse_options(cmdline) abort
         \ s:eval_cmdline(a:cmdline) : a:cmdline
 
   for s in split(cmdline, s:re_unquoted_match('\%(\\\@<!\s\)\+'))
-    let arg = substitute(s, '\\\( \)', '\1', 'g')
-    let arg_key = substitute(arg, '=\zs.*$', '', '')
+    let s = substitute(s, '\\\( \)', '\1', 'g')
+    let splits = split(s, '\a\a\+\zs:')
+    if len(splits) == 1
+      let source_name = 'file'
+      let source_arg = s
+    else
+      let source_name = splits[0]
+      let source_arg = join(splits[1:], ':')
+    endif
+    let arg_key = substitute(s, '=\zs.*$', '', '')
 
     let name = substitute(tr(arg_key, '-', '_'), '=$', '', '')[1:]
     if name =~# '^no_'
@@ -136,13 +144,13 @@ function! s:parse_options(cmdline) abort
       let value = v:false
     else
       let value = (arg_key =~# '=$') ?
-            \ s:remove_quote_pairs(arg[len(arg_key) :]) : v:true
+            \ s:remove_quote_pairs(s[len(arg_key) :]) : v:true
     endif
 
     if index(keys(defx#init#_user_options()), name) >= 0
       let options[name] = value
     else
-      call add(args, arg)
+      call add(args, [source_name, source_arg])
     endif
   endfor
 
