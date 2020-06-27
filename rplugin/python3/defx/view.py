@@ -50,7 +50,7 @@ class View(object):
                    ) -> None:
         self.init(context)
 
-        if self._init_defx(paths, clipboard):
+        if self._init_defx_paths(paths, clipboard):
             # Skipped initialize
             return
 
@@ -357,9 +357,7 @@ class View(object):
         self.update_candidates()
         self.redraw()
 
-    def _init_defx(self,
-                   paths: typing.List[str],
-                   clipboard: Clipboard) -> bool:
+    def _init_defx(self, clipboard: Clipboard) -> bool:
         if not self._switch_buffer():
             return False
 
@@ -367,12 +365,9 @@ class View(object):
         self._bufnr = self._buffer.number
         self._winid = self._vim.call('win_getid')
 
-        if not paths:
-            paths = [self._vim.call('getcwd')]
-
         self._buffer.vars['defx'] = {
             'context': self._context._asdict(),
-            'paths': paths,
+            'paths': [],
         }
 
         # Note: Have to use setlocal instead of "current.window.options"
@@ -423,10 +418,25 @@ class View(object):
         self._candidates = []
         self._clipboard = clipboard
         self._defxs = []
-        self._update_defx_paths(paths)
 
         self._init_all_columns()
         self._init_columns(self._context.columns.split(':'))
+
+        self._vim.vars['defx#_drives'] = self._context.drives
+
+        return True
+
+    def _init_defx_paths(self,
+                         paths: typing.List[str],
+                         clipboard: Clipboard) -> bool:
+        if not self._init_defx(clipboard):
+            return False
+
+        if not paths:
+            paths = [self._vim.call('getcwd')]
+
+        self._buffer.vars['defx']['paths'] = paths
+        self._update_defx_paths(paths)
 
         self.redraw(True)
 
@@ -439,9 +449,12 @@ class View(object):
         for defx in self._defxs:
             self._init_cursor(defx)
 
-        self._vim.vars['defx#_drives'] = self._context.drives
-
         return True
+
+    def _init_defx_candidates(self,
+                              candidates: typing.List[typing.Any],
+                              clipboard: Clipboard) -> bool:
+        pass
 
     def _switch_buffer(self) -> bool:
         if self._context.split == 'tab':
