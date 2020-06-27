@@ -50,6 +50,9 @@ class Kind(Base):
 
 
 def check_overwrite(view: View, dest: Path, src: Path) -> Path:
+    if not src.exists() or not dest.exists():
+        return Path('')
+
     s_stat = src.stat()
     s_mtime = s_stat.st_mtime
     view.print_msg(f' src: {src} {s_stat.st_size} bytes')
