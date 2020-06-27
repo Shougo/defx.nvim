@@ -27,7 +27,9 @@ class Defx(object):
         self._context = context
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
-        self._source: typing.Optional[Source] = None
+        self._source: Source = (SourceList(self._vim)
+                                if source_name == 'file/list'
+                                else SourceFile(self._vim))
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
         self._ignored_files = context.ignored_files.split(',')
@@ -37,14 +39,9 @@ class Defx(object):
         self._opened_candidates: typing.Set[str] = set()
         self._selected_candidates: typing.Set[str] = set()
 
-        self._init_source(source_name)
+        self._init_source()
 
-    def _init_source(self, source_name: str) -> None:
-        if source_name == 'file/list':
-            self._source = SourceList(self._vim)
-        else:
-            self._source = SourceFile(self._vim)
-
+    def _init_source(self) -> None:
         custom = self._vim.call('defx#custom#_get')['source']
         name = self._source.name
         if name in custom:
@@ -71,7 +68,8 @@ class Defx(object):
         root['is_opened_tree'] = False
         root['is_selected'] = False
         root['level'] = 0
-        root['word'] = self._context.root_marker + root['word']
+        root['word'] = '{}{}:{}'.format(self._context.root_marker,
+                                        self._source.name, root['word'])
 
         return root
 
