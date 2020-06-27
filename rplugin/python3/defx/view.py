@@ -198,7 +198,8 @@ class View(object):
                 return pos
         return -1
 
-    def cd(self, defx: Defx, path: str, cursor: int) -> None:
+    def cd(self, defx: Defx, source_name: str,
+           path: str, cursor: int) -> None:
         history = defx._cursor_history
 
         # Save previous cursor position
@@ -207,7 +208,7 @@ class View(object):
             history[defx._cwd] = candidate['action__path']
 
         global_histories = self._vim.vars['defx#_histories']
-        global_histories.append(defx._cwd)
+        global_histories.append([defx._source.name, defx._cwd])
         self._vim.vars['defx#_histories'] = global_histories
 
         defx.cd(path)
@@ -699,7 +700,8 @@ class View(object):
                 self._defxs.append(
                     Defx(self._vim, self._context, source_name, path, index))
             else:
-                self.cd(self._defxs[index], path, self._context.cursor)
+                defx = self._defxs[index]
+                self.cd(defx, defx._source.name, path, self._context.cursor)
             self._update_paths(index, path)
 
     def _check_bufnr(self, bufnr: int) -> bool:

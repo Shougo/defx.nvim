@@ -85,14 +85,22 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     """
     Change the current directory.
     """
-    path = Path(context.args[0]) if context.args else Path.home()
+    source_name = 'file'
+    if context.args:
+        if len(context.args) > 1:
+            source_name = context.args[0]
+            path = Path(context.args[1])
+        else:
+            path = Path(context.args[0])
+    else:
+        path = Path.home()
     path = Path(defx._cwd).joinpath(path).resolve()
-    if not readable(path) or not path.is_dir():
-        error(view._vim, f'{path} is not readable directory')
+    if not readable(path) or (source_name == 'file' and not path.is_dir()):
+        error(view._vim, f'{path} is invalid.')
         return
 
     prev_cwd = defx._cwd
-    view.cd(defx, str(path), context.cursor)
+    view.cd(defx, source_name, str(path), context.cursor)
     if context.args and context.args[0] == '..':
         view.search_file(Path(prev_cwd), defx._index)
 
@@ -142,7 +150,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
         path = target['action__path']
 
         if path.is_dir():
-            view.cd(defx, str(path), context.cursor)
+            view.cd(defx, defx._source.name, str(path), context.cursor)
             continue
 
         bufnr = view._vim.call('bufnr', f'^{path}$')
@@ -329,7 +337,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
         path = target['action__path']
 
         if path.is_dir():
-            view.cd(defx, str(path), context.cursor)
+            view.cd(defx, defx._source.name, str(path), context.cursor)
             continue
 
         try:
@@ -351,7 +359,7 @@ def _open_directory(view: View, defx: Defx, context: Context) -> None:
             path = target['action__path']
 
     if path.is_dir():
-        view.cd(defx, str(path), context.cursor)
+        view.cd(defx, 'file', str(path), context.cursor)
 
 
 @action(name='paste', attr=ActionAttr.NO_TAGETS)
