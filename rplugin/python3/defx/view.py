@@ -60,12 +60,6 @@ class View(object):
         self._init_columns(self._context.columns.split(':'))
         self.redraw(True)
 
-    def init_candidates(self, candidates: typing.List[typing.Any],
-                        context: typing.Dict[str, typing.Any],
-                        clipboard: Clipboard
-                        ) -> None:
-        self.init(context)
-
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
                   new_context: typing.Dict[str, typing.Any]) -> None:
@@ -445,22 +439,6 @@ class View(object):
                            self._vim.call('defx#init#_context', {}))
             for [index, [source_name, path]] in enumerate(paths):
                 self._check_session(index, path)
-
-        for defx in self._defxs:
-            self._init_cursor(defx)
-
-        return True
-
-    def _init_defx_candidates(self,
-                              candidates: typing.List[typing.Any],
-                              clipboard: Clipboard) -> bool:
-        if not self._init_defx(clipboard):
-            return False
-
-        self._defxs.append(
-            Defx(self._vim, self._context, 'candidates', '', 0))
-
-        self.redraw(True)
 
         for defx in self._defxs:
             self._init_cursor(defx)

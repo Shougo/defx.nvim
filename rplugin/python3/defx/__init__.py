@@ -34,10 +34,6 @@ if hasattr(vim, 'plugin'):
         def start(self, args: Args) -> None:
             self._rplugin.start(args)
 
-        @vim.rpc_export('_defx_start_candidates', sync=True)  # type: ignore
-        def start_candidates(self, args: Args) -> None:
-            self._rplugin.start_candidates(args)
-
         @vim.rpc_export('_defx_do_action', sync=True)  # type: ignore
         def do_action(self, args: Args) -> None:
             self._rplugin.do_action(args)
@@ -68,9 +64,6 @@ if find_spec('yarp'):
 
     def _defx_start(args: Args) -> None:
         global_rplugin.start(args)
-
-    def _defx_start_candidates(args: Args) -> None:
-        global_rplugin.start_candidates(args)
 
     def _defx_do_action(args: Args) -> None:
         global_rplugin.do_action(args)

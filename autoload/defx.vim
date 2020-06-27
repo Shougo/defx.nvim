@@ -22,8 +22,11 @@ endfunction
 function! defx#start_candidates(candidates, user_context) abort
   call defx#initialize()
   let context = defx#init#_context(a:user_context)
-  call defx#util#rpcrequest('_defx_start_candidates',
-        \ [a:candidates, context], v:false)
+  let listfile = tempname()
+  call writefile(a:candidates, listfile)
+  let paths = ['file/list', listfile]
+  call defx#util#rpcrequest('_defx_start',
+        \ [paths, context], v:false)
   if context['search'] !=# ''
     call defx#call_action('search', [context['search']])
   endif

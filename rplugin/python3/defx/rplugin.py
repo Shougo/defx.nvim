@@ -26,11 +26,6 @@ class Rplugin:
         self.get_view(context).init_paths(
             paths, context, self._clipboard)
 
-    def start_candidates(self, args: typing.List[typing.Any]) -> None:
-        [candidates, context] = args
-        self.get_view(context).init_candidates(
-            candidates, context, self._clipboard)
-
     def do_action(self, args: typing.List[typing.Any]) -> None:
         views = [x for x in self._views
                  if x._bufnr == self._vim.current.buffer.number]
