@@ -60,6 +60,8 @@ class Source(Base):
         with path.open() as f:
             for line in f:
                 entry = Path(line.rstrip('\n'))
+                if not entry.exists():
+                    continue
                 candidates.append({
                     'word': str(entry) + (
                         '/' if safe_call(entry.is_dir, False) else ''),
