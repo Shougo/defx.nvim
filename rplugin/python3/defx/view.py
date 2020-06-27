@@ -44,7 +44,7 @@ class View(object):
         self._prev_wininfo = self._get_wininfo()
         self._prev_bufnr = self._context.prev_bufnr
 
-    def init_paths(self, paths: typing.List[str],
+    def init_paths(self, paths: typing.List[typing.List[str]],
                    context: typing.Dict[str, typing.Any],
                    clipboard: Clipboard
                    ) -> None:
@@ -427,13 +427,13 @@ class View(object):
         return True
 
     def _init_defx_paths(self,
-                         paths: typing.List[str],
+                         paths: typing.List[typing.List[str]],
                          clipboard: Clipboard) -> bool:
         if not self._init_defx(clipboard):
             return False
 
         if not paths:
-            paths = [self._vim.call('getcwd')]
+            paths = [['file', self._vim.call('getcwd')]]
 
         self._buffer.vars['defx']['paths'] = paths
         self._update_defx_paths(paths)
@@ -443,7 +443,7 @@ class View(object):
         if self._context.session_file:
             self.do_action('load_session', [],
                            self._vim.call('defx#init#_context', {}))
-            for [index, path] in enumerate(paths):
+            for [index, [source_name, path]] in enumerate(paths):
                 self._check_session(index, path)
 
         for defx in self._defxs:
@@ -457,9 +457,8 @@ class View(object):
         if not self._init_defx(clipboard):
             return False
 
-        path = 'candidates:'
         self._defxs.append(
-            Defx(self._vim, self._context, path, 0))
+            Defx(self._vim, self._context, 'candidates', '', 0))
 
         self.redraw(True)
 
@@ -713,13 +712,14 @@ class View(object):
 
         return result
 
-    def _update_defx_paths(self, paths: typing.List[str]) -> None:
+    def _update_defx_paths(self,
+                           paths: typing.List[typing.List[str]]) -> None:
         self._defxs = self._defxs[:len(paths)]
 
-        for [index, path] in enumerate(paths):
+        for [index, [source_name, path]] in enumerate(paths):
             if index >= len(self._defxs):
                 self._defxs.append(
-                    Defx(self._vim, self._context, path, index))
+                    Defx(self._vim, self._context, source_name, path, index))
             else:
                 self.cd(self._defxs[index], path, self._context.cursor)
             self._update_paths(index, path)

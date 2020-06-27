@@ -7,7 +7,8 @@
 import typing
 
 from defx.base.source import Base as Source
-from defx.source.file import Source as File
+from defx.source.file.list import Source as SourceList
+from defx.source.file import Source as SourceFile
 from defx.context import Context
 from defx.sort import sort
 from defx.util import Nvim
@@ -21,7 +22,7 @@ Candidate = typing.Dict[str, typing.Any]
 class Defx(object):
 
     def __init__(self, vim: Nvim, context: Context,
-                 cwd: str, index: int) -> None:
+                 source_name: str, cwd: str, index: int) -> None:
         self._vim = vim
         self._context = context
         self._cwd = self._vim.call('getcwd')
@@ -36,10 +37,13 @@ class Defx(object):
         self._opened_candidates: typing.Set[str] = set()
         self._selected_candidates: typing.Set[str] = set()
 
-        self._init_source(cwd)
+        self._init_source(source_name)
 
-    def _init_source(self, cwd: str) -> None:
-        self._source = File(self._vim)
+    def _init_source(self, source_name: str) -> None:
+        if source_name == 'file/list':
+            self._source = SourceList(self._vim)
+        else:
+            self._source = SourceFile(self._vim)
 
         custom = self._vim.call('defx#custom#_get')['source']
         name = self._source.name
