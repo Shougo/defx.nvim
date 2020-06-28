@@ -348,6 +348,7 @@ preview							*defx-action-preview*
 		exists.
 		Note: ueberzug module is needed to preview image files.
 		https://pypi.org/project/ueberzug/
+		Note: The image preview is for X11 only.
 
 print 						*defx-action-print*
 		Print the filename.
