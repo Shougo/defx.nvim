@@ -243,8 +243,8 @@ class View(object):
     def search_recursive(self, path: Path, index: int) -> None:
         parents: typing.List[Path] = []
         tmppath: Path = path
-        while self.get_candidate_pos(
-                tmppath, index) < 0 and tmppath.parent != path:
+        while (self.get_candidate_pos(tmppath, index) < 0 and
+               tmppath.parent != path and tmppath.parent != tmppath):
             tmppath = tmppath.parent
             parents.append(tmppath)
 
