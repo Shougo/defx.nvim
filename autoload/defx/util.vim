@@ -371,3 +371,61 @@ function! defx#util#buffer_delete(bufnr) abort
     execute 'silent! bdelete!' a:bufnr
   endif
 endfunction
+
+function! defx#util#_get_preview_window() abort
+  " Note: For popup preview feature
+  if exists('*popup_findpreview') && popup_findpreview() > 0
+    return 1
+  endif
+
+  return len(filter(range(1, winnr('$')),
+        \ "getwinvar(v:val, '&previewwindow') ==# 1"))
+endfunction
+
+function! defx#util#preview_file(context, filename) abort
+  let preview_width = str2nr(a:context.preview_width)
+  let preview_height = str2nr(a:context.preview_height)
+
+  if a:context.vertical_preview
+    let pos = win_screenpos(win_getid())
+    let win_width = winwidth(0)
+
+    call defx#util#execute_path(
+          \ 'silent rightbelow vertical pedit!', a:filename)
+    wincmd P
+
+    if a:context.floating_preview && exists('*nvim_win_set_config')
+      if a:context['split'] ==# 'floating'
+        let win_row = str2nr(a:context['winrow'])
+        let win_col = str2nr(a:context['wincol'])
+      else
+        let win_row = pos[0] - 1
+        let win_col = pos[1] - 1
+      endif
+      let win_col += win_width
+      if a:context.split !=# 'floating'
+        let win_col -= preview_width
+      endif
+
+      call nvim_win_set_config(win_getid(), {
+           \ 'relative': 'editor',
+           \ 'row': win_row,
+           \ 'col': win_col,
+           \ 'width': preview_width,
+           \ 'height': preview_height,
+           \ })
+    else
+      execute 'vert resize ' . preview_width
+    endif
+  else
+    let previewheight_save = &previewheight
+    try
+      let &previewheight = preview_height
+      call defx#util#execute_path('silent aboveleft pedit!', a:filename)
+    finally
+      let &previewheight = previewheight_save
+    endtry
+
+    wincmd P
+  endif
+endfunction

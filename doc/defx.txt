@@ -343,6 +343,10 @@ paste							*defx-action-paste*
 		Note: It is used after |defx-action-copy| or
 		|defx-action-move|.
 
+preview							*defx-action-preview*
+		Preview the file.  Close the preview window if it is already
+		exists.
+
 print 						*defx-action-print*
 		Print the filename.
 
@@ -425,7 +429,7 @@ OPTIONS							*defx-options*
 -no-{option-name}
 		Disable {option-name} flag.
 		Note: If you use both {option-name} and -no-{option-name} in
-		the same denite buffer, it is undefined.
+		the same defx buffer, it is undefined.
 
 							*defx-option-auto-cd*
 -auto-cd
@@ -458,6 +462,17 @@ OPTIONS							*defx-options*
 		You can use "topleft" or "botright".
 		Default: ""
 
+					*defx-option-floating-preview*
+-floating-preview
+		Open the preview window in floating window when
+		|defx-option-vertical-preview|.
+		Note: To use it, you need to use neovim
+		0.4.0+(|nvim_open_win()|).
+		Note: If you need the feature in Vim8, you should use
+		'previewpopup' instead.
+
+		Default: false
+
 						*defx-option-ignored-files*
 -ignored-files={pattern}
 		Specify the ignored files pattern.
@@ -475,6 +490,19 @@ OPTIONS							*defx-options*
 		Create new defx buffer.
 
 		Default: false
+
+						*defx-option-preview-height*
+-preview-height={preview-height}
+		Specify the preview window height.
+
+		Default: 'previewheight'
+
+						*defx-option-preview-width*
+-preview-width={preview-width}
+		Specify the preview width when
+		|defx-option-vertical-preview|.
+
+		Default: 40
 
 							*defx-option-profile*
 -profile
@@ -542,6 +570,11 @@ OPTIONS							*defx-options*
 							*defx-option-toggle*
 -toggle
 		Close defx buffer window if this defx window exists.
+		Default: false
+
+					*defx-option-vertical-preview*
+-vertical-preview
+		Open the preview window vertically.
 		Default: false
 
 						*defx-option-wincol*
@@ -704,7 +737,7 @@ EXAMPLES						*defx-examples*
 	  nnoremap <silent><buffer><expr> E
 	  \ defx#do_action('open', 'vsplit')
 	  nnoremap <silent><buffer><expr> P
-	  \ defx#do_action('open', 'pedit')
+	  \ defx#do_action('preview')
 	  nnoremap <silent><buffer><expr> o
 	  \ defx#do_action('open_tree', 'toggle')
 	  nnoremap <silent><buffer><expr> K

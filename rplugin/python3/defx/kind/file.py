@@ -404,6 +404,29 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         view.search_recursive(dest, defx._index)
 
 
+@action(name='preview')
+def _preview(view: View, defx: Defx, context: Context) -> None:
+    candidate = view.get_cursor_candidate(context.cursor)
+    if not candidate or candidate['action__path'].is_dir():
+        return
+
+    has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
+    if (has_preview and view._previewed_target and
+            view._previewed_target == candidate):
+        view._vim.command('pclose!')
+        return
+
+    prev_id = view._vim.call('win_getid')
+
+    view._previewed_target = candidate
+    view._vim.call('defx#util#preview_file',
+                   context._replace(targets=[])._asdict(),
+                   str(candidate['action__path']))
+    view._vim.current.window.options['foldenable'] = False
+
+    view._vim.call('win_gotoid', prev_id)
+
+
 @action(name='remove', attr=ActionAttr.REDRAW)
 def _remove(view: View, defx: Defx, context: Context) -> None:
     """
