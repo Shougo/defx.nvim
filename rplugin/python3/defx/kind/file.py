@@ -414,20 +414,23 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
     filepath = str(candidate['action__path'])
     guess_type = mimetypes.guess_type(filepath)[0]
     if (guess_type and guess_type.startswith('image/') and
-            importlib.util.find_spec('ueberzug')):
+            shutil.which('ueberzug') and shutil.which('bash')):
         # Preview image file
-        preview_image_py = Path(__file__).parent.parent.joinpath(
-            'preview_image.py')
+        preview_image_sh = Path(__file__).parent.parent.joinpath(
+            'preview_image.sh')
         if view._vim.call('has', 'nvim'):
             jobfunc = 'jobstart'
             jobopts = {}
         else:
             jobfunc = 'job_start'
             jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
-        view._vim.call(jobfunc,
-                       [get_python_exe(), str(preview_image_py), filepath,
-                        view._vim.call('winwidth', 0), context.preview_width],
-                       jobopts)
+
+        total_width = view._vim.call('winwidth', 0)
+        preview_width = context.preview_width
+        ratio = preview_width / total_width
+        args = ['bash', str(preview_image_sh), filepath,
+                int((total_width - preview_width) * ratio), 1, preview_width]
+        view._vim.call(jobfunc, args, jobopts)
         return
 
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))

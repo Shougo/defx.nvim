@@ -346,7 +346,8 @@ paste							*defx-action-paste*
 preview							*defx-action-preview*
 		Preview the file.  Close the preview window if it is already
 		exists.
-		Note: ueberzug module is needed to preview image files.
+		Note: "ueberzug" and "bash" commands are needed to preview
+		image files.
 		https://pypi.org/project/ueberzug/
 		Note: The image preview is for X11 only.
 
