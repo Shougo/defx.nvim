@@ -346,6 +346,8 @@ paste							*defx-action-paste*
 preview							*defx-action-preview*
 		Preview the file.  Close the preview window if it is already
 		exists.
+		Note: ueberzug module is needed to preview image files.
+		https://pypi.org/project/ueberzug/
 
 print 						*defx-action-print*
 		Print the filename.

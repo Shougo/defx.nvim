@@ -4,9 +4,10 @@
 # License: MIT license
 # ============================================================================
 
+from pathlib import Path
 import copy
 import importlib
-from pathlib import Path
+import mimetypes
 import shutil
 import time
 import typing
@@ -410,6 +411,19 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
     if not candidate or candidate['action__path'].is_dir():
         return
 
+    filepath = str(candidate['action__path'])
+    guess_type = mimetypes.guess_type(filepath)[0]
+    if (guess_type and guess_type.startswith('image/') and
+            importlib.util.find_spec('ueberzug')):
+        # Preview image file
+        preview_image_py = Path(__file__).parent.parent.joinpath(
+            'preview_image.py')
+        jobfunc = 'jobstart' if view._vim.call('has', 'nvim') else 'job_start'
+        view._vim.call(jobfunc, ['python3', str(preview_image_py), filepath,
+                                 view._vim.call('getwinposx'),
+                                 view._vim.call('getwinposy')])
+        return
+
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
     if (has_preview and view._previewed_target and
             view._previewed_target == candidate):
@@ -420,8 +434,7 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
 
     view._previewed_target = candidate
     view._vim.call('defx#util#preview_file',
-                   context._replace(targets=[])._asdict(),
-                   str(candidate['action__path']))
+                   context._replace(targets=[])._asdict(), filepath)
     view._vim.current.window.options['foldenable'] = False
 
     view._vim.call('win_gotoid', prev_id)
