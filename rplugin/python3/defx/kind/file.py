@@ -421,8 +421,7 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
         jobfunc = 'jobstart' if view._vim.call('has', 'nvim') else 'job_start'
         view._vim.call(jobfunc,
                        [get_python_exe(), str(preview_image_py), filepath,
-                        view._vim.call('getwinposx'),
-                        view._vim.call('getwinposy')])
+                        view._vim.call('winwidth', 0), context.preview_width])
         return
 
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
