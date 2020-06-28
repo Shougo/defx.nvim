@@ -403,7 +403,7 @@ function! defx#util#preview_file(context, filename) abort
         let win_col = pos[1] - 1
       endif
       let win_col += win_width
-      if a:context.split !=# 'floating'
+      if (win_col + preview_width) > &columns
         let win_col -= preview_width
       endif
 
