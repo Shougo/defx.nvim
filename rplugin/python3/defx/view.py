@@ -14,7 +14,7 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, Nvim
+from defx.util import error, import_plugin, safe_call, Nvim, Candidate
 
 
 class View(object):
@@ -36,6 +36,7 @@ class View(object):
         self._winrestcmd = ''
         self._session_version = '1.0'
         self._sessions: typing.Dict[str, Session] = {}
+        self._previewed_target: typing.Optional[Candidate] = None
 
     def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)

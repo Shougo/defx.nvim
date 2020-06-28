@@ -4,9 +4,10 @@
 # License: MIT license
 # ============================================================================
 
+from pathlib import Path
 import copy
 import importlib
-from pathlib import Path
+import mimetypes
 import shutil
 import time
 import typing
@@ -17,7 +18,7 @@ from defx.base.kind import Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import cd, cwd_input, confirm, error
+from defx.util import cd, cwd_input, confirm, error, get_python_exe
 from defx.util import readable, Nvim
 from defx.view import View
 
@@ -402,6 +403,41 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
     view.redraw(True)
     if dest:
         view.search_recursive(dest, defx._index)
+
+
+@action(name='preview')
+def _preview(view: View, defx: Defx, context: Context) -> None:
+    candidate = view.get_cursor_candidate(context.cursor)
+    if not candidate or candidate['action__path'].is_dir():
+        return
+
+    filepath = str(candidate['action__path'])
+    guess_type = mimetypes.guess_type(filepath)[0]
+    if (guess_type and guess_type.startswith('image/') and
+            importlib.util.find_spec('ueberzug')):
+        # Preview image file
+        preview_image_py = Path(__file__).parent.parent.joinpath(
+            'preview_image.py')
+        jobfunc = 'jobstart' if view._vim.call('has', 'nvim') else 'job_start'
+        view._vim.call(jobfunc,
+                       [get_python_exe(), str(preview_image_py), filepath,
+                        view._vim.call('winwidth', 0), context.preview_width])
+        return
+
+    has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
+    if (has_preview and view._previewed_target and
+            view._previewed_target == candidate):
+        view._vim.command('pclose!')
+        return
+
+    prev_id = view._vim.call('win_getid')
+
+    view._previewed_target = candidate
+    view._vim.call('defx#util#preview_file',
+                   context._replace(targets=[])._asdict(), filepath)
+    view._vim.current.window.options['foldenable'] = False
+
+    view._vim.call('win_gotoid', prev_id)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
