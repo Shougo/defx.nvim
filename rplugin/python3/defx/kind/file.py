@@ -425,11 +425,11 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
             jobfunc = 'job_start'
             jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
 
-        total_width = view._vim.call('winwidth', 0)
-        preview_width = context.preview_width
-        ratio = preview_width / total_width
+        wincol = context.wincol + view._vim.call('winwidth', 0)
+        if wincol + context.preview_width > view._vim.options['columns']:
+            wincol -= 2 * context.preview_width
         args = ['bash', str(preview_image_sh), filepath,
-                int((total_width - preview_width) * ratio), 1, preview_width]
+                wincol, 1, context.preview_width]
         view._vim.call(jobfunc, args, jobopts)
         return
 
