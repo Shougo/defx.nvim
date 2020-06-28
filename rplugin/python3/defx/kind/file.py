@@ -418,10 +418,16 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
         # Preview image file
         preview_image_py = Path(__file__).parent.parent.joinpath(
             'preview_image.py')
-        jobfunc = 'jobstart' if view._vim.call('has', 'nvim') else 'job_start'
+        if view._vim.call('has', 'nvim'):
+            jobfunc = 'jobstart'
+            jobopts = {}
+        else:
+            jobfunc = 'job_start'
+            jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
         view._vim.call(jobfunc,
                        [get_python_exe(), str(preview_image_py), filepath,
-                        view._vim.call('winwidth', 0), context.preview_width])
+                        view._vim.call('winwidth', 0), context.preview_width],
+                       jobopts)
         return
 
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
