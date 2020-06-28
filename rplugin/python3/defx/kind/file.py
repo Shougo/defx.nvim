@@ -18,7 +18,7 @@ from defx.base.kind import Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import cd, cwd_input, confirm, error
+from defx.util import cd, cwd_input, confirm, error, get_python_exe
 from defx.util import readable, Nvim
 from defx.view import View
 
@@ -419,9 +419,10 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
         preview_image_py = Path(__file__).parent.parent.joinpath(
             'preview_image.py')
         jobfunc = 'jobstart' if view._vim.call('has', 'nvim') else 'job_start'
-        view._vim.call(jobfunc, ['python3', str(preview_image_py), filepath,
-                                 view._vim.call('getwinposx'),
-                                 view._vim.call('getwinposy')])
+        view._vim.call(jobfunc,
+                       [get_python_exe(), str(preview_image_py), filepath,
+                        view._vim.call('getwinposx'),
+                        view._vim.call('getwinposy')])
         return
 
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
