@@ -52,7 +52,7 @@ class View(object):
                    ) -> None:
         self.init(context)
 
-        if self._init_defx_paths(paths, clipboard):
+        if not self._init_defx_paths(paths, clipboard):
             # Skipped initialize
             return
 
@@ -432,7 +432,12 @@ class View(object):
     def _init_defx_paths(self,
                          paths: typing.List[typing.List[str]],
                          clipboard: Clipboard) -> bool:
-        if not self._init_defx(clipboard):
+
+        self._init_defx(clipboard)
+
+        # Window check
+        if self._vim.call('win_getid') != self._winid:
+            # Not defx window
             return False
 
         if not paths:
@@ -457,6 +462,10 @@ class View(object):
     def _switch_buffer(self) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
+
+        if self._context.close:
+            self.quit()
+            return False
 
         winnr = self._vim.call('bufwinnr', self._bufnr)
         if winnr > 0:

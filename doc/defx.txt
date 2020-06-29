@@ -454,6 +454,11 @@ OPTIONS							*defx-options*
 		Specify defx buffer name.
 		Default: "default"
 
+							*defx-option-close*
+-close
+		Close defx buffer window.
+		Default: false
+
 							*defx-option-columns*
 -columns={columns1:columns2,...}
 		Specify defx columns.

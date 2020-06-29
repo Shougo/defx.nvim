@@ -95,6 +95,7 @@ function! defx#init#_user_options() abort
         \ 'auto_cd': v:false,
         \ 'auto_recursive_level': 0,
         \ 'buffer_name': 'default',
+        \ 'close': v:false,
         \ 'columns': 'mark:indent:icon:filename:type',
         \ 'direction': '',
         \ 'floating_preview': v:false,
