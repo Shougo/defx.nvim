@@ -416,9 +416,18 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
     if (guess_type and guess_type.startswith('image/') and
             shutil.which('ueberzug') and shutil.which('bash')):
         # Preview image file
+
+        has_nvim = view._vim.call('has', 'nvim')
+
+        if view._previewed_job:
+            # Stop previous job
+            view._vim.call('jobstop' if has_nvim else 'job_stop',
+                           view._previewed_job)
+            view._previewed_job = None
+
         preview_image_sh = Path(__file__).parent.parent.joinpath(
             'preview_image.sh')
-        if view._vim.call('has', 'nvim'):
+        if has_nvim:
             jobfunc = 'jobstart'
             jobopts = {}
         else:
@@ -430,7 +439,7 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
             wincol -= 2 * context.preview_width
         args = ['bash', str(preview_image_sh), filepath,
                 wincol, 1, context.preview_width]
-        view._vim.call(jobfunc, args, jobopts)
+        view._previewed_job = view._vim.call(jobfunc, args, jobopts)
         return
 
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))

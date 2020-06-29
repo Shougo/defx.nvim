@@ -37,6 +37,7 @@ class View(object):
         self._session_version = '1.0'
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
+        self._previewed_job: typing.Optional[int] = None
 
     def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)
