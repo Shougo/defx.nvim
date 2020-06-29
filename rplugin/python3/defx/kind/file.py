@@ -18,7 +18,7 @@ from defx.base.kind import Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
-from defx.util import cd, cwd_input, confirm, error, get_python_exe
+from defx.util import cd, cwd_input, confirm, error, Candidate
 from defx.util import readable, Nvim
 from defx.view import View
 
@@ -415,38 +415,21 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
     guess_type = mimetypes.guess_type(filepath)[0]
     if (guess_type and guess_type.startswith('image/') and
             shutil.which('ueberzug') and shutil.which('bash')):
-        # Preview image file
-
-        has_nvim = view._vim.call('has', 'nvim')
-
-        if view._previewed_job:
-            # Stop previous job
-            view._vim.call('jobstop' if has_nvim else 'job_stop',
-                           view._previewed_job)
-            view._previewed_job = None
-
-        preview_image_sh = Path(__file__).parent.parent.joinpath(
-            'preview_image.sh')
-        if has_nvim:
-            jobfunc = 'jobstart'
-            jobopts = {}
-        else:
-            jobfunc = 'job_start'
-            jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
-
-        wincol = context.wincol + view._vim.call('winwidth', 0)
-        if wincol + context.preview_width > view._vim.options['columns']:
-            wincol -= 2 * context.preview_width
-        args = ['bash', str(preview_image_sh), filepath,
-                wincol, 1, context.preview_width]
-        view._previewed_job = view._vim.call(jobfunc, args, jobopts)
+        _preview_image(view, defx, context, candidate)
         return
 
+    _preview_file(view, defx, context, candidate)
+
+
+def _preview_file(view: View, defx: Defx,
+                  context: Context, candidate: Candidate) -> None:
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
     if (has_preview and view._previewed_target and
             view._previewed_target == candidate):
         view._vim.command('pclose!')
         return
+
+    filepath = str(candidate['action__path'])
 
     prev_id = view._vim.call('win_getid')
 
@@ -456,6 +439,36 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
     view._vim.current.window.options['foldenable'] = False
 
     view._vim.call('win_gotoid', prev_id)
+
+
+def _preview_image(view: View, defx: Defx,
+                   context: Context, candidate: Candidate) -> None:
+    has_nvim = view._vim.call('has', 'nvim')
+    filepath = str(candidate['action__path'])
+
+    if view._previewed_job:
+        # Stop previous job
+        view._vim.call('jobstop' if has_nvim else 'job_stop',
+                       view._previewed_job)
+        view._previewed_job = None
+
+    preview_image_sh = Path(__file__).parent.parent.joinpath(
+        'preview_image.sh')
+    if has_nvim:
+        jobfunc = 'jobstart'
+        jobopts = {}
+    else:
+        jobfunc = 'job_start'
+        jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
+
+    wincol = context.wincol + view._vim.call('winwidth', 0)
+    if wincol + context.preview_width > view._vim.options['columns']:
+        wincol -= 2 * context.preview_width
+    args = ['bash', str(preview_image_sh), filepath,
+            wincol, 1, context.preview_width]
+    # Note: view._previewed_job is None when Vim8.
+    # Because, job_start() returns job object.
+    view._previewed_job = view._vim.call(jobfunc, args, jobopts)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
