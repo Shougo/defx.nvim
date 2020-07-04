@@ -17,6 +17,7 @@ class Context(typing.NamedTuple):
     cursor: int = 0
     direction: str = ''
     drives: typing.List[str] = []
+    focus: bool = False
     floating_preview: bool = False
     ignored_files: str = ''
     listed: bool = False

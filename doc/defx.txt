@@ -471,6 +471,12 @@ OPTIONS							*defx-options*
 		You can use "topleft" or "botright".
 		Default: ""
 
+						*defx-option-focus*
+-focus
+		Focus on the defx buffer after opening a defx buffer.
+
+		Default: true
+
 					*defx-option-floating-preview*
 -floating-preview
 		Open the preview window in floating window when

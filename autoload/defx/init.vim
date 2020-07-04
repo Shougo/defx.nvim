@@ -99,6 +99,7 @@ function! defx#init#_user_options() abort
         \ 'columns': 'mark:indent:icon:filename:type',
         \ 'direction': '',
         \ 'floating_preview': v:false,
+        \ 'focus': v:true,
         \ 'ignored_files': '.*',
         \ 'listed': v:false,
         \ 'new': v:false,
