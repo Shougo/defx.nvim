@@ -396,6 +396,12 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             else:
                 shutil.copy2(str(path), dest)
         elif action == ClipboardAction.MOVE:
+            if dest.exists():
+                # Must remove dest before
+                if dest.is_dir():
+                    shutil.rmtree(str(dest))
+                else:
+                    dest.unlink()
             shutil.move(str(path), cwd)
         view._vim.command('redraw')
     view._vim.command('echo')
