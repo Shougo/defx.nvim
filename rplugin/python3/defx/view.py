@@ -338,7 +338,9 @@ class View(object):
 
         return Context(**context)
 
-    def _resize_window(self) -> None:
+    def _init_window(self) -> None:
+        self._winid = self._vim.call('win_getid')
+
         window_options = self._vim.current.window.options
         if (self._context.split == 'vertical'
                 and self._context.winwidth > 0):
@@ -366,7 +368,6 @@ class View(object):
 
         self._buffer = self._vim.current.buffer
         self._bufnr = self._buffer.number
-        self._winid = self._vim.call('win_getid')
 
         self._buffer.vars['defx'] = {
             'context': self._context._asdict(),
@@ -391,7 +392,7 @@ class View(object):
         if self._context.split == 'floating':
             self._vim.command('setlocal nocursorline')
 
-        self._resize_window()
+        self._init_window()
 
         buffer_options = self._buffer.options
         if not self._context.listed:
@@ -474,7 +475,7 @@ class View(object):
                 self.quit()
             else:
                 self._winid = self._vim.call('win_getid')
-                self._resize_window()
+                self._init_window()
             return False
 
         if (self._vim.current.buffer.options['modified'] and
@@ -509,8 +510,7 @@ class View(object):
                 )
             )
             if self._context.resume:
-                self._winid = self._vim.call('win_getid')
-                self._resize_window()
+                self._init_window()
                 return False
         elif self._vim.call('exists', 'bufadd'):
             bufnr = self._vim.call('bufadd', self._bufname)
