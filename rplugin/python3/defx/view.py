@@ -473,6 +473,7 @@ class View(object):
             if self._context.toggle:
                 self.quit()
             else:
+                self._winid = self._vim.call('win_getid')
                 self._resize_window()
             return False
 
@@ -508,6 +509,7 @@ class View(object):
                 )
             )
             if self._context.resume:
+                self._winid = self._vim.call('win_getid')
                 self._resize_window()
                 return False
         elif self._vim.call('exists', 'bufadd'):
