@@ -434,7 +434,7 @@ class View(object):
                          paths: typing.List[typing.List[str]],
                          clipboard: Clipboard) -> bool:
 
-        self._init_defx(clipboard)
+        initialized = self._init_defx(clipboard)
 
         # Window check
         if self._vim.call('win_getid') != self._winid:
@@ -442,6 +442,9 @@ class View(object):
             return False
 
         if not paths:
+            if not initialized:
+                # Don't initialize path
+                return False
             paths = [['file', self._vim.call('getcwd')]]
 
         self._buffer.vars['defx']['paths'] = paths
