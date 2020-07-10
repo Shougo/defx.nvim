@@ -853,6 +853,12 @@ Q: I want to open file by double click.
 A: >
 	nnoremap <silent><buffer><expr> <2-LeftMouse> defx#do_action('open')
 
+
+Q: I want to separate defx state by tabs.
+
+A: >
+	Defx -buffer-name=`'defx' . tabpagenr()`
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
