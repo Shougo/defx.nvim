@@ -9,5 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install
+        run: |
+          apt install python3-setuptools
+
       - name: Lint
         run: make --keep-going install test lint
