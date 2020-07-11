@@ -1,8 +1,8 @@
 install:
-	pip install --upgrade -r test/requirements.txt
+	pip3 install --upgrade -r test/requirements.txt
 
 install-user:
-	pip install --user --upgrade -r test/requirements.txt
+	pip3 install --user --upgrade -r test/requirements.txt
 
 lint:
 	vint --version
