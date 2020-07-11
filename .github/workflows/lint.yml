@@ -11,7 +11,7 @@ jobs:
 
       - name: Install
         run: |
-          sudo apt install python3-setuptools
+          sudo apt install python3-setuptools python3-wheel
 
       - name: Lint
         run: make --keep-going install test lint

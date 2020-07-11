@@ -1,4 +1,3 @@
-wheel
 pynvim
 pytest
 flake8
