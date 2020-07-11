@@ -1,0 +1,18 @@
+name: Lint and test
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        run: |
+          eval "$(curl -Ss https://raw.githubusercontent.com/neovim/bot-ci/master/scripts/travis-setup.sh) nightly-x64"
+          make install
+
+      - name: Lint
+        run: make --keep-going test lint
