@@ -10,4 +10,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Lint
-        run: make --keep-going test lint
+        run: make --keep-going install test lint
