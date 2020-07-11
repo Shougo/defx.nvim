@@ -9,10 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install
-        run: |
-          eval "$(curl -Ss https://raw.githubusercontent.com/neovim/bot-ci/master/scripts/travis-setup.sh) nightly-x64"
-          make install
-
       - name: Lint
         run: make --keep-going test lint
