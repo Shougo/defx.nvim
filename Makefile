@@ -1,3 +1,5 @@
+PATH := $(HOME)/.local/bin:$(PATH)
+
 install:
 	pip3 install --upgrade -r test/requirements.txt
 
