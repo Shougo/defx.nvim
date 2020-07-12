@@ -428,4 +428,8 @@ function! defx#util#preview_file(context, filename) abort
 
     wincmd P
   endif
+
+  if exists('#User#defx-preview')
+    doautocmd User defx-preview
+  endif
 endfunction
