@@ -16,6 +16,7 @@ function! defx#init#_initialize() abort
   augroup END
 
   let g:defx#_histories = []
+  let g:defx#_previewed_buffers = {}
 endfunction
 function! defx#init#_channel() abort
   if !has('python3')

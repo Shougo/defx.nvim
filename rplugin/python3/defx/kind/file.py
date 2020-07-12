@@ -429,20 +429,32 @@ def _preview(view: View, defx: Defx, context: Context) -> None:
 
 def _preview_file(view: View, defx: Defx,
                   context: Context, candidate: Candidate) -> None:
+    previewed_buffers = view._vim.vars['defx#_previewed_buffers']
+    filepath = str(candidate['action__path'])
+
     has_preview = bool(view._vim.call('defx#util#_get_preview_window'))
     if (has_preview and view._previewed_target and
             view._previewed_target == candidate):
+        bufnr = str(view._vim.call('bufnr', filepath))
+        if bufnr in previewed_buffers:
+            previewed_buffers.pop(bufnr)
+            view._vim.vars['defx#_previewed_buffers'] = previewed_buffers
         view._vim.command('pclose!')
         return
 
-    filepath = str(candidate['action__path'])
-
     prev_id = view._vim.call('win_getid')
+
+    listed = view._vim.call('buflisted', filepath)
 
     view._previewed_target = candidate
     view._vim.call('defx#util#preview_file',
                    context._replace(targets=[])._asdict(), filepath)
     view._vim.current.window.options['foldenable'] = False
+
+    if not listed:
+        bufnr = str(view._vim.call('bufnr', filepath))
+        previewed_buffers[bufnr] = 1
+        view._vim.vars['defx#_previewed_buffers'] = previewed_buffers
 
     view._vim.call('win_gotoid', prev_id)
 

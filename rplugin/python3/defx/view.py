@@ -34,6 +34,7 @@ class View(object):
         self._prev_syntaxes: typing.List[str] = []
         self._prev_highlight_commands: typing.List[str] = []
         self._winrestcmd = ''
+        self._has_preview_window = False
         self._session_version = '1.0'
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
@@ -45,6 +46,9 @@ class View(object):
         self._winrestcmd = self._vim.call('winrestcmd')
         self._prev_wininfo = self._get_wininfo()
         self._prev_bufnr = self._context.prev_bufnr
+        self._has_preview_window = len(
+            [x for x in range(1, self._vim.call('winnr', '$'))
+             if self._vim.call('getwinvar', x, '&previewwindow')]) > 0
 
     def init_paths(self, paths: typing.List[typing.List[str]],
                    context: typing.Dict[str, typing.Any],
@@ -101,6 +105,15 @@ class View(object):
         self._vim.call('defx#util#print_message', expr)
 
     def quit(self) -> None:
+        # Close preview window
+        if not self._has_preview_window:
+            self._vim.command('pclose!')
+        # Clear previewed buffers
+        for bufnr in self._vim.vars['defx#_previewed_buffers'].keys():
+            if not self._vim.call('win_findbuf', bufnr):
+                self._vim.command('silent bdelete ' + str(bufnr))
+        self._vim.vars['defx#_previewed_buffers'] = {}
+
         winnr = self._vim.call('bufwinnr', self._bufnr)
         if winnr < 0:
             return
