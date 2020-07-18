@@ -333,7 +333,7 @@ function! s:strwidthpart_reverse(str, width) abort
 endfunction
 
 function! defx#util#buffer_rename(bufnr, new_filename) abort
-  if a:bufnr < 0
+  if a:bufnr < 0 || !bufloaded(a:bufnr)
     return
   endif
 
