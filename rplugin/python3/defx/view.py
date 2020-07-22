@@ -174,7 +174,7 @@ class View(object):
             (text, highlights) = self._get_columns_text(
                 self._context, candidate)
             lines.append(text)
-            columns_highlights += ([(x[0], i, x[1], x[2])
+            columns_highlights += ([(x[0], i, x[1], x[1] + x[2] + 1)
                                     for x in highlights])
 
         self._buffer.options['modifiable'] = True
@@ -705,7 +705,12 @@ class View(object):
         texts: typing.List[str] = []
         variable_texts: typing.List[str] = []
         ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
+        start = 0
         for column in self._columns:
+            save_start = column.start
+
+            column.start = start
+
             if column.is_stop_variable:
                 if variable_texts:
                     variable_texts.append('')
@@ -726,6 +731,8 @@ class View(object):
                         variable_texts.append(text)
                 else:
                     texts.append(text)
+            start += len(text)
+            column.start = save_start
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:

@@ -41,10 +41,12 @@ class Column(Base):
                                 str, Highlights]:
         if candidate['is_selected']:
             return (str(self.vars['selected_icon']),
-                    [(self._icons['selected'], self.start - 1, self.end + 1)])
+                    [(self._icons['selected'],
+                      self.start, len(self.vars['selected_icon']))])
         elif not os.access(str(candidate['action__path']), os.W_OK):
             return (str(self.vars['readonly_icon']),
-                    [(self._icons['readonly'], self.start - 1, self.end + 1)])
+                    [(self._icons['readonly'],
+                      self.start, len(self.vars['readonly_icon']))])
         return (' ' * self.vars['length'], [])
 
     def length(self, context: Context) -> int:

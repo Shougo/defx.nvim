@@ -36,9 +36,9 @@ class Column(Base):
         path = candidate['action__path']
         if not readable(path):
             return (str(' ' * self._length), [])
-        return (time.strftime(self.vars['format'],
-                              time.localtime(path.stat().st_mtime)),
-                [('Identifier', self.start - 1, self.end + 1)])
+        text = time.strftime(self.vars['format'],
+                             time.localtime(path.stat().st_mtime))
+        return (text, [('Identifier', self.start - 1, len(text))])
 
     def length(self, context: Context) -> int:
         return self._length

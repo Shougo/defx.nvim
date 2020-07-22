@@ -24,6 +24,7 @@ class Column(Base):
             'root_marker_highlight': 'Constant',
         }
         self.is_stop_variable = True
+        self.has_get_with_highlights = True
 
         self._current_length = 0
         self._syntaxes = [

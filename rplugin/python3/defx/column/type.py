@@ -53,9 +53,10 @@ class Column(Base):
                                 str, Highlights]:
         for t in self.vars['types']:
             for glob in t['globs']:
-                if candidate['action__path'].match(glob):
-                    return (str(t['icon']),
-                            [(t['highlight'], self.start - 1, self.end + 1)])
+                if not candidate['action__path'].match(glob):
+                    continue
+                return (str(t['icon']),
+                        [(t['highlight'], self.start - 1, len(t['icon']))])
 
         return (' ' * self._length, [])
 

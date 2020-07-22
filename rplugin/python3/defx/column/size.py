@@ -26,8 +26,8 @@ class Column(Base):
         if not readable(path) or path.is_dir():
             return (' ' * 9, [])
         size = self._get_size(path.stat().st_size)
-        return ('{:>6s}{:>3s}'.format(size[0], size[1]),
-                [('Constant', self.start - 1, self.end + 1)])
+        text = '{:>6s}{:>3s}'.format(size[0], size[1])
+        return (text, [('Constant', self.start, len(text))])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
         multiple = 1024
