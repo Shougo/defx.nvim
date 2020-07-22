@@ -39,6 +39,7 @@ class View(object):
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
         self._previewed_job: typing.Optional[int] = None
+        self._ns: int = -1
 
     def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)
@@ -49,6 +50,8 @@ class View(object):
         self._has_preview_window = len(
             [x for x in range(1, self._vim.call('winnr', '$'))
              if self._vim.call('getwinvar', x, '&previewwindow')]) > 0
+        if self._vim.call('exists', 'nvim_create_namespace'):
+            self._ns = self._vim.call('nvim_create_namespace', 'defx')
 
     def init_paths(self, paths: typing.List[typing.List[str]],
                    context: typing.Dict[str, typing.Any],
@@ -158,10 +161,19 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self, self._context)
 
-        lines = [
-            self._get_columns_text(self._context, x)
-            for x in self._candidates
-        ]
+        # Clear highlights
+        if self._vim.call('exists', 'nvim_buf_clear_namespace'):
+            self._vim.call('nvim_buf_clear_namespace',
+                           self._bufnr, self._ns, 0, -1)
+
+        lines = []
+        columns_highlights = []
+        for (i, candidate) in enumerate(self._candidates):
+            (text, highlights) = self._get_columns_text(
+                self._context, candidate)
+            lines.append(text)
+            columns_highlights += ([(x[0], i, x[1], x[2])
+                                    for x in highlights])
 
         self._buffer.options['modifiable'] = True
 
@@ -172,6 +184,12 @@ class View(object):
         else:
             self._buffer[len(lines):] = []
             self._buffer[:] = lines
+
+        # Update highlights
+        for highlight in columns_highlights:
+            self._vim.call('nvim_buf_add_highlight', self._bufnr, self._ns,
+                           highlight[0], highlight[1],
+                           highlight[2], highlight[3])
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -676,6 +694,7 @@ class View(object):
                           candidate: typing.Dict[str, typing.Any]) -> str:
         texts: typing.List[str] = []
         variable_texts: typing.List[str] = []
+        ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
         for column in self._columns:
             if column.is_stop_variable:
                 if variable_texts:
@@ -686,13 +705,18 @@ class View(object):
 
                 variable_texts = []
             else:
-                text = column.get(context, candidate)
+                if hasattr(column, 'get_with_highlights'):
+                    (text, highlights) = column.get_with_highlights(
+                        context, candidate)
+                    ret_highlights += highlights
+                else:
+                    text = column.get(context, candidate)
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
                 else:
                     texts.append(text)
-        return ' '.join(texts)
+        return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:
         var_defx = self._buffer.vars['defx']

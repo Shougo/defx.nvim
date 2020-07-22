@@ -46,13 +46,16 @@ class Column(Base):
         self._length = max([self.vim.call('strwidth', x['icon'])
                             for x in self.vars['types']])
 
-    def get(self, context: Context,
-            candidate: typing.Dict[str, typing.Any]) -> str:
+    def get_with_highlights(self, context: Context,
+            candidate: typing.Dict[str, typing.Any]) -> [
+                str, typing.List[typing.Tuple[str, int, int]]]:
         for t in self.vars['types']:
             for glob in t['globs']:
                 if candidate['action__path'].match(glob):
-                    return str(t['icon'])
-        return ' ' * self._length
+                    return [str(t['icon']),
+                            [(t['highlight'], self.start - 1, self.end - 1)]]
+
+        return [' ' * self._length, []]
 
     def length(self, context: Context) -> int:
         return self._length
@@ -62,6 +65,8 @@ class Column(Base):
                 in self.vars['types']]
 
     def highlight_commands(self) -> typing.List[str]:
+        return []
+
         commands: typing.List[str] = []
         for t in self.vars['types']:
             commands.append(
