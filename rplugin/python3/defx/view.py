@@ -164,7 +164,7 @@ class View(object):
             column.on_redraw(self, self._context)
 
         # Clear highlights
-        if self._vim.call('exists', '*nvim_buf_clear_namespace'):
+        if self._ns > 0:
             self._vim.call('nvim_buf_clear_namespace',
                            self._bufnr, self._ns, 0, -1)
 
@@ -650,8 +650,7 @@ class View(object):
 
         self._prev_syntaxes = []
         for column in self._columns:
-            if (column.has_get_with_highlights and
-                    self._vim.call('exists', '*nvim_buf_add_highlight')):
+            if column.has_get_with_highlights and self._ns > 0:
                 # Use get_with_highlights() instead
                 continue
 
