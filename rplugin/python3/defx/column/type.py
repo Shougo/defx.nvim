@@ -55,7 +55,7 @@ class Column(Base):
             for glob in t['globs']:
                 if candidate['action__path'].match(glob):
                     return (str(t['icon']),
-                            [(t['highlight'], self.start - 1, self.end - 1)])
+                            [(t['highlight'], self.start - 1, self.end + 1)])
 
         return (' ' * self._length, [])
 

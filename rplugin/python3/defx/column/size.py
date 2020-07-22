@@ -4,9 +4,9 @@
 # License: MIT license
 # ============================================================================
 
-from defx.base.column import Base
+from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, readable
+from defx.util import Nvim, readable, Candidate
 
 import typing
 
@@ -17,14 +17,17 @@ class Column(Base):
         super().__init__(vim)
 
         self.name = 'size'
+        self.has_get_with_highlights = True
 
-    def get(self, context: Context,
-            candidate: typing.Dict[str, typing.Any]) -> str:
+    def get_with_highlights(self, context: Context,
+                            candidate: Candidate) -> typing.Tuple[
+                                str, Highlights]:
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
-            return ' ' * 9
+            return (' ' * 9, [])
         size = self._get_size(path.stat().st_size)
-        return '{:>6s}{:>3s}'.format(size[0], size[1])
+        return ('{:>6s}{:>3s}'.format(size[0], size[1]),
+                [('Constant', self.start - 1, self.end + 1)])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
         multiple = 1024
