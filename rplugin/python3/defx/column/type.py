@@ -4,9 +4,9 @@
 # License: MIT license
 # ============================================================================
 
-from defx.base.column import Base
+from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim
+from defx.util import Nvim, Candidate
 from defx.view import View
 
 import re
@@ -40,6 +40,8 @@ class Column(Base):
         self.vars = {
             'types': types,
         }
+        self.has_get_with_highlights = True
+
         self._length: int = 0
 
     def on_init(self, view: View, context: Context) -> None:
@@ -47,15 +49,15 @@ class Column(Base):
                             for x in self.vars['types']])
 
     def get_with_highlights(self, context: Context,
-            candidate: typing.Dict[str, typing.Any]) -> [
-                str, typing.List[typing.Tuple[str, int, int]]]:
+                            candidate: Candidate) -> typing.Tuple[
+                                str, Highlights]:
         for t in self.vars['types']:
             for glob in t['globs']:
                 if candidate['action__path'].match(glob):
-                    return [str(t['icon']),
-                            [(t['highlight'], self.start - 1, self.end - 1)]]
+                    return (str(t['icon']),
+                            [(t['highlight'], self.start - 1, self.end - 1)])
 
-        return [' ' * self._length, []]
+        return (' ' * self._length, [])
 
     def length(self, context: Context) -> int:
         return self._length
@@ -65,8 +67,6 @@ class Column(Base):
                 in self.vars['types']]
 
     def highlight_commands(self) -> typing.List[str]:
-        return []
-
         commands: typing.List[str] = []
         for t in self.vars['types']:
             commands.append(

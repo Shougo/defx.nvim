@@ -16,6 +16,8 @@ from defx.defx import Defx
 from defx.session import Session
 from defx.util import error, import_plugin, safe_call, Nvim, Candidate
 
+Highlights = typing.List[typing.Tuple[str, int, int]]
+
 
 class View(object):
 
@@ -50,7 +52,7 @@ class View(object):
         self._has_preview_window = len(
             [x for x in range(1, self._vim.call('winnr', '$'))
              if self._vim.call('getwinvar', x, '&previewwindow')]) > 0
-        if self._vim.call('exists', 'nvim_create_namespace'):
+        if self._vim.call('exists', '*nvim_create_namespace'):
             self._ns = self._vim.call('nvim_create_namespace', 'defx')
 
     def init_paths(self, paths: typing.List[typing.List[str]],
@@ -162,7 +164,7 @@ class View(object):
             column.on_redraw(self, self._context)
 
         # Clear highlights
-        if self._vim.call('exists', 'nvim_buf_clear_namespace'):
+        if self._vim.call('exists', '*nvim_buf_clear_namespace'):
             self._vim.call('nvim_buf_clear_namespace',
                            self._bufnr, self._ns, 0, -1)
 
@@ -647,18 +649,25 @@ class View(object):
 
         self._prev_syntaxes = []
         for column in self._columns:
-            source_highlights = column.highlight_commands()
-            if source_highlights:
-                if (not column.is_within_variable and
-                        column.start > 0 and column.end > 0):
-                    commands.append(
-                        'syntax region ' + column.syntax_name +
-                        r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                        str(column.end) + 'v/ keepend oneline')
-                    self._prev_syntaxes += [column.syntax_name]
+            if (hasattr(column, 'get_with_highlights') and
+                    self._vim.call('exists', '*nvim_buf_add_highlight')):
+                # Use get_with_highlights() instead
+                continue
 
-                commands += source_highlights
-                self._prev_syntaxes += column.syntaxes()
+            source_highlights = column.highlight_commands()
+            if not source_highlights:
+                continue
+
+            if (not column.is_within_variable and
+                    column.start > 0 and column.end > 0):
+                commands.append(
+                    'syntax region ' + column.syntax_name +
+                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                    str(column.end) + 'v/ keepend oneline')
+                self._prev_syntaxes += [column.syntax_name]
+
+            commands += source_highlights
+            self._prev_syntaxes += column.syntaxes()
 
         syntax_list = commands + [self._vim.call('execute', 'syntax list')]
         if syntax_list == self._prev_highlight_commands:
@@ -690,8 +699,8 @@ class View(object):
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates
 
-    def _get_columns_text(self, context: Context,
-                          candidate: typing.Dict[str, typing.Any]) -> str:
+    def _get_columns_text(self, context: Context, candidate: Candidate
+                          ) -> typing.Tuple[str, Highlights]:
         texts: typing.List[str] = []
         variable_texts: typing.List[str] = []
         ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
@@ -705,7 +714,7 @@ class View(object):
 
                 variable_texts = []
             else:
-                if hasattr(column, 'get_with_highlights'):
+                if column.has_get_with_highlights:
                     (text, highlights) = column.get_with_highlights(
                         context, candidate)
                     ret_highlights += highlights
