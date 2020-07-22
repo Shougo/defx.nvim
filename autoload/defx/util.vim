@@ -449,3 +449,15 @@ function! defx#util#preview_file(context, filename) abort
     doautocmd User defx-preview
   endif
 endfunction
+
+function! defx#util#call_atomic(calls) abort
+  let results = []
+  for [name, args] in a:calls
+    try
+      call add(results, call(name, args))
+    catch
+      return [results, v:exception]
+    endtry
+  endfor
+  return [results, v:null]
+endfunction

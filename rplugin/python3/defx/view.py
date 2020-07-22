@@ -188,10 +188,11 @@ class View(object):
             self._buffer[:] = lines
 
         # Update highlights
-        for highlight in columns_highlights:
-            self._vim.call('nvim_buf_add_highlight', self._bufnr, self._ns,
-                           highlight[0], highlight[1],
-                           highlight[2], highlight[3])
+        if columns_highlights:
+            self._vim.call('defx#util#call_atomic', [
+                ['nvim_buf_add_highlight',
+                 [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
+                for x in columns_highlights])
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -649,7 +650,7 @@ class View(object):
 
         self._prev_syntaxes = []
         for column in self._columns:
-            if (hasattr(column, 'get_with_highlights') and
+            if (column.has_get_with_highlights and
                     self._vim.call('exists', '*nvim_buf_add_highlight')):
                 # Use get_with_highlights() instead
                 continue
