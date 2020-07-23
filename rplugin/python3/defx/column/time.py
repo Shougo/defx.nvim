@@ -38,7 +38,7 @@ class Column(Base):
             return (str(' ' * self._length), [])
         text = time.strftime(self.vars['format'],
                              time.localtime(path.stat().st_mtime))
-        return (text, [('Identifier', self.start - 1, self._length)])
+        return (text, [('Identifier', self.start, self._length)])
 
     def length(self, context: Context) -> int:
         return self._length

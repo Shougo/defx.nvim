@@ -54,13 +54,13 @@ class Column(Base):
 
         if context.with_highlights and candidate['is_directory']:
             if candidate['is_root']:
+                root_len = len_bytes(candidate['root_marker'])
                 highlights = [
                     (self.vars['root_marker_highlight'],
-                     self.start,
-                     len_bytes(candidate['root_marker'])),
+                     self.start, root_len),
                     ('Identifier',
-                     self.start + len_bytes(candidate['root_marker']),
-                     len_bytes(candidate['word'])),
+                     self.start + root_len,
+                     len_bytes(candidate['word']) - root_len),
                 ]
             else:
                 highlights = [('PreProc', self.start,

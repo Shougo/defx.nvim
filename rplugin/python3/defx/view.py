@@ -212,7 +212,6 @@ class View(object):
                           [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
                          for x in columns_highlights]
             self._vim.call('defx#util#call_atomic', commands)
-            self._prev_highlights = columns_highlights
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -693,7 +692,8 @@ class View(object):
         ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
         start = 0
         for column in self._columns:
-            column.start = start
+            if self._ns > 0:
+                column.start = start
 
             if column.is_stop_variable:
                 if variable_texts:
@@ -701,7 +701,6 @@ class View(object):
                 (text, highlights) = column.get_with_variable_text(
                     context, ' '.join(variable_texts), candidate)
                 texts.append(text)
-                start += len_bytes(text)
                 ret_highlights += highlights
 
                 variable_texts = []
@@ -716,10 +715,11 @@ class View(object):
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
-                        start += len_bytes(text) + 1
                 else:
                     texts.append(text)
-                    start += len_bytes(text) + 1
+            start = len_bytes(' '.join(texts)) + 1
+            if variable_texts:
+                start += len_bytes(' '.join(variable_texts)) + 1
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:
