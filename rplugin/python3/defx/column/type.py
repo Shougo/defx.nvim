@@ -21,7 +21,7 @@ class Column(Base):
         self.name = 'type'
         types = [
             {
-                'name': 'text', 'globs': ['*.txt'],
+                'name': 'text', 'globs': ['*.txt', '*.md', 'README'],
                 'icon': '[T]', 'highlight': 'Constant'
             },
             {

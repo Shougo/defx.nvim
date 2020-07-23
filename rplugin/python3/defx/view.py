@@ -59,18 +59,38 @@ class View(object):
     def init_paths(self, paths: typing.List[typing.List[str]],
                    context: typing.Dict[str, typing.Any],
                    clipboard: Clipboard
-                   ) -> None:
+                   ) -> bool:
         self.init(context)
 
-        if not self._init_defx_paths(paths, clipboard):
-            # Skipped initialize
-            return
+        initialized = self._init_defx(clipboard)
 
-        self._winid = self._vim.call('win_getid')
-        if paths and self._vim.call('bufnr', '%') == self._bufnr:
-            self._update_defx_paths(paths)
+        # Window check
+        if self._vim.call('win_getid') != self._winid:
+            # Not defx window
+            return False
+
+        if not paths:
+            if not initialized:
+                # Don't initialize path
+                return False
+            paths = [['file', self._vim.call('getcwd')]]
+
+        self._buffer.vars['defx']['paths'] = paths
+        self._update_defx_paths(paths)
+
         self._init_columns(self._context.columns.split(':'))
         self.redraw(True)
+
+        if self._context.session_file:
+            self.do_action('load_session', [],
+                           self._vim.call('defx#init#_context', {}))
+            for [index, [source_name, path]] in enumerate(paths):
+                self._check_session(index, path)
+
+        for defx in self._defxs:
+            self._init_cursor(defx)
+
+        return True
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -192,6 +212,7 @@ class View(object):
                           [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
                          for x in columns_highlights]
             self._vim.call('defx#util#call_atomic', commands)
+            self._prev_highlights = columns_highlights
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -460,39 +481,6 @@ class View(object):
         self._init_columns(self._context.columns.split(':'))
 
         self._vim.vars['defx#_drives'] = self._context.drives
-
-        return True
-
-    def _init_defx_paths(self,
-                         paths: typing.List[typing.List[str]],
-                         clipboard: Clipboard) -> bool:
-
-        initialized = self._init_defx(clipboard)
-
-        # Window check
-        if self._vim.call('win_getid') != self._winid:
-            # Not defx window
-            return False
-
-        if not paths:
-            if not initialized:
-                # Don't initialize path
-                return False
-            paths = [['file', self._vim.call('getcwd')]]
-
-        self._buffer.vars['defx']['paths'] = paths
-        self._update_defx_paths(paths)
-
-        self.redraw(True)
-
-        if self._context.session_file:
-            self.do_action('load_session', [],
-                           self._vim.call('defx#init#_context', {}))
-            for [index, [source_name, path]] in enumerate(paths):
-                self._check_session(index, path)
-
-        for defx in self._defxs:
-            self._init_cursor(defx)
 
         return True
 
