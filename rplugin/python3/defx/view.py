@@ -717,7 +717,9 @@ class View(object):
                         variable_texts.append(text)
                 else:
                     texts.append(text)
-            start = len_bytes(' '.join(texts)) + 1
+            start = len_bytes(' '.join(texts))
+            if texts:
+                start += 1
             if variable_texts:
                 start += len_bytes(' '.join(variable_texts)) + 1
         return (' '.join(texts), ret_highlights)
