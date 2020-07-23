@@ -74,6 +74,8 @@ defx requires Python3.6.1+ and Neovim(0.3.0+) or Vim8.1+ with if\_python3.  If
 `:echo has("python3")` returns `1`, then you have python 3 support; otherwise,
 see below.
 
+Note: The latest Neovim is recommended, because it is faster.
+
 You can enable Python3 interface with pip:
 
     pip3 install --user pynvim
