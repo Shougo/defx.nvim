@@ -30,15 +30,15 @@ class Column(Base):
         self._length = self.vim.call('strwidth',
                                      time.strftime(self.vars['format']))
 
-    def get_with_highlights(self, context: Context,
-                            candidate: Candidate) -> typing.Tuple[
-                                str, Highlights]:
+    def get_with_highlights(
+        self, context: Context, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
         path = candidate['action__path']
         if not readable(path):
             return (str(' ' * self._length), [])
         text = time.strftime(self.vars['format'],
                              time.localtime(path.stat().st_mtime))
-        return (text, [('Identifier', self.start - 1, len(text))])
+        return (text, [('Identifier', self.start - 1, self._length)])
 
     def length(self, context: Context) -> int:
         return self._length

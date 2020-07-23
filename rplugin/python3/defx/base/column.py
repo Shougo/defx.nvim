@@ -36,18 +36,17 @@ class Base:
     def on_redraw(self, view: View, context: Context) -> None:
         pass
 
-    def get(self, context: Context,
-            candidate: typing.Dict[str, typing.Any]) -> str:
+    def get(self, context: Context, candidate: Candidate) -> str:
         return ''
 
     def get_with_variable_text(
-            self, context: Context, variable_text: str,
-            candidate: typing.Dict[str, typing.Any]) -> str:
-        return ''
+            self, context: Context, variable_text: str, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
+        return ('', [])
 
-    def get_with_highlights(self, context: Context,
-                            candidate: Candidate) -> typing.Tuple[
-                                str, Highlights]:
+    def get_with_highlights(
+        self, context: Context, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
         return ('', [])
 
     @abstractmethod

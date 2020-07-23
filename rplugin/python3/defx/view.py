@@ -170,6 +170,7 @@ class View(object):
 
         lines = []
         columns_highlights = []
+        self._context = self._context._replace(with_highlights=self._ns > 0)
         for (i, candidate) in enumerate(self._candidates):
             (text, highlights) = self._get_columns_text(
                 self._context, candidate)
@@ -188,7 +189,7 @@ class View(object):
             self._buffer[:] = lines
 
         # Update highlights
-        if columns_highlights:
+        if self._ns > 0 and columns_highlights:
             self._vim.call('defx#util#call_atomic', [
                 ['nvim_buf_add_highlight',
                  [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
@@ -706,16 +707,15 @@ class View(object):
         ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
         start = 0
         for column in self._columns:
-            save_start = column.start
-
             column.start = start
 
             if column.is_stop_variable:
                 if variable_texts:
                     variable_texts.append('')
-                text = column.get_with_variable_text(
+                (text, highlights) = column.get_with_variable_text(
                     context, ' '.join(variable_texts), candidate)
                 texts.append(text)
+                ret_highlights += highlights
 
                 variable_texts = []
             else:
@@ -724,14 +724,14 @@ class View(object):
                         context, candidate)
                     ret_highlights += highlights
                 else:
+                    # Note: For old columns compatibility
                     text = column.get(context, candidate)
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
                 else:
                     texts.append(text)
-            start += len(text)
-            column.start = save_start
+            start += len(bytes(text, 'utf-8', 'surrogatepass'))
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:

@@ -18,16 +18,17 @@ class Column(Base):
 
         self.name = 'size'
         self.has_get_with_highlights = True
+        self._length = 9
 
-    def get_with_highlights(self, context: Context,
-                            candidate: Candidate) -> typing.Tuple[
-                                str, Highlights]:
+    def get_with_highlights(
+        self, context: Context, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
         path = candidate['action__path']
         if not readable(path) or path.is_dir():
-            return (' ' * 9, [])
+            return (' ' * self._length, [])
         size = self._get_size(path.stat().st_size)
         text = '{:>6s}{:>3s}'.format(size[0], size[1])
-        return (text, [('Constant', self.start, len(text))])
+        return (text, [('Constant', self.start, self._length)])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
         multiple = 1024
@@ -41,7 +42,7 @@ class Column(Base):
         return ('INF', '')
 
     def length(self, context: Context) -> int:
-        return 9
+        return self._length
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []

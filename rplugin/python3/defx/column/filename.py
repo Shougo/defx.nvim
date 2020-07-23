@@ -4,9 +4,9 @@
 # License: MIT license
 # ============================================================================
 
-from defx.base.column import Base
+from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim
+from defx.util import Nvim, Candidate
 from defx.view import View
 
 import typing
@@ -42,12 +42,22 @@ class Column(Base):
         self._context = context
 
     def get_with_variable_text(
-            self, context: Context, variable_text: str,
-            candidate: typing.Dict[str, typing.Any]) -> str:
-        marker = (self._directory_marker
-                  if candidate['is_directory'] and not candidate['is_root']
-                  else self._file_marker)
-        return self._truncate(variable_text + marker + candidate['word'])
+            self, context: Context, variable_text: str, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
+        text = variable_text
+        highlights = []
+
+        if not context.with_highlights:
+            text += (self._directory_marker
+                     if candidate['is_directory'] and not candidate['is_root']
+                     else self._file_marker)
+
+        if context.with_highlights and candidate['is_directory']:
+            highlights = [('PreProc', self.start, len(
+                bytes(candidate['word'], 'utf-8', 'surrogatepass')))]
+
+        text += candidate['word']
+        return (self._truncate(text), highlights)
 
     def length(self, context: Context) -> int:
         max_fnamewidth = max([self._strwidth(x['word'])

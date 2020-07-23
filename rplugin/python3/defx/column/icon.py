@@ -37,21 +37,21 @@ class Column(Base):
             'root': 'Identifier',
         }
 
-    def get_with_highlights(self, context: Context,
-                            candidate: Candidate) -> typing.Tuple[
-                                str, Highlights]:
+    def get_with_highlights(
+        self, context: Context, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
         if candidate['is_opened_tree']:
             return (self.vars['opened_icon'],
                     [(self._highlights['opened'],
-                      self.start, len(self.vars['opened_icon']))])
+                      self.start, self.vars['length'])])
         elif candidate['is_root']:
             return (self.vars['root_icon'],
                     [(self._highlights['root'],
-                      self.start, len(self.vars['root_icon']))])
+                      self.start, self.vars['length'])])
         elif candidate['is_directory']:
             return (self.vars['directory_icon'],
                     [(self._highlights['directory'],
-                      self.start, len(self.vars['directory_icon']))])
+                      self.start, self.vars['length'])])
 
         return (' ', [])
 
