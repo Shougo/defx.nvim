@@ -6,7 +6,7 @@
 
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, Candidate
+from defx.util import Nvim, Candidate, len_bytes
 
 import os
 import typing
@@ -42,11 +42,11 @@ class Column(Base):
         if candidate['is_selected']:
             return (str(self.vars['selected_icon']),
                     [(self._icons['selected'],
-                      self.start, self.vars['length'])])
+                      self.start, len_bytes(self.vars['selected_icon']))])
         elif not os.access(str(candidate['action__path']), os.W_OK):
             return (str(self.vars['readonly_icon']),
                     [(self._icons['readonly'],
-                      self.start, self.vars['length'])])
+                      self.start, len_bytes(self.vars['readonly_icon']))])
         return (' ' * self.vars['length'], [])
 
     def length(self, context: Context) -> int:

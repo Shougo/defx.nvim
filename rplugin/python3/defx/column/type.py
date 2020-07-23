@@ -6,7 +6,7 @@
 
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, Candidate
+from defx.util import Nvim, Candidate, len_bytes
 from defx.view import View
 
 import re
@@ -55,8 +55,9 @@ class Column(Base):
             for glob in t['globs']:
                 if not candidate['action__path'].match(glob):
                     continue
-                return (str(t['icon']),
-                        [(t['highlight'], self.start - 1, self._length)])
+                return (str(t['icon']), [
+                    (t['highlight'], self.start - 1, len_bytes(t['icon']))
+                ])
 
         return (' ' * self._length, [])
 

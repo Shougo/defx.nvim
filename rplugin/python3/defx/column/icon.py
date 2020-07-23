@@ -7,7 +7,7 @@
 
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, Candidate
+from defx.util import Nvim, Candidate, len_bytes
 
 import typing
 
@@ -43,15 +43,15 @@ class Column(Base):
         if candidate['is_opened_tree']:
             return (self.vars['opened_icon'],
                     [(self._highlights['opened'],
-                      self.start, self.vars['length'])])
+                      self.start, len_bytes(self.vars['opened_icon']))])
         elif candidate['is_root']:
             return (self.vars['root_icon'],
                     [(self._highlights['root'],
-                      self.start, self.vars['length'])])
+                      self.start, len_bytes(self.vars['root_icon']))])
         elif candidate['is_directory']:
             return (self.vars['directory_icon'],
                     [(self._highlights['directory'],
-                      self.start, self.vars['length'])])
+                      self.start, len_bytes(self.vars['directory_icon']))])
 
         return (' ', [])
 

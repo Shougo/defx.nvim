@@ -14,7 +14,7 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, strwidth
+from defx.util import error, import_plugin, safe_call, len_bytes
 from defx.util import Nvim, Candidate
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
@@ -191,7 +191,7 @@ class View(object):
             (text, highlights) = self._get_columns_text(
                 self._context, candidate)
             lines.append(text)
-            columns_highlights += ([(x[0], i, x[1], x[1] + x[2] + 1)
+            columns_highlights += ([(x[0], i, x[1], x[1] + x[2])
                                     for x in highlights])
 
         self._buffer.options['modifiable'] = True
@@ -701,6 +701,7 @@ class View(object):
                 (text, highlights) = column.get_with_variable_text(
                     context, ' '.join(variable_texts), candidate)
                 texts.append(text)
+                start += len_bytes(text)
                 ret_highlights += highlights
 
                 variable_texts = []
@@ -715,9 +716,10 @@ class View(object):
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
+                        start += len_bytes(text) + 1
                 else:
                     texts.append(text)
-            start += strwidth(self._vim, text) + 1
+                    start += len_bytes(text) + 1
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:

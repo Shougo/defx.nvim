@@ -6,7 +6,7 @@
 
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, Candidate, strwidth
+from defx.util import Nvim, Candidate, len_bytes, strwidth
 from defx.view import View
 
 import typing
@@ -53,8 +53,8 @@ class Column(Base):
                      else self._file_marker)
 
         if context.with_highlights and candidate['is_directory']:
-            highlights = [('PreProc', self.start, len(
-                bytes(candidate['word'], 'utf-8', 'surrogatepass')))]
+            highlights = [('PreProc', self.start,
+                           len_bytes(candidate['word']))]
 
         text += candidate['word']
         return (self._truncate(text), highlights)
