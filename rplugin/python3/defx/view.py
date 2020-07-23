@@ -14,7 +14,8 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, Nvim, Candidate
+from defx.util import error, import_plugin, safe_call, strwidth
+from defx.util import Nvim, Candidate
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
 
@@ -163,11 +164,6 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self, self._context)
 
-        # Clear highlights
-        if self._ns > 0:
-            self._vim.call('nvim_buf_clear_namespace',
-                           self._bufnr, self._ns, 0, -1)
-
         lines = []
         columns_highlights = []
         self._context = self._context._replace(with_highlights=self._ns > 0)
@@ -190,10 +186,12 @@ class View(object):
 
         # Update highlights
         if self._ns > 0 and columns_highlights:
-            self._vim.call('defx#util#call_atomic', [
-                ['nvim_buf_add_highlight',
-                 [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
-                for x in columns_highlights])
+            commands = [['nvim_buf_clear_namespace',
+                        [self._bufnr, self._ns, 0, -1]]]
+            commands += [['nvim_buf_add_highlight',
+                          [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
+                         for x in columns_highlights]
+            self._vim.call('defx#util#call_atomic', commands)
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -731,7 +729,7 @@ class View(object):
                         variable_texts.append(text)
                 else:
                     texts.append(text)
-            start += len(bytes(text, 'utf-8', 'surrogatepass'))
+            start += strwidth(self._vim, text) + 1
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:

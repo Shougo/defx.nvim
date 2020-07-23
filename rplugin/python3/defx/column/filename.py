@@ -6,7 +6,7 @@
 
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, Candidate
+from defx.util import Nvim, Candidate, strwidth
 from defx.view import View
 
 import typing
@@ -60,7 +60,7 @@ class Column(Base):
         return (self._truncate(text), highlights)
 
     def length(self, context: Context) -> int:
-        max_fnamewidth = max([self._strwidth(x['word'])
+        max_fnamewidth = max([strwidth(self.vim, x['word'])
                               for x in context.targets])
         max_fnamewidth += context.variable_length
         max_fnamewidth += len(self._file_marker)
@@ -128,13 +128,8 @@ class Column(Base):
 
         return commands
 
-    def _strwidth(self, word: str) -> int:
-        return (int(self.vim.call('strwidth', word))
-                if len(word) != len(bytes(word, 'utf-8',
-                                          'surrogatepass')) else len(word))
-
     def _truncate(self, word: str) -> str:
-        width = self._strwidth(word)
+        width = strwidth(self.vim, word)
         max_length = self._current_length
         if (width > max_length or
                 len(word) != len(bytes(word, 'utf-8', 'surrogatepass'))):

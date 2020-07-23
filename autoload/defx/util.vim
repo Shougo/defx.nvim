@@ -453,7 +453,6 @@ endfunction
 function! defx#util#call_atomic(calls) abort
   let results = []
   for [name, args] in a:calls
-    echomsg string(args)
     try
       call add(results, call(name, args))
     catch
