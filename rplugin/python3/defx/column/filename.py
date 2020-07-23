@@ -53,8 +53,18 @@ class Column(Base):
                      else self._file_marker)
 
         if context.with_highlights and candidate['is_directory']:
-            highlights = [('PreProc', self.start,
-                           len_bytes(candidate['word']))]
+            if candidate['is_root']:
+                highlights = [
+                    (self.vars['root_marker_highlight'],
+                     self.start,
+                     len_bytes(candidate['root_marker'])),
+                    ('Identifier',
+                     self.start + len_bytes(candidate['root_marker']),
+                     len_bytes(candidate['word'])),
+                ]
+            else:
+                highlights = [('PreProc', self.start,
+                               len_bytes(candidate['word']))]
 
         text += candidate['word']
         return (self._truncate(text), highlights)
