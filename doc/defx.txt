@@ -31,6 +31,8 @@ INSTALL							*defx-install*
 
 Note: defx requires Neovim 0.3.0+ or Vim8.1+ with Python3.6.1+.
 
+Note: The latest Neovim is recommended, because it is faster.
+
 Please install nvim-yarp plugin for Vim8.
 https://github.com/roxma/nvim-yarp
 

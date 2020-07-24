@@ -14,7 +14,10 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, Nvim, Candidate
+from defx.util import error, import_plugin, safe_call, len_bytes
+from defx.util import Nvim, Candidate
+
+Highlights = typing.List[typing.Tuple[str, int, int]]
 
 
 class View(object):
@@ -39,6 +42,7 @@ class View(object):
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
         self._previewed_job: typing.Optional[int] = None
+        self._ns: int = -1
 
     def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)
@@ -49,22 +53,44 @@ class View(object):
         self._has_preview_window = len(
             [x for x in range(1, self._vim.call('winnr', '$'))
              if self._vim.call('getwinvar', x, '&previewwindow')]) > 0
+        if self._vim.call('exists', '*nvim_create_namespace'):
+            self._ns = self._vim.call('nvim_create_namespace', 'defx')
 
     def init_paths(self, paths: typing.List[typing.List[str]],
                    context: typing.Dict[str, typing.Any],
                    clipboard: Clipboard
-                   ) -> None:
+                   ) -> bool:
         self.init(context)
 
-        if not self._init_defx_paths(paths, clipboard):
-            # Skipped initialize
-            return
+        initialized = self._init_defx(clipboard)
 
-        self._winid = self._vim.call('win_getid')
-        if paths and self._vim.call('bufnr', '%') == self._bufnr:
-            self._update_defx_paths(paths)
+        # Window check
+        if self._vim.call('win_getid') != self._winid:
+            # Not defx window
+            return False
+
+        if not paths:
+            if not initialized:
+                # Don't initialize path
+                return False
+            paths = [['file', self._vim.call('getcwd')]]
+
+        self._buffer.vars['defx']['paths'] = paths
+        self._update_defx_paths(paths)
+
         self._init_columns(self._context.columns.split(':'))
         self.redraw(True)
+
+        if self._context.session_file:
+            self.do_action('load_session', [],
+                           self._vim.call('defx#init#_context', {}))
+            for [index, [source_name, path]] in enumerate(paths):
+                self._check_session(index, path)
+
+        for defx in self._defxs:
+            self._init_cursor(defx)
+
+        return True
 
     def do_action(self, action_name: str,
                   action_args: typing.List[str],
@@ -158,10 +184,15 @@ class View(object):
         for column in self._columns:
             column.on_redraw(self, self._context)
 
-        lines = [
-            self._get_columns_text(self._context, x)
-            for x in self._candidates
-        ]
+        lines = []
+        columns_highlights = []
+        self._context = self._context._replace(with_highlights=self._ns > 0)
+        for (i, candidate) in enumerate(self._candidates):
+            (text, highlights) = self._get_columns_text(
+                self._context, candidate)
+            lines.append(text)
+            columns_highlights += ([(x[0], i, x[1], x[1] + x[2])
+                                    for x in highlights])
 
         self._buffer.options['modifiable'] = True
 
@@ -172,6 +203,15 @@ class View(object):
         else:
             self._buffer[len(lines):] = []
             self._buffer[:] = lines
+
+        # Update highlights
+        if self._ns > 0 and columns_highlights:
+            commands = [['nvim_buf_clear_namespace',
+                        [self._bufnr, self._ns, 0, -1]]]
+            commands += [['nvim_buf_add_highlight',
+                          [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
+                         for x in columns_highlights]
+            self._vim.call('defx#util#call_atomic', commands)
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -443,39 +483,6 @@ class View(object):
 
         return True
 
-    def _init_defx_paths(self,
-                         paths: typing.List[typing.List[str]],
-                         clipboard: Clipboard) -> bool:
-
-        initialized = self._init_defx(clipboard)
-
-        # Window check
-        if self._vim.call('win_getid') != self._winid:
-            # Not defx window
-            return False
-
-        if not paths:
-            if not initialized:
-                # Don't initialize path
-                return False
-            paths = [['file', self._vim.call('getcwd')]]
-
-        self._buffer.vars['defx']['paths'] = paths
-        self._update_defx_paths(paths)
-
-        self.redraw(True)
-
-        if self._context.session_file:
-            self.do_action('load_session', [],
-                           self._vim.call('defx#init#_context', {}))
-            for [index, [source_name, path]] in enumerate(paths):
-                self._check_session(index, path)
-
-        for defx in self._defxs:
-            self._init_cursor(defx)
-
-        return True
-
     def _switch_buffer(self) -> bool:
         if self._context.split == 'tab':
             self._vim.command('tabnew')
@@ -629,18 +636,24 @@ class View(object):
 
         self._prev_syntaxes = []
         for column in self._columns:
-            source_highlights = column.highlight_commands()
-            if source_highlights:
-                if (not column.is_within_variable and
-                        column.start > 0 and column.end > 0):
-                    commands.append(
-                        'syntax region ' + column.syntax_name +
-                        r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                        str(column.end) + 'v/ keepend oneline')
-                    self._prev_syntaxes += [column.syntax_name]
+            if column.has_get_with_highlights and self._ns > 0:
+                # Use get_with_highlights() instead
+                continue
 
-                commands += source_highlights
-                self._prev_syntaxes += column.syntaxes()
+            source_highlights = column.highlight_commands()
+            if not source_highlights:
+                continue
+
+            if (not column.is_within_variable and
+                    column.start > 0 and column.end > 0):
+                commands.append(
+                    'syntax region ' + column.syntax_name +
+                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
+                    str(column.end) + 'v/ keepend oneline')
+                self._prev_syntaxes += [column.syntax_name]
+
+            commands += source_highlights
+            self._prev_syntaxes += column.syntaxes()
 
         syntax_list = commands + [self._vim.call('execute', 'syntax list')]
         if syntax_list == self._prev_highlight_commands:
@@ -672,27 +685,44 @@ class View(object):
                 candidate['_defx_index'] = defx._index
             self._candidates += candidates
 
-    def _get_columns_text(self, context: Context,
-                          candidate: typing.Dict[str, typing.Any]) -> str:
+    def _get_columns_text(self, context: Context, candidate: Candidate
+                          ) -> typing.Tuple[str, Highlights]:
         texts: typing.List[str] = []
         variable_texts: typing.List[str] = []
+        ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
+        start = 0
         for column in self._columns:
+            if self._ns > 0:
+                column.start = start
+
             if column.is_stop_variable:
                 if variable_texts:
                     variable_texts.append('')
-                text = column.get_with_variable_text(
+                (text, highlights) = column.get_with_variable_text(
                     context, ' '.join(variable_texts), candidate)
                 texts.append(text)
+                ret_highlights += highlights
 
                 variable_texts = []
             else:
-                text = column.get(context, candidate)
+                if column.has_get_with_highlights:
+                    (text, highlights) = column.get_with_highlights(
+                        context, candidate)
+                    ret_highlights += highlights
+                else:
+                    # Note: For old columns compatibility
+                    text = column.get(context, candidate)
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
                 else:
                     texts.append(text)
-        return ' '.join(texts)
+            start = len_bytes(' '.join(texts))
+            if texts:
+                start += 1
+            if variable_texts:
+                start += len_bytes(' '.join(variable_texts)) + 1
+        return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:
         var_defx = self._buffer.vars['defx']

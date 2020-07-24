@@ -111,3 +111,13 @@ def get_python_exe() -> str:
 
     # return sys.executable anyway. This may not work on windows
     return executable
+
+
+def strwidth(vim: Nvim, word: str) -> int:
+    return (int(vim.call('strwidth', word))
+            if len(word) != len(bytes(word, 'utf-8',
+                                      'surrogatepass')) else len(word))
+
+
+def len_bytes(word: str) -> int:
+    return len(bytes(word, 'utf-8', 'surrogatepass'))

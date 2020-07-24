@@ -4,9 +4,9 @@
 # License: MIT license
 # ============================================================================
 
-from defx.base.column import Base
+from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim
+from defx.util import Nvim, Candidate, len_bytes, strwidth
 from defx.view import View
 
 import typing
@@ -24,6 +24,7 @@ class Column(Base):
             'root_marker_highlight': 'Constant',
         }
         self.is_stop_variable = True
+        self.has_get_with_highlights = True
 
         self._current_length = 0
         self._syntaxes = [
@@ -41,15 +42,35 @@ class Column(Base):
         self._context = context
 
     def get_with_variable_text(
-            self, context: Context, variable_text: str,
-            candidate: typing.Dict[str, typing.Any]) -> str:
-        marker = (self._directory_marker
-                  if candidate['is_directory'] and not candidate['is_root']
-                  else self._file_marker)
-        return self._truncate(variable_text + marker + candidate['word'])
+            self, context: Context, variable_text: str, candidate: Candidate
+    ) -> typing.Tuple[str, Highlights]:
+        text = variable_text
+        highlights = []
+
+        if not context.with_highlights:
+            text += (self._directory_marker
+                     if candidate['is_directory'] and not candidate['is_root']
+                     else self._file_marker)
+
+        if context.with_highlights and candidate['is_directory']:
+            if candidate['is_root']:
+                root_len = len_bytes(candidate['root_marker'])
+                highlights = [
+                    (self.vars['root_marker_highlight'],
+                     self.start, root_len),
+                    ('Identifier',
+                     self.start + root_len,
+                     len_bytes(candidate['word']) - root_len),
+                ]
+            else:
+                highlights = [('PreProc', self.start,
+                               len_bytes(candidate['word']))]
+
+        text += candidate['word']
+        return (self._truncate(text), highlights)
 
     def length(self, context: Context) -> int:
-        max_fnamewidth = max([self._strwidth(x['word'])
+        max_fnamewidth = max([strwidth(self.vim, x['word'])
                               for x in context.targets])
         max_fnamewidth += context.variable_length
         max_fnamewidth += len(self._file_marker)
@@ -117,13 +138,8 @@ class Column(Base):
 
         return commands
 
-    def _strwidth(self, word: str) -> int:
-        return (int(self.vim.call('strwidth', word))
-                if len(word) != len(bytes(word, 'utf-8',
-                                          'surrogatepass')) else len(word))
-
     def _truncate(self, word: str) -> str:
-        width = self._strwidth(word)
+        width = strwidth(self.vim, word)
         max_length = self._current_length
         if (width > max_length or
                 len(word) != len(bytes(word, 'utf-8', 'surrogatepass'))):

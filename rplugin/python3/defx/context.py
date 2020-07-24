@@ -40,6 +40,7 @@ class Context(typing.NamedTuple):
     variable_length: int = 0
     visual_end: int = 0
     visual_start: int = 0
+    with_highlights: bool = False
     wincol: int = 0
     winheight: int = 0
     winrelative: str = 'editor'
