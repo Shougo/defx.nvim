@@ -42,15 +42,15 @@ class Column(Base):
     ) -> typing.Tuple[str, Highlights]:
         if candidate['is_opened_tree']:
             return (self.vars['opened_icon'],
-                    [(self._highlights['opened'],
+                    [(f'{self.syntax_name}_opened_icon',
                       self.start, len_bytes(self.vars['opened_icon']))])
         elif candidate['is_root']:
             return (self.vars['root_icon'],
-                    [(self._highlights['root'],
+                    [(f'{self.syntax_name}_root_icon',
                       self.start, len_bytes(self.vars['root_icon']))])
         elif candidate['is_directory']:
             return (self.vars['directory_icon'],
-                    [(self._highlights['directory'],
+                    [(f'{self.syntax_name}_directory_icon',
                       self.start, len_bytes(self.vars['directory_icon']))])
 
         return (' ', [])

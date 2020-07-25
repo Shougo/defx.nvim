@@ -41,11 +41,11 @@ class Column(Base):
     ) -> typing.Tuple[str, Highlights]:
         if candidate['is_selected']:
             return (str(self.vars['selected_icon']),
-                    [(self._icons['selected'],
+                    [(f'{self.syntax_name}_selected',
                       self.start, len_bytes(self.vars['selected_icon']))])
         elif not os.access(str(candidate['action__path']), os.W_OK):
             return (str(self.vars['readonly_icon']),
-                    [(self._icons['readonly'],
+                    [(f'{self.syntax_name}_readonly',
                       self.start, len_bytes(self.vars['readonly_icon']))])
         return (' ' * self.vars['length'], [])
 

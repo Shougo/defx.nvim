@@ -56,7 +56,8 @@ class Column(Base):
                 if not candidate['action__path'].match(glob):
                     continue
                 return (str(t['icon']), [
-                    (t['highlight'], self.start, len_bytes(t['icon']))
+                    (f"{self.syntax_name}_{t['name']}",
+                     self.start, len_bytes(t['icon']))
                 ])
 
         return (' ' * self._length, [])

@@ -30,7 +30,6 @@ class Column(Base):
         self._syntaxes = [
             'directory',
             'directory_marker',
-            'hidden',
             'root',
             'root_marker',
         ]
@@ -56,15 +55,15 @@ class Column(Base):
             if candidate['is_root']:
                 root_len = len_bytes(candidate['root_marker'])
                 highlights = [
-                    (self.vars['root_marker_highlight'],
+                    (f'{self.syntax_name}_root_marker',
                      self.start, root_len),
                     ('Identifier',
                      self.start + root_len,
                      len_bytes(candidate['word']) - root_len),
                 ]
             else:
-                highlights = [('PreProc', self.start,
-                               len_bytes(candidate['word']))]
+                highlights = [(f'{self.syntax_name}_directory',
+                               self.start, len_bytes(candidate['word']))]
 
         text += candidate['word']
         return (self._truncate(text), highlights)
@@ -125,9 +124,6 @@ class Column(Base):
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'directory', 'PreProc'))
-        commands.append(
-            'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'hidden', 'Comment'))
         commands.append(
             'highlight default link {}_{} {}'.format(
                 self.syntax_name, 'root_marker',
