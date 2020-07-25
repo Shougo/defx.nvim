@@ -57,7 +57,7 @@ class Column(Base):
                 highlights = [
                     (f'{self.highlight_name}_root_marker',
                      self.start, root_len),
-                    ('Identifier',
+                    (f'{self.highlight_name}_root',
                      self.start + root_len,
                      len_bytes(candidate['word']) - root_len),
                 ]
