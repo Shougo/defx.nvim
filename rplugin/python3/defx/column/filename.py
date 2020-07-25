@@ -55,14 +55,14 @@ class Column(Base):
             if candidate['is_root']:
                 root_len = len_bytes(candidate['root_marker'])
                 highlights = [
-                    (f'{self.syntax_name}_root_marker',
+                    (f'{self.highlight_name}_root_marker',
                      self.start, root_len),
                     ('Identifier',
                      self.start + root_len,
                      len_bytes(candidate['word']) - root_len),
                 ]
             else:
-                highlights = [(f'{self.syntax_name}_directory',
+                highlights = [(f'{self.highlight_name}_directory',
                                self.start, len_bytes(candidate['word']))]
 
         text += candidate['word']
@@ -123,14 +123,14 @@ class Column(Base):
 
         commands.append(
             'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'directory', 'PreProc'))
+                self.highlight_name, 'directory', 'PreProc'))
         commands.append(
             'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'root_marker',
+                self.highlight_name, 'root_marker',
                 self.vars['root_marker_highlight']))
         commands.append(
             'highlight default link {}_{} {}'.format(
-                self.syntax_name, 'root', 'Identifier'))
+                self.highlight_name, 'root', 'Identifier'))
 
         return commands
 

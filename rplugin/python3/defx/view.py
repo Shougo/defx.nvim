@@ -590,6 +590,7 @@ class View(object):
         start = 1
         for [index, column] in enumerate(self._columns):
             column.syntax_name = f'Defx_{column.name}_{index}'
+            column.highlight_name = f'Defx_{column.name}'
 
             if within_variable and not column.is_stop_variable:
                 within_variable_columns.append(column)
@@ -657,14 +658,19 @@ class View(object):
             commands += source_highlights
             self._prev_syntaxes += column.syntaxes()
 
-        syntax_list = commands + [self._vim.call('execute', 'syntax list')]
+        syntax_list = commands + [
+            self._vim.call('execute', 'syntax list'),
+            self._vim.call('execute', 'highlight'),
+        ]
         if syntax_list == self._prev_highlight_commands:
             # Skip highlights
             return
 
         self._execute_commands(commands)
         self._prev_highlight_commands = commands + [
-            self._vim.call('execute', 'syntax list')]
+            self._vim.call('execute', 'syntax list'),
+            self._vim.call('execute', 'highlight'),
+        ]
 
     def _execute_commands(self, commands: typing.List[str]) -> None:
         # Note: If commands are too huge, vim.command() will fail.

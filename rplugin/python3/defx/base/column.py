@@ -22,6 +22,7 @@ class Base:
         self.vim: Nvim = vim
         self.name: str = 'base'
         self.syntax_name: str = ''
+        self.highlight_name: str = ''
         self.start: int = -1
         self.end: int = -1
         self.vars: typing.Dict[str, typing.Any] = {}

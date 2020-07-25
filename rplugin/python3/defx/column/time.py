@@ -38,7 +38,7 @@ class Column(Base):
             return (str(' ' * self._length), [])
         text = time.strftime(self.vars['format'],
                              time.localtime(path.stat().st_mtime))
-        return (text, [(self.syntax_name, self.start, self._length)])
+        return (text, [(self.highlight_name, self.start, self._length)])
 
     def length(self, context: Context) -> int:
         return self._length
@@ -46,5 +46,5 @@ class Column(Base):
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
         commands.append(
-            f'highlight default link {self.syntax_name} Identifier')
+            f'highlight default link {self.highlight_name} Identifier')
         return commands

@@ -41,11 +41,11 @@ class Column(Base):
     ) -> typing.Tuple[str, Highlights]:
         if candidate['is_selected']:
             return (str(self.vars['selected_icon']),
-                    [(f'{self.syntax_name}_selected',
+                    [(f'{self.highlight_name}_selected',
                       self.start, len_bytes(self.vars['selected_icon']))])
         elif not os.access(str(candidate['action__path']), os.W_OK):
             return (str(self.vars['readonly_icon']),
-                    [(f'{self.syntax_name}_readonly',
+                    [(f'{self.highlight_name}_readonly',
                       self.start, len_bytes(self.vars['readonly_icon']))])
         return (' ' * self.vars['length'], [])
 
@@ -64,5 +64,5 @@ class Column(Base):
                     self.syntax_name, icon, self.vars[icon + '_icon']))
             commands.append(
                 'highlight default link {}_{} {}'.format(
-                    self.syntax_name, icon, highlight))
+                    self.highlight_name, icon, highlight))
         return commands

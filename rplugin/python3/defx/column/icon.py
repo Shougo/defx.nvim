@@ -42,15 +42,15 @@ class Column(Base):
     ) -> typing.Tuple[str, Highlights]:
         if candidate['is_opened_tree']:
             return (self.vars['opened_icon'],
-                    [(f'{self.syntax_name}_opened_icon',
+                    [(f'{self.highlight_name}_opened_icon',
                       self.start, len_bytes(self.vars['opened_icon']))])
         elif candidate['is_root']:
             return (self.vars['root_icon'],
-                    [(f'{self.syntax_name}_root_icon',
+                    [(f'{self.highlight_name}_root_icon',
                       self.start, len_bytes(self.vars['root_icon']))])
         elif candidate['is_directory']:
             return (self.vars['directory_icon'],
-                    [(f'{self.syntax_name}_directory_icon',
+                    [(f'{self.highlight_name}_directory_icon',
                       self.start, len_bytes(self.vars['directory_icon']))])
 
         return (' ', [])
@@ -72,6 +72,6 @@ class Column(Base):
                  ))
             commands.append(
                 'highlight default link {}_{}_icon {}'.format(
-                    self.syntax_name, icon, highlight))
+                    self.highlight_name, icon, highlight))
 
         return commands
