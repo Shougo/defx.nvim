@@ -51,11 +51,14 @@ class Source(Base):
         if not readable(path) or not path.is_dir():
             error(self.vim, f'"{path}" is not readable directory.')
             return []
-        for entry in path.iterdir():
-            candidates.append({
-                'word': entry.name.replace('\n', '\\n') + (
-                    '/' if safe_call(entry.is_dir, False) else ''),
-                'is_directory': safe_call(entry.is_dir, False),
-                'action__path': entry,
-            })
+        try:
+            for entry in path.iterdir():
+                candidates.append({
+                    'word': entry.name.replace('\n', '\\n') + (
+                        '/' if safe_call(entry.is_dir, False) else ''),
+                    'is_directory': safe_call(entry.is_dir, False),
+                    'action__path': entry,
+                })
+        except OSError:
+            pass
         return candidates
