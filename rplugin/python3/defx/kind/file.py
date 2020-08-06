@@ -576,6 +576,8 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
             error(view._vim, f'{new} already exists')
             continue
 
+        if not new.parent.exists():
+            new.parent.mkdir(parents=True)
         old.rename(new)
 
         # Check rename
