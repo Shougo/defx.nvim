@@ -94,10 +94,7 @@ If Defx was installed prior to Python support being added to Neovim,
 
 ## Configuration Examples
 
-```vim
-" Todo
-```
-
+Please see `:help defx-examples`.
 
 
 ## Screenshots
