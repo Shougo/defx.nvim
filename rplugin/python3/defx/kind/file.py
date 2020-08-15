@@ -15,7 +15,7 @@ import typing
 from defx.action import ActionAttr
 from defx.action import ActionTable
 from defx.base.kind import Base
-from defx.clipboard import ClipboardAction
+from defx.clipboard import Clipboard, ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error, Candidate
@@ -399,6 +399,8 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                     dest.unlink()
             shutil.move(str(path), cwd)
         view._vim.command('redraw')
+    if action == ClipboardAction.MOVE:
+        view._clipboard = Clipboard()
     view._vim.command('echo')
 
     view.redraw(True)
