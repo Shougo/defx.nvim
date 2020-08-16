@@ -347,6 +347,8 @@ class View(object):
         if (enable_nested and len(children) == 1
                 and children[0]['is_directory']):
             # Merge child.
+            defx._nested_candidates.add(str(target['action__path']))
+
             target['action__path'] = children[0]['action__path']
             target['word'] += children[0]['word']
             target['is_opened_tree'] = False
@@ -371,16 +373,24 @@ class View(object):
 
         target['is_opened_tree'] = False
 
+        defx = self._defxs[index]
+        self._remove_nested_path(defx, target['action__path'])
+
         start = pos + 1
         base_level = target['level']
         end = start
         for candidate in self._candidates[start:]:
             if candidate['level'] <= base_level:
                 break
+            self._remove_nested_path(defx, candidate['action__path'])
             end += 1
 
         self._candidates = (self._candidates[: start] +
                             self._candidates[end:])
+
+    def _remove_nested_path(self, defx: Defx, path: Path) -> None:
+        if str(path) in defx._nested_candidates:
+            defx._nested_candidates.remove(str(path))
 
     def _init_context(
             self, context: typing.Dict[str, typing.Any]) -> Context:

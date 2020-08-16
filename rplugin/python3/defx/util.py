@@ -41,7 +41,9 @@ def error(vim: Nvim, expr: typing.Any) -> None:
     """
     Prints the error messages to Vim/Nvim's :messages buffer.
     """
-    vim.call('defx#util#print_error', expr)
+    if isinstance(expr, set):
+        expr = [str(x) for x in expr]
+    vim.call('defx#util#print_error', str(expr))
 
 
 def confirm(vim: Nvim, question: str) -> bool:

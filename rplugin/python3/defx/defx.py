@@ -38,6 +38,7 @@ class Defx(object):
         self._mtime: int = -1
         self._opened_candidates: typing.Set[str] = set()
         self._selected_candidates: typing.Set[str] = set()
+        self._nested_candidates: typing.Set[str] = set()
 
         self._init_source()
 
@@ -80,21 +81,26 @@ class Defx(object):
         gathered_candidates = self.gather_candidates_recursive(
             path, base_level, max_level)
 
-        if self._opened_candidates:
-            candidates = []
-            for candidate in gathered_candidates:
-                candidates.append(candidate)
-                candidate['level'] = base_level
-                candidate_path = str(candidate['action__path'])
+        if not self._opened_candidates and not self._nested_candidates:
+            return gathered_candidates
 
-                if (candidate_path in self._opened_candidates and
-                        not candidate['is_opened_tree']):
-                    candidate['is_opened_tree'] = True
-                    candidates += self.tree_candidates(
-                        candidate_path, base_level + 1, max_level)
-        else:
-            candidates = gathered_candidates
+        candidates = []
+        for candidate in gathered_candidates:
+            candidates.append(candidate)
+            candidate['level'] = base_level
+            candidate_path = str(candidate['action__path'])
 
+            if not candidate['is_directory']:
+                continue
+            if (candidate_path not in self._opened_candidates and
+                    candidate_path not in self._nested_candidates):
+                continue
+
+            children = self.tree_candidates(
+                candidate_path, base_level + 1, max_level)
+
+            candidate['is_opened_tree'] = True
+            candidates += children
         return candidates
 
     def gather_candidates_recursive(
