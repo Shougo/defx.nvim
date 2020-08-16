@@ -380,7 +380,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                 continue
             dest = overwrite
 
-        if path == dest:
+        if not path.exists() or path == dest:
             continue
 
         view.print_msg(
@@ -400,6 +400,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             shutil.move(str(path), cwd)
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:
+        # Clear clipboard after move
         view._clipboard = Clipboard()
     view._vim.command('echo')
 
