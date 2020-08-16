@@ -342,6 +342,10 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             pass
         view._vim.call('defx#util#execute_path', command, str(path))
 
+        # Restore previous buffer
+        prev_bufname = view._vim.call('bufname', view._prev_bufnr)
+        view._vim.call('setreg', '#', prev_bufname)
+
 
 @action(name='open_directory')
 def _open_directory(view: View, defx: Defx, context: Context) -> None:

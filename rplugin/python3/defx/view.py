@@ -166,6 +166,11 @@ class View(object):
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
 
+        # Restore previous buffer
+        prev_bufname = self._vim.call('bufname',
+                                      self._context.prev_last_bufnr)
+        self._vim.call('setreg', '#', prev_bufname)
+
     def redraw(self, is_force: bool = False) -> None:
         """
         Redraw defx buffer.
