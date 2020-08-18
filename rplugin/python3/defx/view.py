@@ -167,9 +167,10 @@ class View(object):
             self._vim.command(self._winrestcmd)
 
         # Restore previous buffer
-        prev_bufname = self._vim.call('bufname',
-                                      self._context.prev_last_bufnr)
-        self._vim.call('setreg', '#', prev_bufname)
+        if self._vim.call('buflisted', self._prev_bufnr):
+            prev_bufname = self._vim.call('bufname',
+                                        self._context.prev_last_bufnr)
+            self._vim.call('setreg', '#', prev_bufname)
 
     def redraw(self, is_force: bool = False) -> None:
         """
