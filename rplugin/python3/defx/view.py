@@ -400,7 +400,8 @@ class View(object):
             # ignore noname buffer
             return
 
-        self._vim.call('setreg', '#', prev_bufname)
+        self._vim.call('setreg', '#',
+                       self._vim.call('fnameescape', prev_bufname))
 
     def _remove_nested_path(self, defx: Defx, path: Path) -> None:
         if str(path) in defx._nested_candidates:
