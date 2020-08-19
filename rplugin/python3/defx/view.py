@@ -166,11 +166,7 @@ class View(object):
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
 
-        # Restore previous buffer
-        if self._vim.call('buflisted', self._prev_bufnr):
-            prev_bufname = self._vim.call('bufname',
-                                        self._context.prev_last_bufnr)
-            self._vim.call('setreg', '#', prev_bufname)
+        self.restore_previous_buffer()
 
     def redraw(self, is_force: bool = False) -> None:
         """
@@ -393,6 +389,18 @@ class View(object):
 
         self._candidates = (self._candidates[: start] +
                             self._candidates[end:])
+
+    def restore_previous_buffer(self) -> None:
+        if not self._vim.call('buflisted', self._prev_bufnr):
+            return
+
+        prev_bufname = self._vim.call('bufname',
+                                      self._context.prev_last_bufnr)
+        if not prev_bufname:
+            # ignore noname buffer
+            return
+
+        self._vim.call('setreg', '#', prev_bufname)
 
     def _remove_nested_path(self, defx: Defx, path: Path) -> None:
         if str(path) in defx._nested_candidates:

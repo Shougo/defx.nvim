@@ -166,10 +166,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
                 view._vim.command('wincmd w')
             view._vim.call('defx#util#execute_path', command, str(path))
 
-        # Restore previous buffer
-        if view._vim.call('buflisted', view._prev_bufnr):
-            prev_bufname = view._vim.call('bufname', view._prev_bufnr)
-            view._vim.call('setreg', '#', prev_bufname)
+        view.restore_previous_buffer()
 
 
 @action(name='execute_command', attr=ActionAttr.NO_TAGETS)
@@ -347,10 +344,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             pass
         view._vim.call('defx#util#execute_path', command, str(path))
 
-        # Restore previous buffer
-        if view._vim.call('buflisted', view._prev_bufnr):
-            prev_bufname = view._vim.call('bufname', view._prev_bufnr)
-            view._vim.call('setreg', '#', prev_bufname)
+        view.restore_previous_buffer()
 
 
 @action(name='open_directory')
