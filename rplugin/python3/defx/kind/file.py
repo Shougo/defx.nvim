@@ -405,7 +405,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:
         # Clear clipboard after move
-        view._clipboard = Clipboard()
+        view._clipboard.candidates = []
     view._vim.command('echo')
 
     view.redraw(True)
