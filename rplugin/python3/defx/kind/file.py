@@ -144,6 +144,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     """
     Open like :drop.
     """
+    cwd = view._vim.call('getcwd')
     command = context.args[0] if context.args else 'edit'
 
     for target in context.targets:
@@ -164,6 +165,10 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
+            try:
+                path = path.relative_to(cwd)
+            except ValueError:
+                pass
             view._vim.call('defx#util#execute_path', command, str(path))
 
         view.restore_previous_buffer()
