@@ -144,7 +144,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     """
     Open like :drop.
     """
-    cwd = view._vim.call('getcwd')
+    cwd = view._vim.call('getcwd', -1)
     command = context.args[0] if context.args else 'edit'
 
     for target in context.targets:
