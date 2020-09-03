@@ -15,7 +15,7 @@ import typing
 from defx.action import ActionAttr
 from defx.action import ActionTable
 from defx.base.kind import Base
-from defx.clipboard import Clipboard, ClipboardAction
+from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error, Candidate
@@ -144,6 +144,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     """
     Open like :drop.
     """
+    cwd = view._vim.call('getcwd', -1)
     command = context.args[0] if context.args else 'edit'
 
     for target in context.targets:
@@ -164,6 +165,10 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
+            try:
+                path = path.relative_to(cwd)
+            except ValueError:
+                pass
             view._vim.call('defx#util#execute_path', command, str(path))
 
         view.restore_previous_buffer()
