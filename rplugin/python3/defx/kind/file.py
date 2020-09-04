@@ -165,10 +165,13 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
                 view._vim.call('win_gotoid', context.prev_winid)
             else:
                 view._vim.command('wincmd w')
-            try:
-                path = path.relative_to(cwd)
-            except ValueError:
-                pass
+
+            if not view._vim.call('haslocaldir'):
+                try:
+                    path = path.relative_to(cwd)
+                except ValueError:
+                    pass
+
             view._vim.call('defx#util#execute_path', command, str(path))
 
         view.restore_previous_buffer()
@@ -334,7 +337,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
     """
     Open the file.
     """
-    cwd = view._vim.call('getcwd')
+    cwd = view._vim.call('getcwd', -1)
     command = context.args[0] if context.args else 'edit'
     for target in context.targets:
         path = target['action__path']
@@ -343,10 +346,12 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             view.cd(defx, defx._source.name, str(path), context.cursor)
             continue
 
-        try:
-            path = path.relative_to(cwd)
-        except ValueError:
-            pass
+        if not view._vim.call('haslocaldir'):
+            try:
+                path = path.relative_to(cwd)
+            except ValueError:
+                pass
+
         view._vim.call('defx#util#execute_path', command, str(path))
 
         view.restore_previous_buffer()
