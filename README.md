@@ -115,3 +115,4 @@ Please see `:help defx-examples`.
 ![Defx floating window](https://user-images.githubusercontent.com/24732170/59892964-1c823f00-9416-11e9-8369-2e21910e168c.png)
 ![Horizon colorscheme](https://user-images.githubusercontent.com/324519/63241202-a4fb4100-c207-11e9-9060-c3c04608ea7b.png)
 ![Image preview](https://user-images.githubusercontent.com/41671631/85951370-5d9c2000-b995-11ea-8a3d-2c304d21cc4c.gif)
+![Defx + vim-quickui](https://user-images.githubusercontent.com/32936898/92196371-bd390f00-eea1-11ea-957e-5dcde77afd3e.png)
