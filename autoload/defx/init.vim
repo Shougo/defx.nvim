@@ -24,8 +24,8 @@ function! defx#init#_channel() abort
           \ 'defx requires Python3 support("+python3").')
     return v:true
   endif
-  if has('nvim') && !has('nvim-0.3.0')
-    call defx#util#print_error('defx requires nvim 0.3.0+.')
+  if has('nvim') && !has('nvim-0.4.0')
+    call defx#util#print_error('defx requires nvim 0.4.0+.')
     return v:true
   endif
   if !has('nvim') && v:version < 801
