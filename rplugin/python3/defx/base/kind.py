@@ -312,7 +312,11 @@ def _toggle_sort(view: View, defx: Defx, context: Context) -> None:
 
 @action(name='yank_path')
 def _yank_path(view: View, defx: Defx, context: Context) -> None:
-    yank = '\n'.join([str(x['action__path']) for x in context.targets])
+    mods = context.args[0] if context.args else ''
+    paths = [str(x['action__path']) for x in context.targets]
+    if mods:
+        paths = [view._vim.call('fnamemodify', x, mods) for x in paths]
+    yank = '\n'.join(paths)
     view._vim.call('setreg', '"', yank)
     if (view._vim.call('has', 'clipboard') or
             view._vim.call('has', 'xterm_clipboard')):

@@ -428,6 +428,9 @@ toggle_select_visual
 yank_path					*defx-action-yank_path*
 		Yank the all candidates path.
 
+		Action args:
+			0. |fnamemodify()| modifier(The default is "")
+
 ------------------------------------------------------------------------------
 OPTIONS							*defx-options*
 
