@@ -476,12 +476,6 @@ def _preview_image(view: View, defx: Defx,
     has_nvim = view._vim.call('has', 'nvim')
     filepath = str(candidate['action__path'])
 
-    if view._previewed_job:
-        # Stop previous job
-        view._vim.call('jobstop' if has_nvim else 'job_stop',
-                       view._previewed_job)
-        view._previewed_job = None
-
     preview_image_sh = Path(__file__).parent.parent.joinpath(
         'preview_image.sh')
     if has_nvim:
@@ -496,9 +490,8 @@ def _preview_image(view: View, defx: Defx,
         wincol -= 2 * context.preview_width
     args = ['bash', str(preview_image_sh), filepath,
             wincol, 1, context.preview_width]
-    # Note: view._previewed_job is None when Vim8.
-    # Because, job_start() returns job object.
-    view._previewed_job = view._vim.call(jobfunc, args, jobopts)
+
+    view._vim.call(jobfunc, args, jobopts)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
