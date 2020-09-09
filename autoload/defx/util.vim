@@ -40,6 +40,9 @@ endfunction
 function! defx#util#has_yarp() abort
   return !has('nvim') || get(g:, 'defx#enable_yarp', 0)
 endfunction
+function! defx#util#has_textprop() abort
+  return v:version >= 802 && has('*prop_add')
+endfunction
 
 function! defx#util#execute_path(command, path) abort
   try

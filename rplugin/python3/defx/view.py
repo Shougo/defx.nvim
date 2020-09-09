@@ -43,6 +43,8 @@ class View(object):
         self._previewed_target: typing.Optional[Candidate] = None
         self._previewed_job: typing.Optional[int] = None
         self._ns: int = -1
+        self._has_textprop = False
+        self._proptypes: typing.Set[str] = set()
 
     def init(self, context: typing.Dict[str, typing.Any]) -> None:
         self._context = self._init_context(context)
@@ -53,7 +55,13 @@ class View(object):
         self._has_preview_window = len(
             [x for x in range(1, self._vim.call('winnr', '$'))
              if self._vim.call('getwinvar', x, '&previewwindow')]) > 0
-        if self._vim.call('exists', '*nvim_create_namespace'):
+
+        if self._vim.call('defx#util#has_textprop'):
+            self._has_textprop = True
+
+            # Set dummy namespace
+            self._ns = 1
+        else:
             self._ns = self._vim.call('nvim_create_namespace', 'defx')
 
     def init_paths(self, paths: typing.List[typing.List[str]],

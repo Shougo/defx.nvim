@@ -28,8 +28,8 @@ function! defx#init#_channel() abort
     call defx#util#print_error('defx requires nvim 0.4.0+.')
     return v:true
   endif
-  if !has('nvim') && v:version < 801
-    call defx#util#print_error('defx requires Vim 8.1+.')
+  if !has('nvim') && !defx#util#has_textprop()
+    call defx#util#print_error('defx requires Vim 8.2+ with textprop.')
     return v:true
   endif
 
