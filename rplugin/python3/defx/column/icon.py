@@ -63,13 +63,15 @@ class Column(Base):
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
+        fmt = 'syntax match {0}_{1}_icon /[{2}]{3}/ contained containedin={4}'
         for icon, highlight in self._highlights.items():
             commands.append(
-                ('syntax match {0}_{1}_icon /[{2}]{3}/ ' +
-                 'contained containedin={0}').format(
-                     self.syntax_name, icon, self.vars[icon + '_icon'],
-                     ' ' if self.is_within_variable else ''
-                 ))
+                fmt.format(
+                    self.highlight_name, icon, self.vars[icon + '_icon'],
+                    ' ' if self.is_within_variable else '',
+                    self.syntax_name
+                )
+            )
             commands.append(
                 'highlight default link {}_{}_icon {}'.format(
                     self.highlight_name, icon, highlight))

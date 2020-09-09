@@ -92,34 +92,43 @@ class Column(Base):
         commands.append(
             r'syntax match {0}_{1} /{2}/ conceal contained '
             'containedin={0}_directory'.format(
-                self.syntax_name, 'directory_marker', directory_marker))
+                self.highlight_name, 'directory_marker', directory_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}\%(.{3}[{4}/]\)\+/ '
-            'contained containedin={0}'.format(
-                self.syntax_name, 'directory', directory_marker, r'\{-}',
-                '\\' if self.vim.call('defx#util#is_windows') else ''))
+            'contained containedin={5}'.format(
+                self.highlight_name, 'directory', directory_marker, r'\{-}',
+                '\\' if self.vim.call('defx#util#is_windows') else '',
+                self.syntax_name
+            )
+        )
 
         file_marker = self.vim.call(
             'escape', self._file_marker, r'~/\.^$[]*')
         commands.append(
             r'syntax match {0}_{1} /{2}/ conceal contained '
             'containedin={0}_file'.format(
-                self.syntax_name, 'file_marker', file_marker))
+                self.highlight_name, 'file_marker', file_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.{3}/ '
-            'contained containedin={0}'.format(
-                self.syntax_name, 'file', file_marker, r'\{-}'))
+            'contained containedin={4}'.format(
+                self.highlight_name, 'file', file_marker, r'\{-}',
+                self.syntax_name
+            )
+        )
 
         root_marker = self.vim.call(
             'escape', self._context.root_marker, r'~/\.^$[]*')
         commands.append(
             r'syntax match {0}_{1} /{2}/ contained '
             'containedin={0}_root'.format(
-                self.syntax_name, 'root_marker', root_marker))
+                self.highlight_name, 'root_marker', root_marker))
         commands.append(
             r'syntax match {0}_{1} /{2}.*/ contained '
-            'containedin={0}'.format(
-                self.syntax_name, 'root', root_marker))
+            'containedin={3}'.format(
+                self.highlight_name, 'root', root_marker,
+                self.syntax_name
+            )
+        )
 
         commands.append(
             'highlight default link {}_{} {}'.format(
