@@ -214,10 +214,6 @@ class View(object):
             self._buffer[len(lines):] = []
             self._buffer[:] = lines
 
-        # Update highlights
-        if self._ns > 0 and columns_highlights:
-            self._update_highlights(columns_highlights)
-
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
 
@@ -229,6 +225,11 @@ class View(object):
                 self.search_file(prev['action__path'], prev['_defx_index'])
             if is_force:
                 self._init_column_syntax()
+
+        # Update highlights
+        # Note: update_highlights() must be called after init_column_syntax()
+        if self._ns > 0 and columns_highlights:
+            self._update_highlights(columns_highlights)
 
         if self._context.profile:
             error(self._vim, f'redraw time = {time.time() - start}')
@@ -812,12 +813,31 @@ class View(object):
 
     def _update_highlights(self, columns_highlights: typing.List[
             typing.Tuple[str, int, int, int]]) -> None:
+        commands = []
         if self._has_textprop:
-            pass
+            for proptype in self._proptypes:
+                commands.append(['prop_remove', [{'type': proptype}]])
+
+            for highlight in columns_highlights:
+                if highlight[0] not in self._proptypes:
+                    commands.append(
+                        ['prop_type_add',
+                         [highlight[0], {'highlight': highlight[0]}]]
+                    )
+                    self._proptypes.add(highlight[0])
+                commands.append(
+                    ['prop_add',
+                     [highlight[1] + 1, highlight[2] + 1,
+                      {'end_col': highlight[3] + 1, 'type': highlight[0]}]]
+                )
         else:
-            commands = [['nvim_buf_clear_namespace',
-                        [self._bufnr, self._ns, 0, -1]]]
+            commands.append(['nvim_buf_clear_namespace',
+                             [self._bufnr, self._ns, 0, -1]])
             commands += [['nvim_buf_add_highlight',
                           [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
                          for x in columns_highlights]
         self._vim.call('defx#util#call_atomic', commands)
+
+        if self._has_textprop:
+            # Note: redraw is needed for text props
+            self._vim.command('redraw')
