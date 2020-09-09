@@ -664,6 +664,9 @@ class View(object):
             commands.append(
                 'silent! syntax clear ' + syntax)
 
+        if self._proptypes:
+            self._clear_prop_types()
+
         self._prev_syntaxes = []
         for column in self._columns:
             with_highlights = column.has_get_with_highlights and self._ns > 0
@@ -810,6 +813,12 @@ class View(object):
         return (bool(self._vim.call('bufexists', bufnr)) and
                 bufnr != self._vim.call('bufnr', '%') and
                 self._vim.call('getbufvar', bufnr, '&filetype') != 'defx')
+
+    def _clear_prop_types(self) -> None:
+        self._vim.call('defx#util#call_atomic', [
+            ['prop_type_delete', [x]] for x in self._proptypes
+        ])
+        self._proptypes = set()
 
     def _update_highlights(self, columns_highlights: typing.List[
             typing.Tuple[str, int, int, int]]) -> None:
