@@ -216,12 +216,7 @@ class View(object):
 
         # Update highlights
         if self._ns > 0 and columns_highlights:
-            commands = [['nvim_buf_clear_namespace',
-                        [self._bufnr, self._ns, 0, -1]]]
-            commands += [['nvim_buf_add_highlight',
-                          [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
-                         for x in columns_highlights]
-            self._vim.call('defx#util#call_atomic', commands)
+            self._update_highlights(columns_highlights)
 
         self._buffer.options['modifiable'] = False
         self._buffer.options['modified'] = False
@@ -814,3 +809,15 @@ class View(object):
         return (bool(self._vim.call('bufexists', bufnr)) and
                 bufnr != self._vim.call('bufnr', '%') and
                 self._vim.call('getbufvar', bufnr, '&filetype') != 'defx')
+
+    def _update_highlights(self, columns_highlights: typing.List[
+            typing.Tuple[str, int, int, int]]) -> None:
+        if self._has_textprop:
+            pass
+        else:
+            commands = [['nvim_buf_clear_namespace',
+                        [self._bufnr, self._ns, 0, -1]]]
+            commands += [['nvim_buf_add_highlight',
+                          [self._bufnr, self._ns, x[0], x[1], x[2], x[3]]]
+                         for x in columns_highlights]
+        self._vim.call('defx#util#call_atomic', commands)
