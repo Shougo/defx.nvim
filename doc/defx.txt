@@ -1,6 +1,6 @@
 *defx.txt*	Dark powered file explorer for neovim/Vim8.
 
-Version: 1.5
+Version: 2.0
 Author: Shougo <Shougo.Matsu at gmail.com>
 License: MIT license
 
@@ -29,7 +29,7 @@ INTRODUCTION						*defx-introduction*
 ==============================================================================
 INSTALL							*defx-install*
 
-Note: defx requires Neovim 0.4.0+ or Vim8.1+ with Python3.6.1+.
+Note: defx requires Neovim 0.4.0+ or Vim8.2+ with Python3.6.1+.
 
 Note: The latest Neovim is recommended, because it is faster.
 

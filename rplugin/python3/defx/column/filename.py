@@ -46,12 +46,7 @@ class Column(Base):
         text = variable_text
         highlights = []
 
-        if not context.with_highlights:
-            text += (self._directory_marker
-                     if candidate['is_directory'] and not candidate['is_root']
-                     else self._file_marker)
-
-        if context.with_highlights and candidate['is_directory']:
+        if candidate['is_directory']:
             if candidate['is_root']:
                 root_len = len_bytes(candidate['root_marker'])
                 highlights = [
@@ -86,49 +81,6 @@ class Column(Base):
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
-
-        directory_marker = self.vim.call(
-            'escape', self._directory_marker, r'~/\.^$[]*')
-        commands.append(
-            r'syntax match {0}_{1} /{2}/ conceal contained '
-            'containedin={0}_directory'.format(
-                self.highlight_name, 'directory_marker', directory_marker))
-        commands.append(
-            r'syntax match {0}_{1} /{2}\%(.{3}[{4}/]\)\+/ '
-            'contained containedin={5}'.format(
-                self.highlight_name, 'directory', directory_marker, r'\{-}',
-                '\\' if self.vim.call('defx#util#is_windows') else '',
-                self.syntax_name
-            )
-        )
-
-        file_marker = self.vim.call(
-            'escape', self._file_marker, r'~/\.^$[]*')
-        commands.append(
-            r'syntax match {0}_{1} /{2}/ conceal contained '
-            'containedin={0}_file'.format(
-                self.highlight_name, 'file_marker', file_marker))
-        commands.append(
-            r'syntax match {0}_{1} /{2}.{3}/ '
-            'contained containedin={4}'.format(
-                self.highlight_name, 'file', file_marker, r'\{-}',
-                self.syntax_name
-            )
-        )
-
-        root_marker = self.vim.call(
-            'escape', self._context.root_marker, r'~/\.^$[]*')
-        commands.append(
-            r'syntax match {0}_{1} /{2}/ contained '
-            'containedin={0}_root'.format(
-                self.highlight_name, 'root_marker', root_marker))
-        commands.append(
-            r'syntax match {0}_{1} /{2}.*/ contained '
-            'containedin={3}'.format(
-                self.highlight_name, 'root', root_marker,
-                self.syntax_name
-            )
-        )
 
         commands.append(
             'highlight default link {}_{} {}'.format(
