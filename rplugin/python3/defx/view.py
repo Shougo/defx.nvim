@@ -58,9 +58,6 @@ class View(object):
 
         if self._vim.call('defx#util#has_textprop'):
             self._has_textprop = True
-
-            # Set dummy namespace
-            self._ns = 1
         else:
             self._ns = self._vim.call('nvim_create_namespace', 'defx')
 
@@ -196,7 +193,6 @@ class View(object):
 
         lines = []
         columns_highlights = []
-        self._context = self._context._replace(with_highlights=self._ns > 0)
         for (i, candidate) in enumerate(self._candidates):
             (text, highlights) = self._get_columns_text(
                 self._context, candidate)
@@ -228,7 +224,7 @@ class View(object):
 
         # Update highlights
         # Note: update_highlights() must be called after init_column_syntax()
-        if self._ns > 0 and columns_highlights:
+        if columns_highlights:
             self._update_highlights(columns_highlights)
 
         if self._context.profile:
@@ -460,8 +456,6 @@ class View(object):
         # "current.window.options" changes global value instead of local in
         # neovim.
         self._vim.command('setlocal colorcolumn=')
-        self._vim.command('setlocal conceallevel=2')
-        self._vim.command('setlocal concealcursor=nc')
         self._vim.command('setlocal nocursorcolumn')
         self._vim.command('setlocal nofoldenable')
         self._vim.command('setlocal foldcolumn=0')
@@ -669,23 +663,9 @@ class View(object):
 
         self._prev_syntaxes = []
         for column in self._columns:
-            with_highlights = column.has_get_with_highlights and self._ns > 0
             source_highlights = column.highlight_commands()
-            if with_highlights:
-                # Use source highlights only
-                source_highlights = [x for x in source_highlights
-                                     if x.startswith('highlight ')]
             if not source_highlights:
                 continue
-
-            if (not with_highlights and
-                    not column.is_within_variable and
-                    column.start > 0 and column.end > 0):
-                commands.append(
-                    'syntax region ' + column.syntax_name +
-                    r' start=/\%' + str(column.start) + r'v/ end=/\%' +
-                    str(column.end) + 'v/ keepend oneline')
-                self._prev_syntaxes += [column.syntax_name]
 
             commands += source_highlights
             self._prev_syntaxes += column.syntaxes()
@@ -732,8 +712,7 @@ class View(object):
         ret_highlights: typing.List[typing.Tuple[str, int, int]] = []
         start = 0
         for column in self._columns:
-            if self._ns > 0:
-                column.start = start
+            column.start = start
 
             if column.is_stop_variable:
                 if variable_texts:
@@ -745,13 +724,9 @@ class View(object):
 
                 variable_texts = []
             else:
-                if column.has_get_with_highlights:
-                    (text, highlights) = column.get_with_highlights(
-                        context, candidate)
-                    ret_highlights += highlights
-                else:
-                    # Note: For old columns compatibility
-                    text = column.get(context, candidate)
+                (text, highlights) = column.get_with_highlights(
+                    context, candidate)
+                ret_highlights += highlights
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
