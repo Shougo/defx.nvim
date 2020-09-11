@@ -731,7 +731,6 @@ class View(object):
                 else:
                     # Note: For old columns compatibility
                     text = column.get(context, candidate)
-                ret_highlights += highlights
                 if column.is_start_variable or column.is_within_variable:
                     if text:
                         variable_texts.append(text)
