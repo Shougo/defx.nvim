@@ -724,8 +724,13 @@ class View(object):
 
                 variable_texts = []
             else:
-                (text, highlights) = column.get_with_highlights(
-                    context, candidate)
+                if column.has_get_with_highlights:
+                    (text, highlights) = column.get_with_highlights(
+                        context, candidate)
+                    ret_highlights += highlights
+                else:
+                    # Note: For old columns compatibility
+                    text = column.get(context, candidate)
                 ret_highlights += highlights
                 if column.is_start_variable or column.is_within_variable:
                     if text:
