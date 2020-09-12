@@ -235,6 +235,18 @@ cd 						*defx-action-cd*
 		Action args:
 			0. new current directory path
 
+change_filtered_files			*defx-action-change_filtered_files*
+		Change |defx-option-filtered-files| dynamically.
+
+		Action args:
+			0. filtered files pattern
+
+change_ignored_files			*defx-action-change_ignored_files*
+		Change |defx-option-ignored-files| dynamically.
+
+		Action args:
+			0. ignored files pattern
+
 change_vim_cwd					*change_vim_cwd*
 		Change current working directory to the current directory.
 		Note: It changes global current directory if the window has
@@ -481,6 +493,12 @@ OPTIONS							*defx-options*
 		Focus on the defx buffer after opening a defx buffer.
 
 		Default: true
+
+						*defx-option-filtered-files*
+-filtered-files={pattern}
+		Specify the filtered files pattern.
+		The pattern is comma separated.
+		Default: ""
 
 					*defx-option-floating-preview*
 -floating-preview

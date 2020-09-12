@@ -88,6 +88,24 @@ def _call(view: View, defx: Defx, context: Context) -> None:
     view._vim.call(function, dict_context)
 
 
+@action(name='change_filtered_files', attr=ActionAttr.REDRAW)
+def _change_filtered_files(view: View, defx: Defx, context: Context) -> None:
+    filtered_files = context.args[0] if context.args else view._vim.call(
+        'defx#util#input',
+        f'{".".join(defx._filtered_files)} -> ',
+        '.'.join(defx._filtered_files))
+    defx._filtered_files = filtered_files.split(',')
+
+
+@action(name='change_ignored_files', attr=ActionAttr.REDRAW)
+def _change_ignored_files(view: View, defx: Defx, context: Context) -> None:
+    ignored_files = context.args[0] if context.args else view._vim.call(
+        'defx#util#input',
+        f'{".".join(defx._ignored_files)} -> ',
+        '.'.join(defx._ignored_files))
+    defx._ignored_files = ignored_files.split(',')
+
+
 @action(name='clear_select_all', attr=ActionAttr.MARK | ActionAttr.NO_TAGETS)
 def _clear_select_all(view: View, defx: Defx, context: Context) -> None:
     for candidate in [x for x in view._candidates

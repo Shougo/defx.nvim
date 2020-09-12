@@ -72,8 +72,10 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     elif choice == 2:
         ret = Path('')
     elif choice == 3:
-        ret = Path(view._vim.call('input', f'{src} -> ', str(dest),
-                                  ('dir' if src.is_dir() else 'file')))
+        ret = Path(view._vim.call(
+            'defx#util#input',
+            f'{src} -> ', str(dest),
+            ('dir' if src.is_dir() else 'file')))
     elif choice == 4 and d_mtime < s_mtime:
         ret = src
     elif choice == 5:

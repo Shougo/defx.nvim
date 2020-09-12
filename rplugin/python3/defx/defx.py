@@ -33,6 +33,7 @@ class Defx(object):
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
         self._ignored_files = context.ignored_files.split(',')
+        self._filtered_files = context.filtered_files.split(',')
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
@@ -130,6 +131,18 @@ class Defx(object):
 
         candidates = self._source.gather_candidates(
             self._context, Path(path))
+
+        if self._filtered_files != ['']:
+            new_candidates = []
+            for candidate in candidates:
+                matched = False
+                for glob in self._filtered_files:
+                    if candidate['action__path'].match(glob):
+                        matched = True
+                        break
+                if matched:
+                    new_candidates.append(candidate)
+            candidates = new_candidates
 
         if self._enabled_ignored_files:
             for glob in self._ignored_files:
