@@ -27,13 +27,14 @@ class Defx(object):
         self._context = context
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
+
         self._source: Source = (SourceList(self._vim)
                                 if source_name == 'file/list'
                                 else SourceFile(self._vim))
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
-        self._ignored_files = context.ignored_files.split(',')
         self._filtered_files = context.filtered_files.split(',')
+        self._ignored_files = context.ignored_files.split(',')
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
