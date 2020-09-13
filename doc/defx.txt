@@ -823,6 +823,12 @@ EXAMPLES						*defx-examples*
 	  \ defx#do_action('print')
 	  nnoremap <silent><buffer><expr> cd
 	  \ defx#do_action('change_vim_cwd')
+          "double click on child node will open it
+          "double click on root will open it's parent
+	  nnoremap <silent><buffer><expr> <2-LeftMouse> 
+	  \ match(getline('.'),'\[in\]')==-1 ? 
+	  \ defx#do_action('open') :
+	  \ defx#do_action('cd',['..']
 	endfunction
 <
 ==============================================================================
