@@ -182,7 +182,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     view.close_preview()
 
 
-@action(name='execute_command', attr=ActionAttr.NO_TAGETS)
+@action(name='execute_command', attr=ActionAttr.REDRAW)
 def _execute_command(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the command.
@@ -194,7 +194,11 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     view._vim.command('redraw')
 
     for target in context.targets:
-        args = shlex.split(command) + [target['action__path']]
+        args = [
+            (view._vim.call('fnamemodify',
+                            str(target['action__path']), x[1:])
+             if x.startswith('%') else x) for x in shlex.split(command)
+        ]
         output = subprocess.check_output(args, cwd=defx._cwd)
         if output:
             view.print_msg(output)
