@@ -21,7 +21,7 @@ from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error, Candidate
-from defx.util import readable, Nvim
+from defx.util import readable, Nvim, fnamemodify
 from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}
@@ -195,8 +195,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     for target in context.targets:
         args = [
-            (view._vim.call('fnamemodify',
-                            str(target['action__path']), x[1:])
+            (fnamemodify(view._vim, str(target['action__path']), x[1:])
              if x.startswith('%') else x) for x in shlex.split(command)
         ]
         output = subprocess.check_output(args, cwd=defx._cwd)
