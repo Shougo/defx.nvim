@@ -194,7 +194,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     view._vim.command('redraw')
 
-    def parse_argument(arg: str):
+    def parse_argument(arg: str) -> str:
         if not arg.startswith('%'):
             return arg
         arg = arg[1:]

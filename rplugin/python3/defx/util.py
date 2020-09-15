@@ -125,5 +125,5 @@ def len_bytes(word: str) -> int:
     return len(bytes(word, 'utf-8', 'surrogatepass'))
 
 
-def fnamemodify(vim: Nvim, word: str, mod: str) -> int:
-    return vim.call('fnamemodify', word, mod)
+def fnamemodify(vim: Nvim, word: str, mod: str) -> str:
+    return str(vim.call('fnamemodify', word, mod))
