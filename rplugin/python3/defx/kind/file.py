@@ -191,6 +191,8 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     command = context.args[0] if context.args else view._vim.call(
         'defx#util#input', 'Command: ', '', 'shellcmd')
+    if not command:
+        return
 
     view._vim.command('redraw')
 
