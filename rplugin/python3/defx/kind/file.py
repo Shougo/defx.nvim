@@ -8,7 +8,9 @@ from pathlib import Path
 import copy
 import importlib
 import mimetypes
+import shlex
 import shutil
+import subprocess
 import time
 import typing
 
@@ -185,17 +187,17 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the command.
     """
-    save_cwd = view._vim.call('getcwd')
-    cd(view._vim, defx._cwd)
 
     command = context.args[0] if context.args else view._vim.call(
-        'input', 'Command: ', '', 'shellcmd')
+        'defx#util#input', 'Command: ', '', 'shellcmd')
 
-    output = view._vim.call('system', command)
-    if output:
-        view.print_msg(output)
+    view._vim.command('redraw')
 
-    cd(view._vim, save_cwd)
+    for target in context.targets:
+        args = shlex.split(command) + [target['action__path']]
+        output = subprocess.check_output(args, cwd=defx._cwd)
+        if output:
+            view.print_msg(output)
 
 
 @action(name='execute_system')
