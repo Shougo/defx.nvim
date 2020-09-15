@@ -124,5 +124,6 @@ def strwidth(vim: Nvim, word: str) -> int:
 def len_bytes(word: str) -> int:
     return len(bytes(word, 'utf-8', 'surrogatepass'))
 
+
 def fnamemodify(vim: Nvim, word: str, mod: str) -> int:
     return vim.call('fnamemodify', word, mod)

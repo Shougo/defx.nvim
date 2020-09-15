@@ -11,6 +11,7 @@ import mimetypes
 import shlex
 import shutil
 import subprocess
+import re
 import time
 import typing
 
@@ -193,11 +194,18 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     view._vim.command('redraw')
 
+    def parse_argument(arg: str):
+        if not arg.startswith('%'):
+            return arg
+        arg = arg[1:]
+        m = re.match(r'((:.)*)(.*)', arg)
+        target_path = str(target['action__path'])
+        if not m:
+            return target_path
+        return fnamemodify(view._vim, target_path, m.group(2)) + m.group(3)
+
     for target in context.targets:
-        args = [
-            (fnamemodify(view._vim, str(target['action__path']), x[1:])
-             if x.startswith('%') else x) for x in shlex.split(command)
-        ]
+        args = [parse_argument(x) for x in shlex.split(command)]
         output = subprocess.check_output(args, cwd=defx._cwd)
         if output:
             view.print_msg(output)
