@@ -270,7 +270,17 @@ drop							*defx-action-drop*
 
 execute_command 				*defx-action-execute_command*
 		Execute the command.
+		If the argument is "%", it substitutes one file.
 
+		Example:
+		You selected files "foo", "bar", "baz".
+
+		(Input)   "echo %"
+		(Command) "echo foo; echo bar; echo baz"
+
+		(Input)   "echo"
+		(Command) "echo"
+		
 		Action args:
 			0. command(The default is your input)
 

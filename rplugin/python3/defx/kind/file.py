@@ -8,7 +8,10 @@ from pathlib import Path
 import copy
 import importlib
 import mimetypes
+import shlex
 import shutil
+import subprocess
+import re
 import time
 import typing
 
@@ -19,7 +22,7 @@ from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error, Candidate
-from defx.util import readable, Nvim
+from defx.util import readable, Nvim, fnamemodify
 from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}
@@ -180,22 +183,32 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
     view.close_preview()
 
 
-@action(name='execute_command', attr=ActionAttr.NO_TAGETS)
+@action(name='execute_command', attr=ActionAttr.REDRAW)
 def _execute_command(view: View, defx: Defx, context: Context) -> None:
     """
     Execute the command.
     """
-    save_cwd = view._vim.call('getcwd')
-    cd(view._vim, defx._cwd)
 
     command = context.args[0] if context.args else view._vim.call(
-        'input', 'Command: ', '', 'shellcmd')
+        'defx#util#input', 'Command: ', '', 'shellcmd')
 
-    output = view._vim.call('system', command)
-    if output:
-        view.print_msg(output)
+    view._vim.command('redraw')
 
-    cd(view._vim, save_cwd)
+    def parse_argument(arg: str) -> str:
+        if not arg.startswith('%'):
+            return arg
+        arg = arg[1:]
+        m = re.match(r'((:.)*)(.*)', arg)
+        target_path = str(target['action__path'])
+        if not m:
+            return target_path
+        return fnamemodify(view._vim, target_path, m.group(2)) + m.group(3)
+
+    for target in context.targets:
+        args = [parse_argument(x) for x in shlex.split(command)]
+        output = subprocess.check_output(args, cwd=defx._cwd)
+        if output:
+            view.print_msg(output)
 
 
 @action(name='execute_system')
