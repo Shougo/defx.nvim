@@ -94,6 +94,18 @@ If Defx was installed prior to Python support being added to Neovim,
 
 ## Configuration Examples
 
+```viml
+"double click on root node will onpen it's parent
+"otherwise open this node instead
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+    nnoremap <silent><buffer><expr> <2-LeftMouse> 
+                \ line('.') == 1 ? 
+                \ defx#do_action('cd',['..']) :
+                \ defx#do_action('open')
+endfunction
+```
+
 Please see `:help defx-examples`.
 
 
