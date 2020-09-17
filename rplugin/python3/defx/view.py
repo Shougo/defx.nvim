@@ -95,6 +95,8 @@ class View(object):
         for defx in self._defxs:
             self._init_cursor(defx)
 
+        self._vim.command('doautocmd <nomodeline> User DefxDirChanged')
+
         return True
 
     def do_action(self, action_name: str,
@@ -287,6 +289,8 @@ class View(object):
             self.search_file(history[path], defx._index)
 
         self._update_paths(defx._index, path)
+
+        self._vim.command('doautocmd <nomodeline> User DefxDirChanged')
 
     def search_file(self, path: Path, index: int) -> bool:
         target = str(path)

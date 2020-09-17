@@ -892,6 +892,14 @@ Q: I want to separate defx state by tabs.
 A: >
 	Defx -buffer-name=`'defx' . tabpagenr()`
 
+
+Q: I want to hook defx events.
+
+A: Some hook is implemented now. >
+
+	autocmd User DefxDirChanged
+	\ echomsg 'defx current directory is changed'
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
