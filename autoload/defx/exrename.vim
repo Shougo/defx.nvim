@@ -197,6 +197,8 @@ function! s:exit(bufnr) abort
     call s:custom_alternate_buffer()
   endif
   silent execute 'bdelete!' a:bufnr
+
+  call defx#redraw()
 endfunction
 
 function! s:check_lines() abort
