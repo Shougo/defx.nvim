@@ -138,7 +138,7 @@ class Defx(object):
             for candidate in candidates:
                 matched = False
                 for glob in self._filtered_files:
-                    if candidate['action__path'].match(glob):
+                    if glob and candidate['action__path'].match(glob):
                         matched = True
                         break
                 if matched or candidate['is_directory']:
@@ -147,8 +147,10 @@ class Defx(object):
 
         if self._enabled_ignored_files:
             for glob in self._ignored_files:
-                candidates = [x for x in candidates
-                              if not x['action__path'].match(glob)]
+                candidates = [
+                    x for x in candidates
+                    if not glob or not x['action__path'].match(glob)
+                ]
 
         for candidate in candidates:
             candidate['is_opened_tree'] = False
