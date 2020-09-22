@@ -197,9 +197,14 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
   else
     let arglead = s:expand_complete(a:arglead)
     " Path names completion.
-    let files = filter(map(glob(a:arglead . '*', v:true, v:true),
-          \                's:substitute_path_separator(v:val)'),
-          \            'stridx(tolower(v:val), tolower(arglead)) == 0')
+    let save_wildignorecase = &wildignorecase
+    try
+      set wildignorecase
+      let files = map(glob(a:arglead . '*', v:true, v:true),
+            \                's:substitute_path_separator(v:val)')
+    finally
+      let &wildignorecase = save_wildignorecase
+    endtry
     let files = map(filter(files, 'isdirectory(v:val)'),
           \ 's:expand_complete(v:val)')
     if a:arglead =~# '^\~'
@@ -210,7 +215,8 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
     let _ += files
   endif
 
-  return uniq(sort(filter(_, 'stridx(v:val, a:arglead) == 0')))
+  return uniq(sort(filter(_,
+        \ 'stridx(tolower(v:val), tolower(a:arglead)) == 0')))
 endfunction
 
 function! defx#util#has_yarp() abort
