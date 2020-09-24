@@ -196,6 +196,19 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     view._vim.command('redraw')
 
+    command_args = shlex.split(command)
+    if '*' in command_args:
+        args = []
+        for arg in command_args:
+            if arg == '*':
+                args += [x['action__path'] for x in context.targets]
+            else:
+                args.append(arg)
+        output = subprocess.check_output(args, cwd=defx._cwd)
+        if output:
+            view.print_msg(output)
+        return
+
     def parse_argument(arg: str) -> str:
         if not arg.startswith('%'):
             return arg
@@ -207,7 +220,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
         return fnamemodify(view._vim, target_path, m.group(2)) + m.group(3)
 
     for target in context.targets:
-        args = [parse_argument(x) for x in shlex.split(command)]
+        args = [parse_argument(x) for x in command_args]
         output = subprocess.check_output(args, cwd=defx._cwd)
         if output:
             view.print_msg(output)

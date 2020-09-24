@@ -271,6 +271,7 @@ drop							*defx-action-drop*
 execute_command 				*defx-action-execute_command*
 		Execute the command.
 		If the argument is "%", it substitutes one file.
+		If the argument is "*", it substitutes the selected files.
 
 		Example:
 		You selected files "foo", "bar", "baz".
