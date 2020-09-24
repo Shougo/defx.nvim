@@ -284,6 +284,8 @@ execute_command 				*defx-action-execute_command*
 		
 		Action args:
 			0. command(The default is your input)
+			1. if it is "async", the command is executed
+			   asynchronously
 
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.

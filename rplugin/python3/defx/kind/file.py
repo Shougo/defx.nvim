@@ -86,6 +86,16 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     return ret
 
 
+def execute_job(view: View, args: typing.List[str]) -> None:
+    if view._vim.call('has', 'nvim'):
+        jobfunc = 'jobstart'
+        jobopts = {}
+    else:
+        jobfunc = 'job_start'
+        jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
+    view._vim.call(jobfunc, args, jobopts)
+
+
 @action(name='cd')
 def _cd(view: View, defx: Defx, context: Context) -> None:
     """
@@ -189,10 +199,13 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
     Execute the command.
     """
 
-    command = context.args[0] if context.args else view._vim.call(
-        'defx#util#input', 'Command: ', '', 'shellcmd')
+    command = (context.args[0]
+               if context.args and context.args[0]
+               else view._vim.call('defx#util#input',
+                                   'Command: ', '', 'shellcmd'))
     if not command:
         return
+    is_async = len(context.args) >= 2 and context.args[1] == 'async'
 
     view._vim.command('redraw')
 
@@ -201,12 +214,16 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
         args = []
         for arg in command_args:
             if arg == '*':
-                args += [x['action__path'] for x in context.targets]
+                args += [str(x['action__path']) for x in context.targets]
             else:
                 args.append(arg)
-        output = subprocess.check_output(args, cwd=defx._cwd)
-        if output:
-            view.print_msg(output)
+
+        if is_async:
+            execute_job(view, args)
+        else:
+            output = subprocess.check_output(args, cwd=defx._cwd)
+            if output:
+                view.print_msg(output)
         return
 
     def parse_argument(arg: str) -> str:
@@ -221,9 +238,13 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
 
     for target in context.targets:
         args = [parse_argument(x) for x in command_args]
-        output = subprocess.check_output(args, cwd=defx._cwd)
-        if output:
-            view.print_msg(output)
+
+        if is_async:
+            execute_job(view, args)
+        else:
+            output = subprocess.check_output(args, cwd=defx._cwd)
+            if output:
+                view.print_msg(output)
 
 
 @action(name='execute_system')
@@ -507,17 +528,10 @@ def _preview_file(view: View, defx: Defx,
 
 def _preview_image(view: View, defx: Defx,
                    context: Context, candidate: Candidate) -> None:
-    has_nvim = view._vim.call('has', 'nvim')
     filepath = str(candidate['action__path'])
 
     preview_image_sh = Path(__file__).parent.parent.joinpath(
         'preview_image.sh')
-    if has_nvim:
-        jobfunc = 'jobstart'
-        jobopts = {}
-    else:
-        jobfunc = 'job_start'
-        jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
 
     wincol = context.wincol + view._vim.call('winwidth', 0)
     if wincol + context.preview_width > view._vim.options['columns']:
@@ -525,7 +539,7 @@ def _preview_image(view: View, defx: Defx,
     args = ['bash', str(preview_image_sh), filepath,
             wincol, 1, context.preview_width]
 
-    view._vim.call(jobfunc, args, jobopts)
+    execute_job(view, args)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
