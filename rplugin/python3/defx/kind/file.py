@@ -53,6 +53,12 @@ class Kind(Base):
         return actions
 
 
+def check_output(view: View, cwd: str, args: typing.List[str]) -> None:
+    output = subprocess.check_output(args, cwd=cwd)
+    if output:
+        view.print_msg(output)
+
+
 def check_overwrite(view: View, dest: Path, src: Path) -> Path:
     if not src.exists() or not dest.exists():
         return Path('')
@@ -221,9 +227,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
         if is_async:
             execute_job(view, args)
         else:
-            output = subprocess.check_output(args, cwd=defx._cwd)
-            if output:
-                view.print_msg(output)
+            check_output(view, defx._cwd, args)
         return
 
     def parse_argument(arg: str) -> str:
@@ -242,9 +246,7 @@ def _execute_command(view: View, defx: Defx, context: Context) -> None:
         if is_async:
             execute_job(view, args)
         else:
-            output = subprocess.check_output(args, cwd=defx._cwd)
-            if output:
-                view.print_msg(output)
+            check_output(view, defx._cwd, args)
 
 
 @action(name='execute_system')

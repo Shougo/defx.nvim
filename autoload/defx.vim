@@ -45,6 +45,8 @@ function! defx#do_action(action, ...) abort
     return ''
   endif
 
+  call defx#util#check_action_args(a:000)
+
   let args = defx#util#convert2list(get(a:000, 0, []))
   return printf(":\<C-u>call defx#call_action(%s, %s)\<CR>",
         \ string(a:action), string(args))
@@ -53,6 +55,8 @@ function! defx#async_action(action, ...) abort
   if &l:filetype !=# 'defx'
     return ''
   endif
+
+  call defx#util#check_action_args(a:000)
 
   let args = defx#util#convert2list(get(a:000, 0, []))
   return printf(":\<C-u>call defx#call_async_action(%s, %s)\<CR>",
@@ -63,6 +67,8 @@ function! defx#call_action(action, ...) abort
     return
   endif
 
+  call defx#util#check_action_args(a:000)
+
   let context = defx#init#_context({})
   let args = defx#util#convert2list(get(a:000, 0, []))
   call defx#util#rpcrequest(
@@ -72,6 +78,8 @@ function! defx#call_async_action(action, ...) abort
   if &l:filetype !=# 'defx'
     return
   endif
+
+  call defx#util#check_action_args(a:000)
 
   let context = defx#init#_context({})
   let args = defx#util#convert2list(get(a:000, 0, []))

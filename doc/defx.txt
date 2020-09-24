@@ -75,6 +75,7 @@ defx#async_action({action}[, {args}])			*defx#async_action()*
 		Fire {action} action with {args} asynchronously.  You can find
 		the actions list in |defx-actions|.
 		{args} behavior depends on {action}.
+		Note: {args} must be |list| if it is not single value.
 		Note: It is only used to define mappings.
 		Note: You cannot fire the next action until the previous
 		action is finished.
@@ -84,12 +85,14 @@ defx#call_action({action}[, {args}])
 		Fire {action} action with {args}.  You can find the actions
 		list in |defx-actions|.
 		{args} behavior depends on {action}.
+		Note: {args} must be |list| if it is not single value.
 
 						*defx#call_async_action()*
 defx#call_async_action({action}[, {args}])
 		Fire {action} action with {args} asynchronously.  You can find
 		the actions list in |defx-actions|.
 		{args} behavior depends on {action}.
+		Note: {args} must be |list| if it is not single value.
 		Note: You cannot fire the next action until the previous
 		action is finished.
 

@@ -471,3 +471,14 @@ function! defx#util#call_atomic(calls) abort
   endfor
   return [results, v:null]
 endfunction
+
+function! defx#util#check_action_args(args) abort
+  let max_len = 1
+  if len(a:args) <= max_len
+    return
+  endif
+
+  call defx#util#print_error(
+        \ printf('Your action arguments are too long.  max=%d, args=%s',
+        \        max_len, string(a:args)))
+endfunction
