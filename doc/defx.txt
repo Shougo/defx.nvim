@@ -906,6 +906,13 @@ A: Some hook is implemented now. >
 	autocmd User DefxDirChanged
 	\ echomsg 'defx current directory is changed'
 
+Q: Is there any way to bind a key to move the cursor to the parent directory
+of the file under the cursor?
+
+A: >
+	nnoremap <silent><buffer><expr> P defx#do_action('search',
+	\ fnamemodify(defx#get_candidate().action__path, ':h'))
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
