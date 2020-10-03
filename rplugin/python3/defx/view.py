@@ -14,7 +14,7 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, len_bytes
+from defx.util import error, import_plugin, safe_call, len_bytes, readable
 from defx.util import Nvim, Candidate
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
@@ -703,7 +703,10 @@ class View(object):
         self._candidates = []
         for defx in self._defxs:
             root = defx.get_root_candidate()
-            defx._mtime = root['action__path'].stat().st_mtime
+            root_path = root['action__path']
+            defx._mtime = (root_path.stat().st_mtime
+                           if readable(root_path) and root_path.is_dir()
+                           else -1)
 
             candidates = [root]
             candidates += defx.tree_candidates(

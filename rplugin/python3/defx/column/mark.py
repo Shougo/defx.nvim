@@ -39,11 +39,13 @@ class Column(Base):
     def get_with_highlights(
         self, context: Context, candidate: Candidate
     ) -> typing.Tuple[str, Highlights]:
+        candidate_path = candidate['action__path']
         if candidate['is_selected']:
             return (str(self.vars['selected_icon']),
                     [(f'{self.highlight_name}_selected',
                       self.start, len_bytes(self.vars['selected_icon']))])
-        elif not os.access(str(candidate['action__path']), os.W_OK):
+        elif (not os.access(str(candidate_path), os.W_OK) or
+              (candidate['is_root'] and not candidate_path.is_dir())):
             return (str(self.vars['readonly_icon']),
                     [(f'{self.highlight_name}_readonly',
                       self.start, len_bytes(self.vars['readonly_icon']))])

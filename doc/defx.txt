@@ -67,6 +67,8 @@ COMMANDS 						*defx-commands*
 
 :Defx [{options}] {paths}				*:Defx*
 		Creates a new Defx buffer.
+		Note: If you want to open {paths} that have spaces, you must
+		escape spaces.
 
 ------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*
