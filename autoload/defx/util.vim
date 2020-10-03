@@ -134,7 +134,7 @@ function! s:parse_options(cmdline) abort
     let splits = split(s, '\a\a\+\zs:')
     if len(splits) == 1
       let source_name = 'file'
-      let source_arg = s
+      let source_arg = s:remove_quote_pairs(s)
     else
       let source_name = splits[0]
       let source_arg = join(splits[1:], ':')
