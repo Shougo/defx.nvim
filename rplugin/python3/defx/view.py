@@ -472,8 +472,6 @@ class View(object):
         self._vim.command('setlocal nospell')
         self._vim.command('setlocal nowrap')
         self._vim.command('setlocal signcolumn=no')
-        if self._context.split == 'floating':
-            self._vim.command('setlocal nocursorline')
 
         self._init_window()
 
@@ -489,7 +487,8 @@ class View(object):
         buffer_options['filetype'] = 'defx'
 
         if not self._vim.call('has', 'nvim'):
-            # In Vim8, FileType autocmd is not fired after set filetype option.
+            # Note: In Vim8, FileType autocmd is not fired after set filetype
+            # option.
             self._vim.command('silent doautocmd FileType defx')
 
         self._vim.command('autocmd! defx * <buffer>')

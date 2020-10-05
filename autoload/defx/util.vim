@@ -3,7 +3,6 @@
 " AUTHOR: Shougo Matsushita <Shougo.Matsu at gmail.com>
 " License: MIT license
 "=============================================================================
-
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = !s:is_windows && !has('win32unix')
       \ && (has('mac') || has('macunix') || has('gui_macvim') ||
