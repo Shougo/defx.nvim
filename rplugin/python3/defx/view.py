@@ -467,8 +467,6 @@ class View(object):
         self._vim.command('setlocal nofoldenable')
         self._vim.command('setlocal foldcolumn=0')
         self._vim.command('setlocal nolist')
-        self._vim.command('setlocal nonumber')
-        self._vim.command('setlocal norelativenumber')
         self._vim.command('setlocal nospell')
         self._vim.command('setlocal nowrap')
         self._vim.command('setlocal signcolumn=no')
