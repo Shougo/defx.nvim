@@ -582,7 +582,8 @@ OPTIONS							*defx-options*
 
 							*defx-option-search*
 -search={path}
-		Search the {path}.
+		Search the {path}.  It expands to {path} from current
+		directory.
 		Note: It must be full path.
 
 		Default: ""
