@@ -36,7 +36,7 @@ def _sort_method(
 def _extension(
         candidates: typing.List[typing.Dict[str, typing.Any]]
 ) -> typing.List[typing.Dict[str, typing.Any]]:
-    return sorted(candidates, key=lambda x: x['action__path'].suffix)
+    return sorted(candidates, key=lambda x: str(x['action__path'].suffix))
 
 
 def _filename(
@@ -55,7 +55,7 @@ def _size(
         candidates: typing.List[typing.Dict[str, typing.Any]]
 ) -> typing.List[typing.Dict[str, typing.Any]]:
     return sorted(candidates, key=(lambda x:
-                                   x['action__path'].stat().st_size
+                                   int(x['action__path'].stat().st_size)
                                    if readable(x['action__path']) else -1))
 
 
@@ -63,7 +63,7 @@ def _time(
         candidates: typing.List[typing.Dict[str, typing.Any]]
 ) -> typing.List[typing.Dict[str, typing.Any]]:
     return sorted(candidates, key=(lambda x:
-                                   x['action__path'].stat().st_mtime
+                                   int(x['action__path'].stat().st_mtime)
                                    if readable(x['action__path']) else 0))
 
 
