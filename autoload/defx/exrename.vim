@@ -156,6 +156,9 @@ function! s:do_rename() abort
       continue
     endif
 
+    " Create the parent directory.
+    call mkdir(fnamemodify(new_file, ':h'), 'p')
+
     if rename(old_file, new_file)
       " Rename error
       redraw
