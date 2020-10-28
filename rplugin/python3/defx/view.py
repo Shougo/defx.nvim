@@ -815,7 +815,7 @@ class View(object):
             for proptype in self._proptypes:
                 commands.append(['prop_remove', [{'type': proptype}]])
 
-            for highlight in columns_highlights:
+            for highlight in [x for x in columns_highlights if x[0] != '']:
                 if highlight[0] not in self._proptypes:
                     commands.append(
                         ['prop_type_add',
