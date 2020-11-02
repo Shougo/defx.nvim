@@ -333,6 +333,9 @@ open							*defx-action-open*
 
 		Action args:
 			0. open command(The default is |:edit|)
+			   Note: if the command is "choose", it use
+			   "vim-choosewin" plugin as window selector.
+			   https://github.com/t9md/vim-choosewin
 
 open_directory					*defx-action-open_directory*
 		Open the directory.

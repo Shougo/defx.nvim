@@ -102,6 +102,17 @@ def execute_job(view: View, args: typing.List[str]) -> None:
     view._vim.call(jobfunc, args, jobopts)
 
 
+def switch(view: View) -> None:
+    windows = [x for x in range(1, view._vim.call('winnr', '$') + 1)
+               if view._vim.call('getwinvar', x, '&buftype') == '']
+
+    result = view._vim.call('choosewin#start', windows,
+                            {'auto_choose': True, 'hook_enable': False})
+    if not result:
+        # Open vertical
+        view._vim.command('noautocmd rightbelow vnew')
+
+
 @action(name='cd')
 def _cd(view: View, defx: Defx, context: Context) -> None:
     """
@@ -393,6 +404,9 @@ def _open(view: View, defx: Defx, context: Context) -> None:
     """
     cwd = view._vim.call('getcwd', -1)
     command = context.args[0] if context.args else 'edit'
+    choose = command == 'choose' and (
+        view._vim.call('exists', 'g:loaded_choosewin')
+        or view._vim.call('hasmapto', '<Plug>(choosewin)', 'n'))
     previewed_buffers = view._vim.vars['defx#_previewed_buffers']
     for target in context.targets:
         path = target['action__path']
@@ -407,7 +421,11 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             except ValueError:
                 pass
 
-        view._vim.call('defx#util#execute_path', command, str(path))
+        if choose:
+            switch(view)
+
+        view._vim.call('defx#util#execute_path',
+                       'edit' if choose else command, str(path))
 
         bufnr = str(view._vim.call('bufnr', str(path)))
         if bufnr in previewed_buffers:
