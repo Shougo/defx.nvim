@@ -206,7 +206,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
 
             view._vim.call('defx#util#execute_path', command, str(path))
 
-        view.restore_previous_buffer()
+        view.restore_previous_buffer(view._prev_bufnr)
     view.close_preview()
 
 
@@ -432,7 +432,7 @@ def _open(view: View, defx: Defx, context: Context) -> None:
             previewed_buffers.pop(bufnr)
             view._vim.vars['defx#_previewed_buffers'] = previewed_buffers
 
-        view.restore_previous_buffer()
+        view.restore_previous_buffer(view._prev_bufnr)
     view.close_preview()
 
 

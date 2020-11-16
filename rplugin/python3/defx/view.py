@@ -177,7 +177,7 @@ class View(object):
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
 
-        self.restore_previous_buffer()
+        self.restore_previous_buffer(self._context.prev_last_bufnr)
 
     def redraw(self, is_force: bool = False) -> None:
         """
@@ -399,12 +399,12 @@ class View(object):
         self._candidates = (self._candidates[: start] +
                             self._candidates[end:])
 
-    def restore_previous_buffer(self) -> None:
-        if not self._vim.call('buflisted', self._prev_bufnr):
+    def restore_previous_buffer(self, bufnr: int) -> None:
+        if (not self._vim.call('buflisted', bufnr) or
+                self._vim.call('win_getid') != self._winid):
             return
 
-        prev_bufname = self._vim.call('bufname',
-                                      self._context.prev_last_bufnr)
+        prev_bufname = self._vim.call('bufname', bufnr)
         if not prev_bufname:
             # ignore noname buffer
             return
