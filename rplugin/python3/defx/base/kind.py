@@ -315,7 +315,8 @@ def _toggle_select_visual(view: View, defx: Defx, context: Context) -> None:
         candidate['is_selected'] = not candidate['is_selected']
 
 
-@action(name='toggle_sort', attr=ActionAttr.MARK | ActionAttr.NO_TAGETS)
+@action(name='toggle_sort', attr=ActionAttr.MARK |
+        ActionAttr.NO_TAGETS | ActionAttr.REDRAW)
 def _toggle_sort(view: View, defx: Defx, context: Context) -> None:
     """
     Toggle the current sort method.
