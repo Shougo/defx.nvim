@@ -18,7 +18,15 @@ class Column(Base):
 
         self.name = 'size'
         self.has_get_with_highlights = True
+
         self._length = 9
+        self._suffixes = {
+            'B': 'Comment',
+            'KB': 'Constant',
+            'MB': 'Special',
+            'GB': 'Statement',
+            'TB': 'Statement',
+        }
 
     def get_with_highlights(
         self, context: Context, candidate: Candidate
@@ -28,7 +36,8 @@ class Column(Base):
             return (' ' * self._length, [])
         size = self._get_size(path.stat().st_size)
         text = '{:>6s}{:>3s}'.format(size[0], size[1])
-        return (text, [(self.highlight_name, self.start, self._length)])
+        highlight = f'{self.highlight_name}_{size[1]}'
+        return (text, [(highlight, self.start, self._length)])
 
     def _get_size(self, size: float) -> typing.Tuple[str, str]:
         multiple = 1024
@@ -46,6 +55,8 @@ class Column(Base):
 
     def highlight_commands(self) -> typing.List[str]:
         commands: typing.List[str] = []
-        commands.append(
-            f'highlight default link {self.highlight_name} Constant')
+        for suffix, highlight in self._suffixes.items():
+            commands.append(
+                'highlight default link {}_{} {}'.format(
+                    self.highlight_name, suffix, highlight))
         return commands
