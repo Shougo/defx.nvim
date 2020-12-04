@@ -67,8 +67,8 @@ COMMANDS 						*defx-commands*
 
 :Defx [{options}] {paths}				*:Defx*
 		Creates a new Defx buffer.
-		Note: If you want to open {paths} that have spaces, you must
-		escape spaces.
+		Note: If you want to open {paths} that have spaces or colons,
+		you must escape them.
 
 ------------------------------------------------------------------------------
 FUNCTIONS 						*defx-functions*
@@ -853,7 +853,7 @@ FREQUENTLY ASKED QUESTIONS (FAQ)			*defx-faq*
 Q: I want to explore the folder where the current file is.
 
 A: >
-	Defx `expand('%:p:h')` -search=`expand('%:p')`
+	Defx `escape(expand('%:p:h'), ' :')` -search=`expand('%:p')`
 
 Q: I want to open defx window like explorer.
 
