@@ -99,6 +99,8 @@ Please see `:help defx-examples`.
 
 ## Screenshots
 
+Please see: https://github.com/Shougo/defx.nvim/issues/18
+
 ![Multi root feature](https://user-images.githubusercontent.com/41495/45696476-ac9d0a80-bb9e-11e8-9ee2-120ac7d0f045.png)
 ![Defx -split=vertical](https://user-images.githubusercontent.com/2835826/45823772-7190f900-bcbc-11e8-9727-3dda3ce4c07c.png)
 ![Defx -new](https://user-images.githubusercontent.com/3047695/45927914-7f07e680-bf3b-11e8-9b36-755e1eec2a8f.png)
@@ -111,5 +113,3 @@ Please see `:help defx-examples`.
 ![Defx floating window](https://user-images.githubusercontent.com/24732170/59892964-1c823f00-9416-11e9-8369-2e21910e168c.png)
 ![Horizon colorscheme](https://user-images.githubusercontent.com/324519/63241202-a4fb4100-c207-11e9-9060-c3c04608ea7b.png)
 ![Image preview](https://user-images.githubusercontent.com/41671631/85951370-5d9c2000-b995-11ea-8a3d-2c304d21cc4c.gif)
-
-Please see: https://github.com/Shougo/defx.nvim/issues/18
