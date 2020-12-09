@@ -401,12 +401,13 @@ class View(object):
 
     def restore_previous_buffer(self, bufnr: int) -> None:
         if (not self._vim.call('buflisted', bufnr) or
-                not self._vim.call('bufexists', bufnr) or
                 self._vim.call('win_getid') != self._winid):
             return
 
-        prev_bufname = self._vim.call('bufname', bufnr)
-        if not prev_bufname or self._vim.call('getreg', '#') == prev_bufname:
+        # Note: Convert to full path to prevent error
+        prev_bufname = self._vim.call(
+            'fnamemodify', self._vim.call('bufname', bufnr), ':p')
+        if not prev_bufname:
             return
 
         self._vim.call('setreg', '#',
