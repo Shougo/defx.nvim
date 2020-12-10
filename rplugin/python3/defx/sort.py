@@ -15,8 +15,10 @@ from defx.util import readable
 class _Reversed:
     def __init__(self, obj):
         self._obj = obj
+
     def __lt__(self, other):
         return self._obj > other._obj
+
     def __eq__(self, other):
         return self._obj == other._obj
 
@@ -50,7 +52,7 @@ def _make_key_func(
 
 
 def _make_reversed_key(
-        key_method : str
+        key_method: str
 ) -> typing.Callable[[typing.Dict[str, typing.Any]], typing.Any]:
     return lambda x: _Reversed(key_method(x))
 
