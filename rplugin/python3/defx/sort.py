@@ -13,13 +13,15 @@ from defx.util import readable
 
 @functools.total_ordering
 class _Reversed:
-    def __init__(self, obj):
+    def __init__(self, obj: typing.Any) -> None:
         self._obj = obj
 
-    def __lt__(self, other):
+    def __lt__(self, other: '_Reversed') -> typing.Any:
         return self._obj > other._obj
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> typing.Any:
+        if not isinstance(other, _Reversed):
+            return NotImplemented
         return self._obj == other._obj
 
 
@@ -36,8 +38,8 @@ def sort(
 
 def _make_key_func(
         methods: str
-) -> typing.List[typing.Callable[[typing.Dict[str, typing.Any]], typing.Any]]:
-    key_func = []
+) -> typing.Callable[[typing.Any], typing.List[typing.Any]]:
+    key_func: typing.List[typing.Callable[[typing.Any], typing.Any]] = []
     for method in methods.split(':'):
         key = method.lower()
         if key not in SORT_KEY_METHODS:
@@ -52,7 +54,7 @@ def _make_key_func(
 
 
 def _make_reversed_key(
-        key_method: str
+        key_method: typing.Callable[[typing.Dict[str, typing.Any]], typing.Any]
 ) -> typing.Callable[[typing.Dict[str, typing.Any]], typing.Any]:
     return lambda x: _Reversed(key_method(x))
 
