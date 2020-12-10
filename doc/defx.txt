@@ -607,6 +607,8 @@ OPTIONS							*defx-options*
 -sort={method}
 		Sort method.
 		If the method is upper case, the order will be reversed.
+		You can sort by multiple keys by ":"(e.g.
+		-sort=extension:filename).
 
 		"extension": file extension sort
 		"filename": file name sort
