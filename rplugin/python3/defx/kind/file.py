@@ -378,7 +378,7 @@ def _new_multiple_files(view: View, defx: Defx, context: Context) -> None:
     if not str_filenames:
         return None
 
-    for name in str_filenames.split():
+    for name in shlex.split(str_filenames):
         is_dir = name[-1] == '/'
 
         filename = Path(cwd).joinpath(name)
