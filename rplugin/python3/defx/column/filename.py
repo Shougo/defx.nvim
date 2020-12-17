@@ -70,12 +70,16 @@ class Column(Base):
         max_fnamewidth += context.variable_length
         max_fnamewidth += len(self._file_marker)
         max_width = int(self.vars['max_width'])
-        max_width_percent = int(self.vars['max_width_percent'])
-        if max_width_percent > 0:
-            max_width = int(max_width_percent * context.winwidth / 100)
+        if max_width < 0:
+            self._current_length = int(context.winwidth + max_width)
+        else:
+            max_width_percent = int(self.vars['max_width_percent'])
+            if max_width_percent > 0:
+                max_width = int(max_width_percent * context.winwidth / 100)
+            self._current_length = min(max_fnamewidth, max_width)
         self._current_length = max(
-            min(max_fnamewidth, max_width),
-            int(self.vars['min_width']))
+                self._current_length,
+                int(self.vars['min_width']))
         return self._current_length
 
     def syntaxes(self) -> typing.List[str]:

@@ -684,10 +684,14 @@ filename	File name.
 		min_width	  the minimum width of a defx buffer
 				  (default: 40)
 		max_width	  the maximum width of a defx buffer
+				  Negative value sets width exactly to:
+				  "winwidth - (-max_width)".
+				  Example: "-36" max_width means width
+				  is "winwidth - 36".
 				  (default: 100)
 		max_width_percent
-				  the maximum width of a defx buffer
-				  It means: "winwidth -max_width / 100".
+				  the maximum width in percentage of a defx buffer
+				  It means: "winwidth * max_width_percent / 100".
 				  Example: "120" max_width_percent means 120
 				  percent winwidth.
 				  (default: 0)
@@ -928,6 +932,7 @@ COMPATIBILITY						*defx-compatibility*
 
 2020-12-17
 * "max_width_percent" is added instead of negative value of "max_width".
+* "max_width" negative value sets max_width to current window width plus "max_width".
 
 2020-05-04
 * "open_tree_recursive" and "open_or_close_tree" actions are deprecated.
