@@ -21,6 +21,7 @@ class Column(Base):
         self.vars = {
             'min_width': 40,
             'max_width': 100,
+            'max_width_percent': 0,
             'root_marker_highlight': 'Constant',
         }
         self.is_stop_variable = True
@@ -69,8 +70,9 @@ class Column(Base):
         max_fnamewidth += context.variable_length
         max_fnamewidth += len(self._file_marker)
         max_width = int(self.vars['max_width'])
-        if max_width < 0:
-            max_width = int(-max_width * context.winwidth / 100)
+        max_width_percent = int(self.vars['max_width_percent'])
+        if max_width_percent > 0:
+            max_width = int(max_width_percent * context.winwidth / 100)
         self._current_length = max(
             min(max_fnamewidth, max_width),
             int(self.vars['min_width']))
