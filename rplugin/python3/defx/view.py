@@ -805,7 +805,8 @@ class View(object):
 
     def _clear_prop_types(self) -> None:
         self._vim.call('defx#util#call_atomic', [
-            ['prop_type_delete', [x]] for x in self._proptypes
+            ['prop_type_delete', [x, {'bufnr': self._bufnr}]]
+            for x in self._proptypes
         ])
         self._proptypes = set()
 
@@ -814,19 +815,24 @@ class View(object):
         commands = []
         if self._has_textprop:
             for proptype in self._proptypes:
-                commands.append(['prop_remove', [{'type': proptype}]])
+                commands.append(
+                    ['prop_remove', [{'type': proptype, 'bufnr': self._bufnr}]]
+                )
 
             for highlight in [x for x in columns_highlights if x[0] != '']:
                 if highlight[0] not in self._proptypes:
                     commands.append(
                         ['prop_type_add',
-                         [highlight[0], {'highlight': highlight[0]}]]
+                         [highlight[0],
+                          {'highlight': highlight[0], 'bufnr': self._bufnr}]]
                     )
                     self._proptypes.add(highlight[0])
                 commands.append(
                     ['prop_add',
                      [highlight[1] + 1, highlight[2] + 1,
-                      {'end_col': highlight[3] + 1, 'type': highlight[0]}]]
+                      {'end_col': highlight[3] + 1,
+                       'type': highlight[0],
+                       'bufnr': self._bufnr}]]
                 )
         else:
             commands.append(['nvim_buf_clear_namespace',
