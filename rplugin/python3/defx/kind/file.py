@@ -491,6 +491,11 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                 else:
                     dest.unlink()
             shutil.move(str(path), cwd)
+
+            # Check rename
+            view._vim.call('defx#util#buffer_rename',
+                           view._vim.call('bufnr', str(path)), str(dest))
+
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:
         # Clear clipboard after move
