@@ -932,7 +932,8 @@ COMPATIBILITY						*defx-compatibility*
 
 2020-12-17
 * "max_width_percent" is added instead of negative value of "max_width".
-* "max_width" negative value sets max_width to current window width plus "max_width".
+* "max_width" negative value sets max_width to current window width plus
+  "max_width".
 
 2020-05-04
 * "open_tree_recursive" and "open_or_close_tree" actions are deprecated.
