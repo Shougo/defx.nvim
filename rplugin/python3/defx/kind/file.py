@@ -495,7 +495,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             # Check rename
             if not path.is_dir():
                 view._vim.call('defx#util#buffer_rename',
-                            view._vim.call('bufnr', str(path)), str(dest))
+                               view._vim.call('bufnr', str(path)), str(dest))
 
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:
@@ -663,7 +663,7 @@ def _rename(view: View, defx: Defx, context: Context) -> None:
         # The old is directory, the path may be matched opened file
         if not new.is_dir():
             view._vim.call('defx#util#buffer_rename',
-                            view._vim.call('bufnr', str(old)), str(new))
+                           view._vim.call('bufnr', str(old)), str(new))
 
         view.redraw(True)
         view.search_recursive(new, defx._index)

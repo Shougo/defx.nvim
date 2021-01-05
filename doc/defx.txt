@@ -163,6 +163,17 @@ defx#get_candidate()					*defx#get_candidate()*
 defx#get_context()					*defx#get_context()*
 		Returns the current context as |Dictionary|.
 
+defx#is_binary()					*defx#is_binary()*
+		Returns |v:true| if the current cursor candidate is binary
+		file.
+
+		Example: >
+
+		nnoremap <silent><buffer><expr> <CR>
+		\ defx#is_binary() ?
+		\ defx#do_action('execute_system') :
+		\ defx#do_action('open')
+
 defx#is_directory()					*defx#is_directory()*
 		Returns |v:true| if the current cursor candidate is directory.
 

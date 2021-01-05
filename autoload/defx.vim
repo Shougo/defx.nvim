@@ -103,6 +103,15 @@ endfunction
 function! defx#is_opened_tree() abort
   return get(defx#get_candidate(), 'is_opened_tree', v:false)
 endfunction
+function! defx#is_binary() abort
+  let path = get(defx#get_candidate(), 'action__path', '')
+  if !filereadable(path)
+    return v:false
+  endif
+
+  let head = join(readfile(path, 'b', 5), '\n')
+  return head =~# '[\x00-\x08\x10-\x1a\x1c-\x1f]\{2,}'
+endfunction
 function! defx#get_context() abort
   if &l:filetype !=# 'defx'
     return {}
