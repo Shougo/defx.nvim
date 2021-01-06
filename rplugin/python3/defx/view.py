@@ -405,9 +405,10 @@ class View(object):
             return
 
         # Note: Convert to full path to prevent error
+        # "1" matches "123" buffer
         prev_bufname = self._vim.call(
             'fnamemodify', self._vim.call('bufname', bufnr), ':p')
-        if not prev_bufname:
+        if not self._vim.call('buflisted', prev_bufname):
             return
 
         self._vim.call('setreg', '#',
