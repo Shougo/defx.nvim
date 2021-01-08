@@ -160,6 +160,10 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 defx#get_candidate()					*defx#get_candidate()*
 		Returns the current cursor candidate as |Dictionary|.
 
+				    	*defx#get_selected_candidates()*
+defx#get_selected_candidates()
+		Returns the selected candidates as |List| of |Dictionary|.
+
 defx#get_context()					*defx#get_context()*
 		Returns the current context as |Dictionary|.
 
@@ -937,6 +941,13 @@ of the file under the cursor?
 A: >
 	nnoremap <silent><buffer><expr> P defx#do_action('search',
 	\ fnamemodify(defx#get_candidate().action__path, ':h'))
+
+Q: I want to execute ":Denite grep" command for selected files.
+
+A: >
+	nnoremap <silent><buffer> gr :<C-u>call denite#start(
+	\ [{'name': 'grep', 'args': map(defx#get_selected_candidates(),
+	\ "v:val['action__path']")}])<CR>
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

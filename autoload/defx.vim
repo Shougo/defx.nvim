@@ -94,8 +94,13 @@ function! defx#get_candidate() abort
   if &l:filetype !=# 'defx'
     return {}
   endif
-
   return defx#util#rpcrequest('_defx_get_candidate', [], v:false)
+endfunction
+function! defx#get_selected_candidates() abort
+  if &l:filetype !=# 'defx'
+    return {}
+  endif
+  return defx#util#rpcrequest('_defx_get_selected_candidates', [], v:false)
 endfunction
 function! defx#is_directory() abort
   return get(defx#get_candidate(), 'is_directory', v:false)

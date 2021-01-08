@@ -16,6 +16,7 @@ else:
     import pynvim as vim
 
 Args = typing.List[typing.Any]
+Candidate = typing.Dict[str, typing.Union[str, bool]]
 
 if hasattr(vim, 'plugin'):
     # Neovim only
@@ -43,9 +44,14 @@ if hasattr(vim, 'plugin'):
             self._rplugin.do_action(args)
 
         @vim.rpc_export('_defx_get_candidate', sync=True)  # type: ignore
-        def get_candidate(self, args: Args
-                          ) -> typing.Dict[str, typing.Union[str, bool]]:
+        def get_candidate(self, args: Args) -> Candidate:
             return self._rplugin.get_candidate()
+
+        @vim.rpc_export(
+            '_defx_get_selected_candidates', sync=True)  # type: ignore
+        def get_selected_candidates(self,
+                                    args: Args) -> typing.List[Candidate]:
+            return self._rplugin.get_selected_candidates()
 
         @vim.rpc_export('_defx_get_context', sync=True)  # type: ignore
         def get_context(self, args: Args) -> typing.Dict[str, typing.Any]:
@@ -71,9 +77,11 @@ if find_spec('yarp'):
     def _defx_async_action(args: Args) -> None:
         global_rplugin.do_action(args)
 
-    def _defx_get_candidate(args: Args
-                            ) -> typing.Dict[str, typing.Union[str, bool]]:
+    def _defx_get_candidate(args: Args) -> Candidate:
         return global_rplugin.get_candidate()
+
+    def _defx_get_selected_candidates(args: Args) -> typing.List[Candidate]:
+        return global_rplugin.get_selected_candidates()
 
     def _defx_get_context(args: Args) -> typing.Dict[str, typing.Any]:
         return global_rplugin.get_context()

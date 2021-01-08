@@ -10,6 +10,8 @@ from defx.clipboard import Clipboard
 from defx.view import View
 from defx.util import Nvim
 
+Candidate = typing.Dict[str, typing.Union[str, bool]]
+
 
 class Rplugin:
 
@@ -42,7 +44,7 @@ class Rplugin:
         if paths == prev_paths and view._candidates != prev_candidates:
             self.redraw([x for x in self._views if x != view])
 
-    def get_candidate(self) -> typing.Dict[str, typing.Union[str, bool]]:
+    def get_candidate(self) -> Candidate:
         cursor = self._vim.call('line', '.')
         for view in [x for x in self._views
                      if x._bufnr == self._vim.current.buffer.number]:
@@ -55,6 +57,20 @@ class Rplugin:
                 'action__path': str(candidate['action__path']),
             }
         return {}
+
+    def get_selected_candidates(self) -> typing.List[Candidate]:
+        cursor = self._vim.call('line', '.')
+        for view in [x for x in self._views
+                     if x._bufnr == self._vim.current.buffer.number]:
+            candidates = view.get_selected_candidates(cursor)
+            return [{
+                'word': candidate['word'],
+                'is_directory': candidate['is_directory'],
+                'is_opened_tree': candidate['is_opened_tree'],
+                'level': candidate['level'],
+                'action__path': str(candidate['action__path']),
+            } for candidate in candidates]
+        return []
 
     def get_context(self) -> typing.Dict[str, typing.Any]:
         for view in [x for x in self._views

@@ -244,7 +244,7 @@ class View(object):
             return self._candidates[cursor - 1]
 
     def get_selected_candidates(
-            self, cursor: int, index: int
+            self, cursor: int, index: int = -1
     ) -> typing.List[typing.Dict[str, typing.Any]]:
         if not self._candidates:
             return []
@@ -252,7 +252,8 @@ class View(object):
         candidates = [x for x in self._candidates if x['is_selected']]
         if not candidates:
             candidates = [self.get_cursor_candidate(cursor)]
-        return [x for x in candidates if x.get('_defx_index', -1) == index]
+        return [x for x in candidates
+                if index < 0 or x.get('_defx_index', -1) == index]
 
     def get_candidate_pos(self, path: Path, index: int) -> int:
         for [pos, candidate] in enumerate(self._candidates):
