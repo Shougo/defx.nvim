@@ -128,6 +128,10 @@ function! s:parse_options(cmdline) abort
   let cmdline = (a:cmdline =~# '\\\@<!`.*\\\@<!`') ?
         \ s:eval_cmdline(a:cmdline) : a:cmdline
 
+  " Note: convert number options to string to check types
+  let defalt_options = map(copy(defx#init#_user_options()),
+        \ 'type(v:val) == v:t_number ? string(v:val) : v:val')
+
   for s in split(cmdline, s:re_unquoted_match('\%(\\\@<!\s\)\+'))
     let s = substitute(s, '\\\( \)', '\1', 'g')
     let splits = split(s, '\a\a\+\zs:')
@@ -149,8 +153,14 @@ function! s:parse_options(cmdline) abort
             \ s:remove_quote_pairs(s[len(arg_key) :]) : v:true
     endif
 
-    if index(keys(defx#init#_user_options()), name) >= 0
-      let options[name] = value
+    if has_key(defalt_options, name)
+      " Type check
+      if type(defalt_options[name]) != type(value)
+        call defx#util#print_error(
+              \ printf('option "%s": type is invalid.', arg_key))
+      else
+        let options[name] = value
+      endif
     else
       call add(args, [source_name, source_arg])
     endif
