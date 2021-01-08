@@ -195,7 +195,7 @@ def _drop(view: View, defx: Defx, context: Context) -> None:
             # Jump to the last accessed window
             view._vim.command('wincmd p')
 
-            if view._vim.call('win_getid') == view._winid
+            if view._vim.call('win_getid') == view._winid:
                 view._vim.command('wincmd w')
 
             if not view._vim.call('haslocaldir'):
