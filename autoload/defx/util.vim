@@ -360,7 +360,7 @@ function! defx#util#buffer_rename(bufnr, new_filename) abort
   set hidden
   let bufnr_save = bufnr('%')
   noautocmd silent! execute 'buffer' a:bufnr
-  silent execute (&l:buftype ==# '' ? 'saveas!' : 'file')
+  silent! execute (&l:buftype ==# '' ? 'saveas!' : 'file')
         \ fnameescape(a:new_filename)
   if &l:buftype ==# ''
     " Remove old buffer.
