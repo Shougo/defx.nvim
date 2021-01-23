@@ -5,11 +5,12 @@
 # ============================================================================
 
 from pathlib import Path
+from pynvim import Nvim
 import typing
 
 from defx.base.source import Base
 from defx.context import Context
-from defx.util import error, readable, safe_call, Nvim
+from defx.util import error, readable, safe_call
 
 
 class Source(Base):

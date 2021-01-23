@@ -4,11 +4,12 @@
 # License: MIT license
 # ============================================================================
 
+from pynvim import Nvim
+import typing
+
 from defx.base.column import Base, Highlights
 from defx.context import Context
-from defx.util import Nvim, readable, Candidate
-
-import typing
+from defx.util import readable, Candidate
 
 
 class Column(Base):

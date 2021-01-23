@@ -4,18 +4,19 @@
 # License: MIT license
 # ============================================================================
 
+from pathlib import Path
+from pynvim import Nvim
+from pynvim.api import Buffer
 import copy
 import time
 import typing
-from pynvim.api import Buffer
-from pathlib import Path
 
 from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
 from defx.util import error, import_plugin, safe_call, len_bytes, readable
-from defx.util import Nvim, Candidate
+from defx.util import Candidate
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
 

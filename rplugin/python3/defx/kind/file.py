@@ -5,6 +5,7 @@
 # ============================================================================
 
 from pathlib import Path
+from pynvim import Nvim
 import copy
 import importlib
 import mimetypes
@@ -22,7 +23,7 @@ from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.util import cd, cwd_input, confirm, error, Candidate
-from defx.util import readable, Nvim, fnamemodify
+from defx.util import readable, fnamemodify
 from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}

@@ -4,11 +4,11 @@
 # License: MIT license
 # ============================================================================
 
+from pynvim import Nvim
 import typing
 
 from abc import ABC, abstractmethod
 from defx.context import Context
-from defx.util import Nvim
 from defx.util import error
 from pathlib import Path
 

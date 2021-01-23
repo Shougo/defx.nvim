@@ -4,13 +4,13 @@
 # License: MIT license
 # ============================================================================
 
+from pynvim import Nvim
 import typing
 
 from abc import abstractmethod
 
 from defx.context import Context
-from defx.util import Nvim, Candidate
-from defx.util import error
+from defx.util import Candidate, error
 from defx.view import View
 
 Highlights = typing.List[typing.Tuple[str, int, int]]

@@ -4,10 +4,11 @@
 # License: MIT license
 # ============================================================================
 
+from pathlib import Path
+from pynvim import Nvim
 import json
 import re
 import typing
-from pathlib import Path
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
@@ -15,7 +16,6 @@ from defx.action import do_action
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import Nvim
 from defx.view import View
 
 _action_table: typing.Dict[str, ActionTable] = {}

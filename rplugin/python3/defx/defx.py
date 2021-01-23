@@ -4,6 +4,7 @@
 # License: MIT license
 # ============================================================================
 
+from pynvim import Nvim
 import typing
 
 from defx.base.source import Base as Source
@@ -11,7 +12,6 @@ from defx.source.file.list import Source as SourceList
 from defx.source.file import Source as SourceFile
 from defx.context import Context
 from defx.sort import sort
-from defx.util import Nvim
 from defx.util import cd, error
 from pathlib import Path
 

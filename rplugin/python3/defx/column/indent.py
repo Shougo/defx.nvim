@@ -5,11 +5,11 @@
 # License: MIT license
 # ============================================================================
 
+from pynvim import Nvim
+import typing
+
 from defx.base.column import Base
 from defx.context import Context
-from defx.util import Nvim
-
-import typing
 
 
 class Column(Base):
