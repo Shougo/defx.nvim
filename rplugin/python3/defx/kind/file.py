@@ -128,8 +128,11 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
             path = Path(context.args[0])
     else:
         path = Path.home()
-    path = Path(defx._cwd).joinpath(path).resolve()
-    if not readable(path) or (source_name == 'file' and not path.is_dir()):
+    path = Path(defx._cwd).joinpath(path)
+    if not readable(path):
+        error(view._vim, f'{path} is invalid.')
+    path = path.resolve()
+    if source_name == 'file' and not path.is_dir():
         error(view._vim, f'{path} is invalid.')
         return
 
