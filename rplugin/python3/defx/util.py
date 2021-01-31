@@ -79,7 +79,7 @@ def readable(path: Path) -> bool:
             return True
         else:
             return False
-    except Exception:
+    except (Exception, OSError):
         return False
 
 
