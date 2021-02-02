@@ -75,7 +75,7 @@ def readable(path: Path) -> bool:
     Check {path} is readable.
     """
     try:
-        if access(str(path), R_OK) and path.resolve():
+        if os.access(str(path), os.R_OK) and path.resolve():
             return True
         else:
             return False
