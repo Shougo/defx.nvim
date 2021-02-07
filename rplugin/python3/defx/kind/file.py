@@ -498,18 +498,19 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
         view.print_msg(
             f'[{index + 1}/{len(view._clipboard.candidates)}] {path}')
 
+        if dest.exists() and action != ClipboardAction.MOVE:
+            # Must remove dest before
+            if not dest.is_symlink() and dest.is_dir():
+                shutil.rmtree(str(dest))
+            else:
+                dest.unlink()
+
         if action == ClipboardAction.COPY:
             if path.is_dir():
                 shutil.copytree(str(path), dest)
             else:
                 shutil.copy2(str(path), dest)
         elif action == ClipboardAction.MOVE:
-            if dest.exists():
-                # Must remove dest before
-                if dest.is_dir():
-                    shutil.rmtree(str(dest))
-                else:
-                    dest.unlink()
             shutil.move(str(path), cwd)
 
             # Check rename
@@ -518,12 +519,6 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                                view._vim.call('bufnr', str(path)), str(dest))
         elif action == ClipboardAction.LINK:
             # Create the symbolic link to dest
-            if dest.exists():
-                # Must remove dest before
-                if dest.is_dir():
-                    shutil.rmtree(str(dest))
-                else:
-                    dest.unlink()
             dest.symlink_to(path, target_is_directory=path.is_dir())
 
         view._vim.command('redraw')
