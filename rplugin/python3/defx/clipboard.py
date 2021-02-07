@@ -11,6 +11,7 @@ import typing
 class ClipboardAction(Enum):
     MOVE = auto()
     COPY = auto()
+    LINK = auto()
 
 
 class Clipboard():

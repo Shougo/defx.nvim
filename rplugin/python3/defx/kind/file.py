@@ -273,6 +273,21 @@ def _execute_system(view: View, defx: Defx, context: Context) -> None:
         view._vim.call('defx#util#open', str(target['action__path']))
 
 
+@action(name='link')
+def _link(view: View, defx: Defx, context: Context) -> None:
+    if not context.targets:
+        return
+
+    message = 'Link to the clipboard: {}'.format(
+        str(context.targets[0]['action__path'])
+        if len(context.targets) == 1
+        else str(len(context.targets)) + ' files')
+    view.print_msg(message)
+
+    view._clipboard.action = ClipboardAction.LINK
+    view._clipboard.candidates = context.targets
+
+
 @action(name='move')
 def _move(view: View, defx: Defx, context: Context) -> None:
     if not context.targets:
@@ -482,6 +497,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
 
         view.print_msg(
             f'[{index + 1}/{len(view._clipboard.candidates)}] {path}')
+
         if action == ClipboardAction.COPY:
             if path.is_dir():
                 shutil.copytree(str(path), dest)
@@ -500,6 +516,9 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
             if not path.is_dir():
                 view._vim.call('defx#util#buffer_rename',
                                view._vim.call('bufnr', str(path)), str(dest))
+        elif action == ClipboardAction.LINK:
+            # Create the symbolic link to dest
+            dest.symlink_to(path)
 
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:

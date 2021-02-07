@@ -310,6 +310,12 @@ execute_command 				*defx-action-execute_command*
 execute_system 					*defx-action-execute_system*
 		Execute the file by system associated command.
 
+link 						*defx-action-link*
+		Create symbolic files for the selected files to defx
+		clipboard.
+		Note: If you want to execute it in Windows, you need to have
+		symbolic link permission.
+
 move 						*defx-action-move*
 		Move the selected files to defx clipboard.
 
