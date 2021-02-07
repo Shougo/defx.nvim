@@ -518,7 +518,7 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                                view._vim.call('bufnr', str(path)), str(dest))
         elif action == ClipboardAction.LINK:
             # Create the symbolic link to dest
-            dest.symlink_to(path)
+            dest.symlink_to(path, target_is_directory=path.is_dir())
 
         view._vim.command('redraw')
     if action == ClipboardAction.MOVE:
