@@ -120,26 +120,31 @@ def _cd(view: View, defx: Defx, context: Context) -> None:
     Change the current directory.
     """
     source_name = defx._source.name
-    if context.args:
-        if len(context.args) > 1:
-            source_name = context.args[0]
-            path = Path(context.args[1])
-        else:
-            path = Path(context.args[0])
-    else:
-        path = Path.home()
-    path = Path(defx._cwd).joinpath(path)
-    if not readable(path):
-        error(view._vim, f'{path} is invalid.')
-    path = path.resolve()
-    if source_name == 'file' and not path.is_dir():
-        error(view._vim, f'{path} is invalid.')
-        return
+    is_parent = context.args and context.args[0] == '..'
+    prev_cwd = Path(defx._cwd)
 
-    prev_cwd = defx._cwd
+    if is_parent:
+        path = prev_cwd.parent
+    else:
+        if context.args:
+            if len(context.args) > 1:
+                source_name = context.args[0]
+                path = Path(context.args[1])
+            else:
+                path = Path(context.args[0])
+        else:
+            path = Path.home()
+        path = prev_cwd.joinpath(path)
+        if not readable(path):
+            error(view._vim, f'{path} is invalid.')
+        path = path.resolve()
+        if source_name == 'file' and not path.is_dir():
+            error(view._vim, f'{path} is invalid.')
+            return
+
     view.cd(defx, source_name, str(path), context.cursor)
-    if context.args and context.args[0] == '..':
-        view.search_file(Path(prev_cwd), defx._index)
+    if is_parent:
+        view.search_file(prev_cwd, defx._index)
 
 
 @action(name='change_vim_cwd', attr=ActionAttr.NO_TAGETS)
