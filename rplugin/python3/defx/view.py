@@ -498,7 +498,7 @@ class View(object):
         self._vim.command('autocmd! defx * <buffer>')
         self._vim.command('autocmd defx '
                           'CursorHold,FocusGained <buffer> '
-                          'call defx#call_async_action("check_redraw")')
+                          'call defx#call_action("check_redraw")')
         self._vim.command('autocmd defx FileType <buffer> '
                           'call defx#call_action("redraw")')
 
