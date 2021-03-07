@@ -42,6 +42,7 @@ class View(object):
         self._session_version = '1.0'
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
+        self._previewed_img = ''
         self._previewed_job: typing.Optional[int] = None
         self._ns: int = -1
         self._has_textprop = False
@@ -140,6 +141,7 @@ class View(object):
         self._vim.call('defx#util#print_message', expr)
 
     def close_preview(self) -> None:
+        self._vim.call('defx#util#close_preview_img')
         if not self._has_preview_window:
             self._vim.command('pclose!')
         # Clear previewed buffers

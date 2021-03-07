@@ -585,6 +585,11 @@ def _preview_image(view: View, defx: Defx,
                    context: Context, candidate: Candidate) -> None:
     filepath = str(candidate['action__path'])
 
+    view._vim.call('defx#util#close_preview_img')
+    if filepath == view._previewed_img:
+        view._previewed_img = ''
+        return
+
     preview_image_sh = Path(__file__).parent.parent.joinpath(
         'preview_image.sh')
 
@@ -594,7 +599,8 @@ def _preview_image(view: View, defx: Defx,
     args = ['bash', str(preview_image_sh), filepath,
             wincol, 1, context.preview_width]
 
-    execute_job(view, args)
+    view._previewed_img = filepath
+    view._vim.call('defx#util#preview_img', args)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)

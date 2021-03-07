@@ -468,6 +468,25 @@ function! defx#util#preview_file(context, filename) abort
   endif
 endfunction
 
+function! defx#util#preview_img(args) abort
+  if has('nvim')
+    let Jobfunc = function('jobstart')
+    let jobopts = {}
+  else
+    let Jobfunc = function('job_start')
+    let jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
+  endif
+  let g:defx#_previewed_job = Jobfunc(a:args, jobopts)
+endfunction
+
+function! defx#util#close_preview_img() abort
+  if has('nvim')
+    call jobstop(g:defx#_previewed_job)
+  else
+    call job_stop(g:defx#_previewed_job)
+  endif
+endfunction
+
 function! defx#util#call_atomic(calls) abort
   let results = []
   for [name, args] in a:calls
