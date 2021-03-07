@@ -480,10 +480,13 @@ function! defx#util#preview_img(args) abort
 endfunction
 
 function! defx#util#close_preview_img() abort
+  let job = g:defx#_previewed_job
   if has('nvim')
-    call jobstop(g:defx#_previewed_job)
+    call jobstop(job)
   else
-    call job_stop(g:defx#_previewed_job)
+    if type(job) == v:t_job
+      call job_stop(job)
+    endif
   endif
 endfunction
 
