@@ -43,7 +43,7 @@ class View(object):
         self._sessions: typing.Dict[str, Session] = {}
         self._previewed_target: typing.Optional[Candidate] = None
         self._previewed_img = ''
-        self._previewed_job: typing.Optional[int] = None
+        self._async_job: typing.Optional[int] = None
         self._ns: int = -1
         self._has_textprop = False
         self._proptypes: typing.Set[str] = set()
@@ -141,9 +141,10 @@ class View(object):
         self._vim.call('defx#util#print_message', expr)
 
     def close_preview(self) -> None:
-        self._vim.call('defx#util#close_preview_img')
+        self._vim.call('defx#util#close_async_job')
         if not self._has_preview_window:
             self._vim.command('pclose!')
+
         # Clear previewed buffers
         for bufnr in self._vim.vars['defx#_previewed_buffers'].keys():
             if not self._vim.call('win_findbuf', bufnr):

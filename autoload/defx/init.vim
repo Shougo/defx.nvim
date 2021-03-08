@@ -17,7 +17,7 @@ function! defx#init#_initialize() abort
 
   let g:defx#_histories = []
   let g:defx#_previewed_buffers = {}
-  let g:defx#_previewed_job = 0
+  let g:defx#_async_job = 0
 endfunction
 function! defx#init#_channel() abort
   if !has('python3')

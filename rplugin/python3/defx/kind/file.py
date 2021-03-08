@@ -94,13 +94,16 @@ def check_overwrite(view: View, dest: Path, src: Path) -> Path:
 
 
 def execute_job(view: View, args: typing.List[str]) -> None:
+    view._vim.call('defx#util#close_async_job')
+
     if view._vim.call('has', 'nvim'):
         jobfunc = 'jobstart'
         jobopts = {}
     else:
         jobfunc = 'job_start'
         jobopts = {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'}
-    view._vim.call(jobfunc, args, jobopts)
+
+    view._vim.vars['defx#_async_job'] = view._vim.call(jobfunc, args, jobopts)
 
 
 def switch(view: View) -> None:
@@ -585,7 +588,6 @@ def _preview_image(view: View, defx: Defx,
                    context: Context, candidate: Candidate) -> None:
     filepath = str(candidate['action__path'])
 
-    view._vim.call('defx#util#close_preview_img')
     if filepath == view._previewed_img:
         view._previewed_img = ''
         return
@@ -599,8 +601,8 @@ def _preview_image(view: View, defx: Defx,
     args = ['bash', str(preview_image_sh), filepath,
             wincol, 1, context.preview_width]
 
+    execute_job(view, args)
     view._previewed_img = filepath
-    view._vim.call('defx#util#preview_img', args)
 
 
 @action(name='remove', attr=ActionAttr.REDRAW)
