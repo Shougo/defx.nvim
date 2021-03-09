@@ -470,11 +470,17 @@ endfunction
 
 function! defx#util#close_async_job() abort
   let job = g:defx#_async_job
+  if job <= 0
+    return
+  endif
+
   if has('nvim')
     call jobstop(job)
   elseif type(job) == v:t_job
     call job_stop(job)
   endif
+
+  let g:defx#_async_job = 0
 endfunction
 
 function! defx#util#call_atomic(calls) abort
