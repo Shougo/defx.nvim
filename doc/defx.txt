@@ -955,6 +955,27 @@ A: >
 	\ [{'name': 'grep', 'args': map(defx#get_selected_candidates(),
 	\ "v:val['action__path']")}])<CR>
 
+Q: I want to select the file automatically when it is opened.
+
+A: >
+	augroup user_plugin_defx
+	  autocmd!
+	  " Define defx window mappings
+	  autocmd FileType defx call <SID>defx_mappings()
+	  autocmd BufNewFile,BufRead * Defx `getcwd()` -no-focus
+	  \ -search=`expand('%:p')`
+	augroup END
+	
+	function! s:defx_mappings() abort
+	  setlocal cursorline
+	endfunction
+	
+	call defx#custom#option('_', {
+	            \ 'winwidth': 30,
+	            \ 'split': 'vertical',
+	            \ 'direction': 'topleft',
+	            \ })
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
