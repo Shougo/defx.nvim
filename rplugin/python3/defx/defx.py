@@ -8,8 +8,6 @@ from pynvim import Nvim
 import typing
 
 from defx.base.source import Base as Source
-from defx.source.file.list import Source as SourceList
-from defx.source.file import Source as SourceFile
 from defx.context import Context
 from defx.sort import sort
 from defx.util import cd, error
@@ -22,15 +20,13 @@ Candidate = typing.Dict[str, typing.Any]
 class Defx(object):
 
     def __init__(self, vim: Nvim, context: Context,
-                 source_name: str, cwd: str, index: int) -> None:
+                 source: Source, cwd: str, index: int) -> None:
         self._vim = vim
         self._context = context
         self._cwd = self._vim.call('getcwd')
         self.cd(cwd)
 
-        self._source: Source = (SourceList(self._vim)
-                                if source_name == 'file/list'
-                                else SourceFile(self._vim))
+        self._source: Source = source
         self._index = index
         self._enabled_ignored_files = not context.show_ignored_files
         self._filtered_files = context.filtered_files.split(',')

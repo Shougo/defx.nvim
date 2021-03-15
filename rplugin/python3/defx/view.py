@@ -15,8 +15,8 @@ from defx.clipboard import Clipboard
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
-from defx.util import error, import_plugin, safe_call, len_bytes, readable
 from defx.util import Candidate
+from defx.util import error, import_plugin, safe_call, len_bytes, readable
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
 
@@ -280,9 +280,15 @@ class View(object):
         self._vim.vars['defx#_histories'] = global_histories
 
         if source_name != defx._source.name:
+            if source_name not in self._all_sources:
+                error(self._vim, 'Invalid source_name:' + source_name)
+                return
+
             # Replace with new defx
-            self._defxs[defx._index] = Defx(self._vim, self._context,
-                                            source_name, path, defx._index)
+            self._defxs[defx._index] = Defx(
+                self._vim, self._context,
+                self._all_sources[source_name],
+                path, defx._index)
             defx = self._defxs[defx._index]
 
         defx.cd(path)
@@ -512,6 +518,7 @@ class View(object):
         self._clipboard = clipboard
         self._defxs = []
 
+        self._init_all_sources()
         self._init_all_columns()
         self._init_columns(self._context.columns.split(':'))
 
@@ -594,6 +601,19 @@ class View(object):
                 self._bufname)
         return True
 
+    def _init_all_sources(self) -> None:
+        from defx.base.source import Base as Source
+        self._all_sources: typing.Dict[str, Source] = {}
+
+        for path_source in self._load_custom_sources():
+            source = import_plugin(path_source, 'source', 'Source')
+            if not source:
+                continue
+
+            source = source(self._vim)
+            if source.name not in self._all_sources:
+                self._all_sources[source.name] = source
+
     def _init_all_columns(self) -> None:
         from defx.base.column import Base as Column
         self._all_columns: typing.Dict[str, Column] = {}
@@ -620,6 +640,9 @@ class View(object):
             column.on_init(self, self._context)
 
     def _init_column_length(self) -> None:
+        if not self._candidates:
+            return
+
         from defx.base.column import Base as Column
         within_variable = False
         within_variable_columns: typing.List[Column] = []
@@ -779,6 +802,19 @@ class View(object):
             self._vim.call('win_getid'), self._vim.call('tabpagebuflist')
         ]
 
+    def _load_custom_sources(self) -> typing.List[Path]:
+        rtp_list = self._vim.options['runtimepath'].split(',')
+        result: typing.List[Path] = []
+
+        for path in rtp_list:
+            source_path = Path(path).joinpath(
+                'rplugin', 'python3', 'defx', 'source')
+            if safe_call(source_path.is_dir):
+                result += source_path.glob('*.py')
+                result += source_path.glob('*/*.py')
+
+        return result
+
     def _load_custom_columns(self) -> typing.List[Path]:
         rtp_list = self._vim.options['runtimepath'].split(',')
         result: typing.List[Path] = []
@@ -796,9 +832,15 @@ class View(object):
         self._defxs = self._defxs[:len(paths)]
 
         for [index, [source_name, path]] in enumerate(paths):
+            if source_name not in self._all_sources:
+                error(self._vim, 'Invalid source_name:' + source_name)
+                return
+
             if index >= len(self._defxs):
                 self._defxs.append(
-                    Defx(self._vim, self._context, source_name, path, index))
+                    Defx(self._vim, self._context,
+                         self._all_sources[source_name],
+                         path, index))
             else:
                 defx = self._defxs[index]
                 self.cd(defx, defx._source.name, path, self._context.cursor)
