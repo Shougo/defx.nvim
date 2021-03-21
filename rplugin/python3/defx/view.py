@@ -419,7 +419,9 @@ class View(object):
         # "1" matches "123" buffer
         prev_bufname = self._vim.call(
             'fnamemodify', self._vim.call('bufname', bufnr), ':p')
-        if not self._vim.call('buflisted', prev_bufname):
+        path_prev = Path(prev_bufname)
+        if (not self._vim.call('buflisted', prev_bufname) or
+                not readable(path_prev) or path_prev.is_dir()):
             return
 
         self._vim.call('setreg', '#',
