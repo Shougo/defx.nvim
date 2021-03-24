@@ -47,6 +47,10 @@ if hasattr(vim, 'plugin'):
         def get_candidate(self, args: Args) -> Candidate:
             return self._rplugin.get_candidate()
 
+        @vim.rpc_export('_defx_get_candidates', sync=True)  # type: ignore
+        def get_candidates(self, args: Args) -> typing.List[Candidate]:
+            return self._rplugin.get_candidates()
+
         @vim.rpc_export(
             '_defx_get_selected_candidates', sync=True)  # type: ignore
         def get_selected_candidates(self,
@@ -79,6 +83,9 @@ if find_spec('yarp'):
 
     def _defx_get_candidate(args: Args) -> Candidate:
         return global_rplugin.get_candidate()
+
+    def _defx_get_candidates(args: Args) -> typing.List[Candidate]:
+        return global_rplugin.get_candidates()
 
     def _defx_get_selected_candidates(args: Args) -> typing.List[Candidate]:
         return global_rplugin.get_selected_candidates()

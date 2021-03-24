@@ -96,9 +96,15 @@ function! defx#get_candidate() abort
   endif
   return defx#util#rpcrequest('_defx_get_candidate', [], v:false)
 endfunction
+function! defx#get_candidates() abort
+  if &l:filetype !=# 'defx'
+    return []
+  endif
+  return defx#util#rpcrequest('_defx_get_candidates', [], v:false)
+endfunction
 function! defx#get_selected_candidates() abort
   if &l:filetype !=# 'defx'
-    return {}
+    return []
   endif
   return defx#util#rpcrequest('_defx_get_selected_candidates', [], v:false)
 endfunction

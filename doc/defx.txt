@@ -160,9 +160,13 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 defx#get_candidate()					*defx#get_candidate()*
 		Returns the current cursor candidate as |Dictionary|.
 
+defx#get_candidates()					*defx#get_candidates()*
+		Returns the candidates as |List| of |Dictionary|.
+
 				    	*defx#get_selected_candidates()*
 defx#get_selected_candidates()
-		Returns the selected candidates as |List| of |Dictionary|.
+		Returns the selected or cursor candidates as |List| of
+		|Dictionary|.
 
 defx#get_context()					*defx#get_context()*
 		Returns the current context as |Dictionary|.

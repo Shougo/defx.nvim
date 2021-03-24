@@ -13,6 +13,17 @@ from defx.view import View
 Candidate = typing.Dict[str, typing.Union[str, bool]]
 
 
+def _candidate(candidate: typing.Dict[str, typing.Any]) -> Candidate:
+    return {
+        'word': candidate['word'],
+        'is_directory': candidate['is_directory'],
+        'is_opened_tree': candidate['is_opened_tree'],
+        'is_selected': candidate['is_selected'],
+        'level': candidate['level'],
+        'action__path': str(candidate['action__path']),
+    }
+
+
 class Rplugin:
 
     def __init__(self, vim: Nvim) -> None:
@@ -25,12 +36,14 @@ class Rplugin:
 
     def start(self, args: typing.List[typing.Any]) -> None:
         [paths, context] = args
-        self.get_view(context).init_paths(
-            paths, context, self._clipboard)
+        self.get_view(context).init_paths(paths, context, self._clipboard)
+
+    def _current_views(self) -> typing.List[View]:
+        return [x for x in self._views
+                if x._bufnr == self._vim.current.buffer.number]
 
     def do_action(self, args: typing.List[typing.Any]) -> None:
-        views = [x for x in self._views
-                 if x._bufnr == self._vim.current.buffer.number]
+        views = self._current_views()
         if not views:
             return
         view = views[0]
@@ -46,35 +59,24 @@ class Rplugin:
 
     def get_candidate(self) -> Candidate:
         cursor = self._vim.call('line', '.')
-        for view in [x for x in self._views
-                     if x._bufnr == self._vim.current.buffer.number]:
-            candidate = view.get_cursor_candidate(cursor)
-            return {
-                'word': candidate['word'],
-                'is_directory': candidate['is_directory'],
-                'is_opened_tree': candidate['is_opened_tree'],
-                'level': candidate['level'],
-                'action__path': str(candidate['action__path']),
-            }
+        for view in self._current_views():
+            return _candidate(view.get_cursor_candidate(cursor))
         return {}
+
+    def get_candidates(self) -> typing.List[Candidate]:
+        for view in self._current_views():
+            return [_candidate(x) for x in view._candidates]
+        return []
 
     def get_selected_candidates(self) -> typing.List[Candidate]:
         cursor = self._vim.call('line', '.')
-        for view in [x for x in self._views
-                     if x._bufnr == self._vim.current.buffer.number]:
+        for view in self._current_views():
             candidates = view.get_selected_candidates(cursor)
-            return [{
-                'word': candidate['word'],
-                'is_directory': candidate['is_directory'],
-                'is_opened_tree': candidate['is_opened_tree'],
-                'level': candidate['level'],
-                'action__path': str(candidate['action__path']),
-            } for candidate in candidates]
+            return [_candidate(x) for x in candidates]
         return []
 
     def get_context(self) -> typing.Dict[str, typing.Any]:
-        for view in [x for x in self._views
-                     if x._bufnr == self._vim.current.buffer.number]:
+        for view in self._current_views():
             return view._context._asdict()
         return {}
 
@@ -89,6 +91,5 @@ class Rplugin:
 
     def redraw(self, views: typing.List[View]) -> None:
         call = self._vim.call
-        for view in [x for x in views
-                     if call('bufwinnr', x._bufnr) > 0]:
+        for view in [x for x in views if call('bufwinnr', x._bufnr) > 0]:
             view.redraw(True)
