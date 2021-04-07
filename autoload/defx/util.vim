@@ -436,7 +436,7 @@ function! defx#util#preview_file(context, filename) abort
       execute 'vert resize ' . preview_width
     endif
   else
-    call defx#util#execute_path('silent aboveleft pedit!', a:filename)
+    call defx#util#execute_path('silent rightbelow pedit!', a:filename)
 
     wincmd P
 
