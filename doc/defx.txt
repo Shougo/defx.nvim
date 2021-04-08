@@ -111,11 +111,6 @@ defx#custom#column({column-name}, {dict})
 	      \ 'root_icon': ' ',
 	      \ })
 
-	call defx#custom#column('filename', {
-	      \ 'min_width': 40,
-	      \ 'max_width': 40,
-	      \ })
-
 	call defx#custom#column('mark', {
 	      \ 'readonly_icon': '✗',
 	      \ 'selected_icon': '✓',
@@ -704,11 +699,13 @@ COLUMNS							*defx-columns*
 
 							*defx-column-filename*
 filename	File name.
+		Note: The column length is expanded to display all filenames
+		automatically.
 
 		variables:
-		min_width	  the minimum width of a defx buffer
+		min_width	  the minimum width of the column
 				  (default: 40)
-		max_width	  the maximum width of a defx buffer
+		max_width	  the maximum width of the column
 				  Negative value sets width exactly to:
 				  "winwidth - (-max_width)".
 				  Example: "-36" max_width means width
@@ -721,7 +718,7 @@ filename	File name.
 				  percent winwidth.
 				  (default: 0)
 		root_marker_highlight
-				the root marker highlight
+				  the root marker highlight
 				  (default: "Constant")
 
 							*defx-column-icon*
@@ -981,6 +978,16 @@ A: >
 	            \ 'direction': 'topleft',
 	            \ })
 
+Q: Defx filename length is too long when defx explorer style.
+
+A: You need to modify "min_width" and "max_width" options in filename column.
+The default values are too long for explorer style.
+>
+	call defx#custom#column('filename', {
+	      \ 'min_width': 10,
+	      \ 'max_width': 20,
+	      \ })
+<
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
