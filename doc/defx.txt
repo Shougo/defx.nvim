@@ -988,6 +988,28 @@ The default values are too long for explorer style.
 	      \ 'max_width': 20,
 	      \ })
 <
+Q: I want to open defx automatically when |:edit| directory.
+
+A: You can use autocmd for it.  But no official guarantee. Because it may
+break other plugins behavior. >
+
+	autocmd BufEnter,VimEnter,BufNew,BufWinEnter,BufRead,BufCreate
+	      \ * if isdirectory(expand('<amatch>'))
+	      \   | call s:browse_check(expand('<amatch>')) | endif
+	
+	function! s:browse_check(path) abort
+	  if bufnr('%') != expand('<abuf>')
+	    return
+	  endif
+	
+	  " Disable netrw.
+	  augroup FileExplorer
+	    autocmd!
+	  augroup END
+	
+	  execute 'Defx' a:path
+	endfunction
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
