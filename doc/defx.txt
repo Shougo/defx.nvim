@@ -283,6 +283,7 @@ copy 						*defx-action-copy*
 
 drop							*defx-action-drop*
 		Open the file like |:drop| command.
+		It opens the last accessed window or already opened window.
 
 		Action args:
 			0. open command(The default is |:edit|)
@@ -347,7 +348,7 @@ new_multiple_files
 		If the input ends with "/", it means new directory.
 
 open							*defx-action-open*
-		Open the selected candidates.
+		Open the selected candidates in the current window.
 		Note: If the candidate is directory, it is same with
 		|defx-action-open_directory|.
 
@@ -1009,6 +1010,11 @@ break other plugins behavior. >
 	
 	  execute 'Defx' a:path
 	endfunction
+
+Q: I want to open file in the right window instead of defx window.
+
+A: Please use |defx-action-drop| instead.  It open file in the last accessed
+window.
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
