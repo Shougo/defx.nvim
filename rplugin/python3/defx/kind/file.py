@@ -181,6 +181,7 @@ def _copy(view: View, defx: Defx, context: Context) -> None:
 
     view._clipboard.action = ClipboardAction.COPY
     view._clipboard.candidates = context.targets
+    view._clipboard.source_name = 'file'
 
 
 @action(name='drop')
@@ -294,6 +295,7 @@ def _link(view: View, defx: Defx, context: Context) -> None:
 
     view._clipboard.action = ClipboardAction.LINK
     view._clipboard.candidates = context.targets
+    view._clipboard.source_name = 'file'
 
 
 @action(name='move')
@@ -309,6 +311,7 @@ def _move(view: View, defx: Defx, context: Context) -> None:
 
     view._clipboard.action = ClipboardAction.MOVE
     view._clipboard.candidates = context.targets
+    view._clipboard.source_name = 'file'
 
 
 @action(name='new_directory')
@@ -512,6 +515,11 @@ def _paste(view: View, defx: Defx, context: Context) -> None:
                 shutil.rmtree(str(dest))
             else:
                 dest.unlink()
+
+        if view._clipboard.source_name != 'file':
+            view._clipboard.paster(str(path), str(dest))
+            view._vim.command('redraw')
+            continue
 
         if action == ClipboardAction.COPY:
             if path.is_dir():
