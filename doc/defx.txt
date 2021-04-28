@@ -17,6 +17,7 @@ Interface		|defx-interface|
   Columns		  |defx-columns|
     External columns	    |defx-external-columns|
   Sources		  |defx-sources|
+Denite Sources		|defx-denite-sources|
 Examples		|defx-examples|
 FAQ			|defx-faq|
 Compatibility		|defx-compatibility|
