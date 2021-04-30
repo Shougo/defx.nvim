@@ -8,7 +8,9 @@ from pathlib import Path
 from pynvim import Nvim
 import json
 import re
+import inspect
 import typing
+from functools import wraps
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
@@ -18,16 +20,17 @@ from defx.defx import Defx
 from defx.session import Session
 from defx.view import View
 
-_action_table: typing.Dict[str, ActionTable] = {}
-
 ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
 
 
 def action(name: str, attr: ActionAttr = ActionAttr.NONE
            ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
-    def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
-        _action_table[name] = ActionTable(func=func, attr=attr)
+    def wrapper(func: typing.Any) -> typing.Any:
+        func._is_action = True
+        func._name = name
+        func._attr = attr
 
+        @wraps(func)
         def inner_wrapper(kind: 'Base', view: View, defx: Defx,
                           context: Context) -> None:
             return func(kind, view, defx, context)
@@ -42,7 +45,13 @@ class Base:
         self.name = 'base'
 
     def get_actions(self) -> typing.Dict[str, ActionTable]:
-        return _action_table
+        def predicate(o):
+            return hasattr(o, '_is_action')
+        actions = {}
+        for m in inspect.getmembers(self, predicate):
+            m = m[1]
+            actions[m._name] = ActionTable(func=m, attr=m._attr)
+        return actions
 
     @action(name='add_session', attr=ActionAttr.NO_TAGETS)
     def _add_session(self, view: View, defx: Defx, context: Context) -> None:
