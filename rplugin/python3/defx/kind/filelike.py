@@ -9,7 +9,6 @@ from pathlib import Path
 from pynvim import Nvim
 import copy
 import shlex
-import shutil
 import subprocess
 import re
 import time
@@ -81,6 +80,9 @@ class Kind(Base):
              >>> self.get_buffer_name('/remote/path')
                 ssh://usr@host/remote/path
         '''
+        pass
+
+    def paste(self, view: View, src: PathLike, dest: PathLike) -> None:
         pass
 
     def preview_file(self, view: View, defx: Defx,
@@ -242,7 +244,7 @@ class Kind(Base):
         view._clipboard.action = ClipboardAction.COPY
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
-        # TODO: define paster
+        view._clipboard.paster = self.paste_to_local
 
     @action(name='drop')
     def _drop(self, view: View, defx: Defx, context: Context) -> None:
@@ -347,7 +349,6 @@ class Kind(Base):
         view._clipboard.action = ClipboardAction.LINK
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
-        # TODO: define paster
 
     @action(name='move')
     def _move(self, view: View, defx: Defx, context: Context) -> None:
@@ -363,7 +364,6 @@ class Kind(Base):
         view._clipboard.action = ClipboardAction.MOVE
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
-        # TODO: define paster
 
     @action(name='new_directory')
     def _new_directory(self, view: View, defx: Defx, context: Context) -> None:
@@ -560,29 +560,7 @@ class Kind(Base):
                 else:
                     dest.unlink()
 
-            # TODO
-            if view._clipboard.source_name != 'file':
-                view._clipboard.paster(str(path), str(dest))
-                view._vim.command('redraw')
-                continue
-
-            if action == ClipboardAction.COPY:
-                if path.is_dir():
-                    shutil.copytree(str(path), dest)
-                else:
-                    shutil.copy2(str(path), dest)
-            elif action == ClipboardAction.MOVE:
-                shutil.move(str(path), cwd)
-
-                # Check rename
-                if not path.is_dir():
-                    view._vim.call(
-                        'defx#util#buffer_rename',
-                        view._vim.call('bufnr', str(path)), str(dest))
-            elif action == ClipboardAction.LINK:
-                # Create the symbolic link to dest
-                dest.symlink_to(path, target_is_directory=path.is_dir())
-
+            self.paste(view, path, dest)
             view._vim.command('redraw')
         if action == ClipboardAction.MOVE:
             # Clear clipboard after move
