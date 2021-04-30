@@ -62,7 +62,8 @@ class Kind(Base):
         '''
         pass
 
-    def paste(self, view: View, src: PathLike, dest: PathLike) -> None:
+    def paste(self, view: View, src: PathLike, dest: PathLike,
+              cwd: str) -> None:
         pass
 
     def preview_file(self, view: View, defx: Defx,
@@ -82,7 +83,7 @@ class Kind(Base):
         view._previewed_target = candidate
         view._vim.call('defx#util#preview_file',
                        context._replace(targets=[])._asdict(),
-                       self.get_buffer_name(str(filepath)))
+                       self.get_buffer_name(filepath))
         view._vim.current.window.options['foldenable'] = False
 
         if not listed:
@@ -224,7 +225,6 @@ class Kind(Base):
         view._clipboard.action = ClipboardAction.COPY
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
-        view._clipboard.paster = self.paste_to_local
 
     @action(name='drop')
     def _drop(self, view: View, defx: Defx, context: Context) -> None:
@@ -540,7 +540,7 @@ class Kind(Base):
                 else:
                     dest.unlink()
 
-            self.paste(view, path, dest)
+            self.paste(view, path, dest, cwd)
             view._vim.command('redraw')
         if action == ClipboardAction.MOVE:
             # Clear clipboard after move
