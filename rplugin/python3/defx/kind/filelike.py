@@ -22,10 +22,8 @@ from defx.util import cwd_input, confirm, error, Candidate
 from defx.util import fnamemodify
 from defx.view import View
 
-ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
 
-
-PathLike = typing.NewType('PathLike', Path)
+PathLike = typing.Union[Path, typing.Any]
 
 
 class Kind(Base):

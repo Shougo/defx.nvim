@@ -14,7 +14,7 @@ import typing
 
 from defx.action import ActionAttr
 from defx.base.kind import action
-from defx.kind.filelike import Kind
+from defx.kind.filelike import Kind as Base
 from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
@@ -22,10 +22,8 @@ from defx.util import cd, confirm, error, Candidate
 from defx.util import readable
 from defx.view import View
 
-ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
 
-
-class Kind(Kind):
+class Kind(Base):
 
     def __init__(self, vim: Nvim) -> None:
         self.vim = vim

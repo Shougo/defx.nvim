@@ -20,18 +20,19 @@ from defx.defx import Defx
 from defx.session import Session
 from defx.view import View
 
-ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
+Kind = typing.Any
+ACTION_FUNC = typing.Callable[[Kind, View, Defx, Context], None]
 
 
 def action(name: str, attr: ActionAttr = ActionAttr.NONE
            ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
-    def wrapper(func: typing.Any) -> typing.Any:
-        func._is_action = True
-        func._name = name
-        func._attr = attr
+    def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
+        func._is_action = True  # type:ignore
+        func._name = name  # type:ignore
+        func._attr = attr  # type:ignore
 
         @wraps(func)
-        def inner_wrapper(kind: 'Base', view: View, defx: Defx,
+        def inner_wrapper(kind: Kind, view: View, defx: Defx,
                           context: Context) -> None:
             return func(kind, view, defx, context)
         return inner_wrapper
@@ -45,12 +46,12 @@ class Base:
         self.name = 'base'
 
     def get_actions(self) -> typing.Dict[str, ActionTable]:
-        def predicate(o):
+        def predicate(o: object) -> bool:
             return hasattr(o, '_is_action')
         actions = {}
-        for m in inspect.getmembers(self, predicate):
-            m = m[1]
-            actions[m._name] = ActionTable(func=m, attr=m._attr)
+        for member in inspect.getmembers(self, predicate):
+            func = member[1]
+            actions[func._name] = ActionTable(func=func, attr=func._attr)
         return actions
 
     @action(name='add_session', attr=ActionAttr.NO_TAGETS)
