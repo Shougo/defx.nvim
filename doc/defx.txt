@@ -956,7 +956,8 @@ Q: I want to execute ":Denite grep" command for selected files.
 A: >
 	nnoremap <silent><buffer> gr :<C-u>call denite#start(
 	\ [{'name': 'grep', 'args':
-	\  [map(defx#get_selected_candidates(), "v:val['action__path']")]
+	\  [map(defx#get_selected_candidates(),
+	\       { _, val -> val['action__path'] })]
 	\ }])<CR>
 
 Q: I want to select the file automatically when it is opened.
