@@ -130,7 +130,7 @@ function! s:parse_options(cmdline) abort
 
   " Note: convert number options to string to check types
   let defalt_options = map(copy(defx#init#_user_options()),
-        \ 'type(v:val) == v:t_number ? string(v:val) : v:val')
+        \ { _, val -> type(val) == v:t_number ? string(val) : val })
 
   for s in split(cmdline, s:re_unquoted_match('\%(\\\@<!\s\)\+'))
     let s = substitute(s, '\\\( \)', '\1', 'g')
@@ -195,14 +195,16 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
   if a:arglead =~# '^-'
     " Option names completion.
     let bool_options = keys(filter(copy(defx#init#_user_options()),
-          \ 'type(v:val) == type(v:true) || type(v:val) == type(v:false)'))
-    let _ += map(copy(bool_options), "'-' . tr(v:val, '_', '-')")
+          \ { _, val -> type(val) == v:t_bool }))
+    let _ += map(copy(bool_options), { _, val -> '-' . tr(val, '_', '-') })
     let string_options = keys(filter(copy(defx#init#_user_options()),
-          \ 'type(v:val) != type(v:true) && type(v:val) != type(v:false)'))
-    let _ += map(copy(string_options), "'-' . tr(v:val, '_', '-') . '='")
+          \ { _, val -> type(val) != v:t_bool }))
+    let _ += map(copy(string_options),
+          \ { _, val -> '-' . tr(val, '_', '-') . '=' })
 
     " Add "-no-" option names completion.
-    let _ += map(copy(bool_options), "'-no-' . tr(v:val, '_', '-')")
+    let _ += map(copy(bool_options),
+          \ { _, val -> '-no-' . tr(val, '_', '-') })
   else
     let arglead = s:expand_complete(a:arglead)
     " Path names completion.
@@ -210,22 +212,22 @@ function! defx#util#complete(arglead, cmdline, cursorpos) abort
     try
       set wildignorecase
       let files = map(glob(a:arglead . '*', v:true, v:true),
-            \                's:substitute_path_separator(v:val)')
+            \         { _, val -> s:substitute_path_separator(val) })
     finally
       let &wildignorecase = save_wildignorecase
     endtry
-    let files = map(filter(files, 'isdirectory(v:val)'),
-          \ 's:expand_complete(v:val)')
+    let files = map(filter(files, { _, val -> isdirectory(val) }),
+          \ { _, val -> s:expand_complete(val) })
     if a:arglead =~# '^\~'
       let home_pattern = '^'. s:expand_complete('~')
-      call map(files, "substitute(v:val, home_pattern, '~/', '')")
+      call map(files, { _, val -> substitute(val, home_pattern, '~/', '') })
     endif
-    call map(files, "escape(v:val.'/', ' \\')")
+    call map(files, { _, val -> escape(val.'/', ' \\') })
     let _ += files
   endif
 
   return uniq(sort(filter(_,
-        \ 'stridx(tolower(v:val), tolower(a:arglead)) == 0')))
+        \ { _, val -> stridx(tolower(val), tolower(a:arglead)) == 0 })))
 endfunction
 
 function! defx#util#has_yarp() abort
@@ -397,7 +399,7 @@ function! defx#util#_get_preview_window() abort
   endif
 
   return len(filter(range(1, winnr('$')),
-        \ "getwinvar(v:val, '&previewwindow') ==# 1"))
+        \ { _, val -> getwinvar(val, '&previewwindow') ==# 1 }))
 endfunction
 
 function! defx#util#preview_file(context, filename) abort

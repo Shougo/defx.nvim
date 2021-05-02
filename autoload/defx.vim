@@ -13,7 +13,7 @@ function! defx#start(paths, user_context) abort
 
   call defx#initialize()
   let context = defx#init#_context(a:user_context)
-  let paths = map(a:paths, "[v:val[0], fnamemodify(v:val[1], ':p')]")
+  let paths = map(a:paths, { _, val -> [val[0], fnamemodify(val[1], ':p')] })
 
   call defx#util#rpcrequest('_defx_start',
         \ [paths, context], v:false)

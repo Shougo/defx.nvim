@@ -23,13 +23,26 @@ _action_table: typing.Dict[str, ActionTable] = {}
 ACTION_FUNC = typing.Callable[[View, Defx, Context], None]
 
 
+class ActionFunc:
+    def __init__(self, name: str, attr: ActionAttr, func: ACTION_FUNC):
+        self._is_action = True
+        self._name = name
+        self._attr = attr
+        self._func = func
+
+    def __call__(self, view: View, defx: Defx, context: Context) -> None:
+        return self._func(view, defx, context)
+
+
 def action(name: str, attr: ActionAttr = ActionAttr.NONE
            ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
     def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
+        f = ActionFunc(name, attr, func)
+
         _action_table[name] = ActionTable(func=func, attr=attr)
 
         def inner_wrapper(view: View, defx: Defx, context: Context) -> None:
-            return func(view, defx, context)
+            return f(view, defx, context)
         return inner_wrapper
     return wrapper
 
