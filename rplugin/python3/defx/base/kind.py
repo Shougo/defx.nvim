@@ -10,7 +10,7 @@ import json
 import re
 import inspect
 import typing
-from functools import wraps
+from functools import wraps, partial
 
 from defx.action import ActionAttr
 from defx.action import ActionTable
@@ -24,17 +24,27 @@ Kind = typing.Any
 ACTION_FUNC = typing.Callable[[Kind, View, Defx, Context], None]
 
 
+class ActionFunc:
+    def __init__(self, name: str, attr: ActionAttr, func: ACTION_FUNC):
+        self._is_action = True
+        self._name = name
+        self._attr = attr
+        self._func = func
+
+    def __call__(self, kind: Kind, view: View, defx: Defx,
+                 context: Context) -> None:
+        return self._func(kind, view, defx, context)
+
+
 def action(name: str, attr: ActionAttr = ActionAttr.NONE
            ) -> typing.Callable[[ACTION_FUNC], ACTION_FUNC]:
     def wrapper(func: ACTION_FUNC) -> ACTION_FUNC:
-        func._is_action = True  # type:ignore
-        func._name = name  # type:ignore
-        func._attr = attr  # type:ignore
+        f = ActionFunc(name, attr, func)
 
-        @wraps(func)
+        @wraps(f)
         def inner_wrapper(kind: Kind, view: View, defx: Defx,
                           context: Context) -> None:
-            return func(kind, view, defx, context)
+            return f(kind, view, defx, context)
         return inner_wrapper
     return wrapper
 
@@ -51,7 +61,8 @@ class Base:
         actions = {}
         for member in inspect.getmembers(self, predicate):
             func = member[1]
-            actions[func._name] = ActionTable(func=func, attr=func._attr)
+            actions[func._name] = ActionTable(
+                func=partial(func._func, self), attr=func._attr)
         return actions
 
     @action(name='add_session', attr=ActionAttr.NO_TAGETS)
