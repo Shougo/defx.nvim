@@ -147,7 +147,8 @@ class View(object):
 
         # Clear previewed buffers
         for bufnr in self._vim.vars['defx#_previewed_buffers'].keys():
-            if not self._vim.call('win_findbuf', bufnr):
+            if (not self._vim.call('win_findbuf', bufnr) and
+                    self._vim.call('buflisted', bufnr)):
                 self._vim.command('silent bdelete ' + str(bufnr))
         self._vim.vars['defx#_previewed_buffers'] = {}
 
