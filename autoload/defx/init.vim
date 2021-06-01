@@ -106,6 +106,7 @@ function! defx#init#_user_options() abort
         \ 'ignored_files': '.*',
         \ 'listed': v:false,
         \ 'new': v:false,
+        \ 'post_action': '',
         \ 'preview_height': &previewheight,
         \ 'preview_width': 40,
         \ 'profile': v:false,

@@ -585,6 +585,15 @@ OPTIONS							*defx-options*
 
 		Default: 40
 
+						*defx-option-post-action*
+-post-action={action}
+		Specify the action after action.
+
+		"jump": move to defx window.
+		Otherwise: nothing.
+
+		Default: "none"
+
 							*defx-option-profile*
 -profile
 		Enable profile feature.
@@ -1017,6 +1026,10 @@ Q: I want to open file in the right window instead of defx window.
 
 A: Please use |defx-action-drop| instead.  It open file in the last accessed
 window.
+
+Q: I don't want to jump to opened buffer after action is fired.
+
+A: Please use |defx-option-post-action|.
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*

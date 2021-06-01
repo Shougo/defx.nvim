@@ -133,6 +133,10 @@ class View(object):
                 error(self._vim, 'Invalid action_name:' + action_name)
                 return
 
+            # Jump to the defx window
+            if context.post_action == 'jump':
+                self._vim.call('win_gotoid', self._winid)
+
     def debug(self, expr: typing.Any) -> None:
         error(self._vim, expr)
 

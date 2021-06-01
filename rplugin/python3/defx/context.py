@@ -23,6 +23,7 @@ class Context(typing.NamedTuple):
     ignored_files: str = ''
     listed: bool = False
     new: bool = False
+    post_action: str = ''
     prev_bufnr: int = 0
     prev_last_bufnr: int = 0
     prev_winid: int = 0
