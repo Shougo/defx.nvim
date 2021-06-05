@@ -891,6 +891,13 @@ EXAMPLES						*defx-examples*
 ==============================================================================
 FREQUENTLY ASKED QUESTIONS (FAQ)			*defx-faq*
 
+Q: How to donate money to you?
+
+A: I have started github sponsorship to spend more time for Vim/neovim
+plugins.  You can donate money to help me!
+
+https://github.com/sponsors/Shougo
+
 Q: I want to explore the folder where the current file is.
 
 A: >
