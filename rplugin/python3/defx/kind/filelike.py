@@ -620,7 +620,7 @@ class Kind(Base):
 
             # Check rename
             # The old is directory, the path may be matched opened file
-            if not new.is_dir():
+            if not new.is_dir() and view._vim.call('bufexists', str(old)):
                 view._vim.call('defx#util#buffer_rename',
                                view._vim.call('bufnr', str(old)), str(new))
 

@@ -72,7 +72,7 @@ class Kind(Base):
             shutil.move(str(src), cwd)
 
             # Check rename
-            if not src.is_dir():
+            if not src.is_dir() and view._vim.call('bufexists', str(src)):
                 view._vim.call('defx#util#buffer_rename',
                                view._vim.call('bufnr', str(src)), str(dest))
         elif action == ClipboardAction.LINK:
@@ -160,8 +160,9 @@ class Kind(Base):
 
         import send2trash
         for target in context.targets:
-            send2trash.send2trash(str(target['action__path']))
+            target_path = str(target['action__path'])
+            send2trash.send2trash(target_path)
 
-            view._vim.call(
-                'defx#util#buffer_delete',
-                view._vim.call('bufnr', str(target['action__path'])))
+            if view._vim.call('bufexists', target_path):
+                view._vim.call('defx#util#buffer_delete',
+                            view._vim.call('bufnr', target_path))
