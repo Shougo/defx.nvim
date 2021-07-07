@@ -64,6 +64,8 @@ def import_plugin(path: Path, source: str,
     module_name = 'defx.%s.%s' % (source, path.stem)
 
     spec = importlib.util.spec_from_file_location(module_name, str(path))
+    if not spec:
+        return None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)  # type: ignore
     cls = getattr(module, classname, None)

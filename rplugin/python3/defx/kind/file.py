@@ -165,4 +165,4 @@ class Kind(Base):
 
             if view._vim.call('bufexists', target_path):
                 view._vim.call('defx#util#buffer_delete',
-                            view._vim.call('bufnr', target_path))
+                               view._vim.call('bufnr', target_path))

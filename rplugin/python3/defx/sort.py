@@ -71,7 +71,7 @@ def _filename(
 
     def numeric_key(v: str) -> typing.List[typing.Any]:
         keys = re.split(r'(\d+)', v)
-        keys[1::2] = [int(x) for x in keys[1::2]]  # type: ignore
+        keys[1::2] = [int(x) for x in keys[1::2]]
         return keys
 
     return numeric_key(candidate['word'].lower())
