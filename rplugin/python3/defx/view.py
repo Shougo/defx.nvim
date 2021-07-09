@@ -761,10 +761,8 @@ class View(object):
             column.start = start
 
             if column.is_stop_variable:
-                if variable_texts:
-                    variable_texts.append('')
                 (text, highlights) = column.get_with_variable_text(
-                    context, ' '.join(variable_texts), candidate)
+                    context, ''.join(variable_texts), candidate)
                 texts.append(text)
                 ret_highlights += highlights
 
@@ -786,7 +784,7 @@ class View(object):
             if texts:
                 start += 1
             if variable_texts:
-                start += len_bytes(' '.join(variable_texts)) + 1
+                start += len_bytes(''.join(variable_texts))
         return (' '.join(texts), ret_highlights)
 
     def _update_paths(self, index: int, path: str) -> None:
