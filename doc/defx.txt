@@ -156,7 +156,7 @@ defx#do_action({action}[, {args}])			*defx#do_action()*
 defx#get_candidate()					*defx#get_candidate()*
 		Returns the current cursor candidate as |Dictionary|.
 
-defx#get_candidates()					*defx#get_candidates()*
+defx#get_candidates()				*defx#get_candidates()*
 		Returns the candidates as |List| of |Dictionary|.
 
 				    	*defx#get_selected_candidates()*
@@ -723,8 +723,10 @@ filename	File name.
 				  is "winwidth - 36".
 				  (default: 100)
 		max_width_percent
-				  the maximum width in percentage of a defx buffer
-				  It means: "winwidth * max_width_percent / 100".
+				  the maximum width in percentage of a defx
+				  buffer
+				  It means: "winwidth * max_width_percent /
+				  100".
 				  Example: "120" max_width_percent means 120
 				  percent winwidth.
 				  (default: 0)
