@@ -62,6 +62,9 @@ class Column(Base):
                 highlights = [(f'{self.highlight_name}_directory',
                                self.start, len_bytes(candidate['word']))]
 
+        # add padding between columns
+        if text and text[-1] != ' ':
+            text += ' '
         text += candidate['word']
         return (self._truncate(text), highlights)
 
