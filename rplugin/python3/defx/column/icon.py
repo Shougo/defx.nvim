@@ -22,6 +22,7 @@ class Column(Base):
         self.vars = {
             'length': 1,
             'directory_icon': '+',
+            'file_icon': ' ',
             'opened_icon': '-',
             'root_icon': ' ',
         }
@@ -54,7 +55,7 @@ class Column(Base):
                     [(f'{self.highlight_name}_directory_icon',
                       self.start, len_bytes(self.vars['directory_icon']))])
 
-        return (' ', [])
+        return (self.vars['file_icon'], [])
 
     def length(self, context: Context) -> int:
         return typing.cast(int, self.vars['length'])

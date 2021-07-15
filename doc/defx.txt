@@ -107,9 +107,10 @@ defx#custom#column({column-name}, {dict})
 		separator "," in {column-name}. >
 
 	call defx#custom#column('icon', {
-	      \ 'directory_icon': '▸',
-	      \ 'opened_icon': '▾',
-	      \ 'root_icon': ' ',
+	      \ 'directory_icon': '▸ ',
+	      \ 'file_icon': '  ',
+	      \ 'opened_icon': '▾ ',
+	      \ 'root_icon': '  ',
 	      \ })
 
 	call defx#custom#column('mark', {
@@ -741,6 +742,8 @@ icon		Basic icon.
 		variables:
 		directory_icon	  the closed directory icon
 				  (default: "+")
+		file_icon	  the normal file icon
+				  (default: " ")
 		opened_icon	  the opened directory icon
 				  (default: "-")
 		root_icon	  the root directory icon
