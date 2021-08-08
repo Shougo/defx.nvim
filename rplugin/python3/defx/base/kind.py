@@ -204,8 +204,7 @@ class Base:
                 toggle = True
 
         for target in [x for x in context.targets if x['is_directory']]:
-            if (toggle and not target['is_directory']
-                    or target['is_opened_tree']):
+            if toggle and target['is_directory'] and target['is_opened_tree']:
                 self._close_tree(
                     view, defx, context._replace(targets=[target]))
             else:
