@@ -106,6 +106,3 @@ Please see: https://github.com/Shougo/defx.nvim/issues/18
 ![Multi root feature](https://user-images.githubusercontent.com/41495/45696476-ac9d0a80-bb9e-11e8-9ee2-120ac7d0f045.png)
 ![Defx -split=vertical](https://user-images.githubusercontent.com/2835826/45823772-7190f900-bcbc-11e8-9727-3dda3ce4c07c.png)
 ![Defx -new](https://user-images.githubusercontent.com/3047695/45927914-7f07e680-bf3b-11e8-9b36-755e1eec2a8f.png)
-![Custom icon](https://user-images.githubusercontent.com/10108377/59982828-ac93d480-9620-11e9-8c10-51909cfeaf94.png)
-![Denite action call](https://user-images.githubusercontent.com/41671631/56280845-a6bfd580-613d-11e9-857a-d81f2633eeab.png)
-![Image preview](https://user-images.githubusercontent.com/41671631/85951370-5d9c2000-b995-11ea-8a3d-2c304d21cc4c.gif)
