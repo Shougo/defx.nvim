@@ -49,3 +49,4 @@ class Context(typing.NamedTuple):
     winrow: int = 0
     winwidth: int = 0
     vertical_preview: bool = False
+    winborder: str = 'none'

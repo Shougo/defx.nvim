@@ -706,6 +706,13 @@ OPTIONS							*defx-options*
 
 		Default: 90
 
+						*defx-option-winborder*
+-winborder={window-border}
+		Set the border of the window if |defx-option-split| is
+		"floating".
+
+		Default: "none"
+
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*
 

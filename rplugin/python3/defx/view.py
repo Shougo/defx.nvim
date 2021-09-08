@@ -567,6 +567,7 @@ class View(object):
                     'col': self._context.wincol,
                     'width': self._context.winwidth,
                     'height': self._context.winheight,
+                    'border': self._context.winborder,
                 })
 
         # Create new buffer
