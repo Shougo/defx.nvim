@@ -124,6 +124,7 @@ function! defx#init#_user_options() abort
         \ 'winrow': &lines / 3,
         \ 'winwidth': 90,
         \ 'vertical_preview': v:false,
+        \ 'winborder': 'none',
         \ }
 endfunction
 function! s:internal_options() abort
