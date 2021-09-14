@@ -179,6 +179,9 @@ class Kind(Base):
 
         if is_parent:
             path = prev_cwd.parent
+
+            # Don't close current directory
+            defx._opened_candidates.add(defx._cwd)
         else:
             if context.args:
                 if len(context.args) > 1:

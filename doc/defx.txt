@@ -1054,6 +1054,9 @@ A: Please use |defx-option-post-action|.
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
+2021-09-14
+* Move to parent directory without close current opened dir.
+
 2021-07-09
 * The padding before filename is removed to fix column problems.  You need to
   add padding manually if it is really needed.
