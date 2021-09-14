@@ -508,3 +508,7 @@ function! defx#util#check_action_args(args) abort
         \ printf('Your action arguments are too long.  max=%d, args=%s',
         \        max_len, string(a:args)))
 endfunction
+
+function! defx#util#back_cursor_input(n) abort
+  call feedkeys(repeat("\<Left>", a:n), 'n')
+endfunction

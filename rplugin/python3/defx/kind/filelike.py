@@ -602,11 +602,19 @@ class Kind(Base):
                            {'buffer_name': 'defx'})
             return
 
+        mode = '' if not context.args else context.args[0]
         for target in context.targets:
             old = target['action__path']
+            default = str(old)
+            if mode == 'insert':
+                view._vim.call('defx#util#back_cursor_input', len(old.name))
+            elif mode == 'append':
+                view._vim.call('defx#util#back_cursor_input', len(old.suffix))
+            elif mode == 'new':
+                default = default[: -len(old.name)]
             new_filename = self.input(
                 view, defx, defx._cwd,
-                f'Old name: {old}\nNew name: ', str(old), 'file')
+                f'Old name: {old}\nNew name: ', default, 'file')
             view._vim.command('redraw')
             if not new_filename:
                 return

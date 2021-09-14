@@ -418,14 +418,6 @@ quit							*defx-action-quit*
 redraw						      *defx-action-redraw*
 		Redraw the buffer.
 
-repeat						      *defx-action-repeat*
-		Redraw the previous action.
-
-rename						      *defx-action-rename*
-		Rename the file/directory under cursor or from selected list.
-		Note: If you select multiple files, it will be buffer-rename
-		mode.
-
 remove							*defx-action-remove*
 		Delete the file/directory under cursor or from selected list
 		completely.
@@ -443,6 +435,22 @@ remove_trash					*defx-action-remove_trash*
 
 		Action args:
 			0. If it is "true", suppress the confirmation.
+
+rename						      *defx-action-rename*
+		Rename the file/directory under cursor or from selected list.
+		Note: If you select multiple files, it will be buffer-rename
+		mode.
+
+		Action args:
+			0. rename mode
+
+			"insert":  Cursor move to before file name.
+			"append":  Cursor move to before file suffix.
+			"new":     Input new file name.
+			Otherwise: Cursor move to end of file name.
+
+repeat						      *defx-action-repeat*
+		Redraw the previous action.
 
 resize						      *defx-action-resize*
 		Vertical resize and redraw the current window.
