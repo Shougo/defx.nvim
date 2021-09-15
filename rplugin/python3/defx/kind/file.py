@@ -8,6 +8,7 @@ from pathlib import Path
 from pynvim import Nvim
 import importlib
 import mimetypes
+import os
 import shutil
 import subprocess
 import typing
@@ -76,8 +77,17 @@ class Kind(Base):
                 view._vim.call('defx#util#buffer_rename',
                                view._vim.call('bufnr', str(src)), str(dest))
         elif action == ClipboardAction.LINK:
-            # Create the symbolic link to dest
-            dest.symlink_to(src, target_is_directory=src.is_dir())
+            mode = view._clipboard.mode
+            if mode == 'hard':
+                # Create the hard link to dest
+                src.link_to(dest)
+            elif mode == 'relative':
+                dest.symlink_to(os.path.relpath(str(src), str(dest.parent)),
+                                target_is_directory=src.is_dir())
+            else:
+                # Create the symbolic link to dest
+                dest.symlink_to(src,
+                                target_is_directory=src.is_dir())
 
     def check_output(self, view: View, cwd: str,
                      args: typing.List[str]) -> None:

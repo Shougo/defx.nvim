@@ -321,6 +321,7 @@ class Kind(Base):
         if not context.targets:
             return
 
+        mode = context.args[0] if context.args else ''
         message = 'Link to the clipboard: {}'.format(
             str(context.targets[0]['action__path'])
             if len(context.targets) == 1
@@ -330,6 +331,7 @@ class Kind(Base):
         view._clipboard.action = ClipboardAction.LINK
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
+        view._clipboard.mode = mode
 
     @action(name='move')
     def _move(self, view: View, defx: Defx, context: Context) -> None:
