@@ -577,6 +577,13 @@ OPTIONS							*defx-options*
 		The pattern is comma separated.
 		Default: ".*"
 
+					*defx-option-ignored-recursive-files*
+-ignored-recursive-files={pattern}
+		Specify the ignored files pattern when
+		|defx-action-open_tree_recursive|.
+		The pattern is comma separated.
+		Default: ""
+
 							*defx-option-listed*
 -listed
 		Enable 'buflisted' option in defx buffer.

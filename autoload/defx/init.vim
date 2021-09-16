@@ -104,6 +104,7 @@ function! defx#init#_user_options() abort
         \ 'floating_preview': v:false,
         \ 'focus': v:true,
         \ 'ignored_files': '.*',
+        \ 'ignored_recursive_files': '',
         \ 'listed': v:false,
         \ 'new': v:false,
         \ 'post_action': '',

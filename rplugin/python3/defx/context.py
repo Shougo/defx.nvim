@@ -21,6 +21,7 @@ class Context(typing.NamedTuple):
     focus: bool = False
     floating_preview: bool = False
     ignored_files: str = ''
+    ignored_recursive_files: str = ''
     listed: bool = False
     new: bool = False
     post_action: str = ''

@@ -31,6 +31,8 @@ class Defx(object):
         self._enabled_ignored_files = not context.show_ignored_files
         self._filtered_files = context.filtered_files.split(',')
         self._ignored_files = context.ignored_files.split(',')
+        self._ignored_recursive_files = context.ignored_recursive_files.split(
+            ',')
         self._cursor_history: typing.Dict[str, Path] = {}
         self._sort_method: str = self._context.sort
         self._mtime: int = -1
@@ -112,7 +114,10 @@ class Defx(object):
         ret = []
         for candidate in candidates:
             ret.append(candidate)
-            if candidate['is_directory']:
+            if candidate['is_directory'] and not [
+                    x for x in self._ignored_recursive_files
+                    if x and candidate['action__path'].match(x)
+            ]:
                 candidate['is_opened_tree'] = True
                 ret += self.gather_candidates_recursive(
                     str(candidate['action__path']), base_level + 1, max_level)
