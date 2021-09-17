@@ -255,6 +255,7 @@ cd 						*defx-action-cd*
 
 		Action args:
 			0. new current directory path
+			1. if it is "open", open previous current directory
 
 change_filtered_files			*defx-action-change_filtered_files*
 		Change |defx-option-filtered-files| dynamically.
@@ -1076,9 +1077,6 @@ A: Please use |defx-option-post-action|.
 
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
-
-2021-09-14
-* Move to parent directory without close current opened dir.
 
 2021-07-09
 * The padding before filename is removed to fix column problems.  You need to

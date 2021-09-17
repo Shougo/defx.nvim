@@ -175,13 +175,15 @@ class Kind(Base):
         """
         source_name = defx._source.name
         is_parent = context.args and context.args[0] == '..'
+        open = len(context.args) > 1 and context.args[1] == 'open'
         prev_cwd = self.path_maker(defx._cwd)
+
+        if open:
+            # Don't close current directory
+            defx._opened_candidates.add(defx._cwd)
 
         if is_parent:
             path = prev_cwd.parent
-
-            # Don't close current directory
-            defx._opened_candidates.add(defx._cwd)
         else:
             if context.args:
                 if len(context.args) > 1:
