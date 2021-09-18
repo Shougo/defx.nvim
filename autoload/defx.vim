@@ -9,6 +9,13 @@ function! defx#initialize() abort
 endfunction
 
 function! defx#start(paths, user_context) abort
+  " Todo: disable when autochdir?
+  "if &autochdir
+  "  call defx#util#print_error(
+  "        \ 'You need to disable "autochdir" option for defx.')
+  "  return
+  "endif
+
   let prev_winid = win_getid()
 
   call defx#initialize()

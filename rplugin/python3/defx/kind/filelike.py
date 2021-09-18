@@ -256,7 +256,9 @@ class Kind(Base):
                 if view._vim.call('win_getid') == view._winid:
                     view._vim.command('wincmd w')
 
-                if not view._vim.call('haslocaldir'):
+                if (not view._vim.call('haslocaldir') and
+                        not bool(view._vim.options['autochdir'])):
+                    # Note: autochdir is dangerous option
                     try:
                         path = path.relative_to(cwd)
                     except ValueError:
@@ -474,7 +476,9 @@ class Kind(Base):
                 view.cd(defx, defx._source.name, str(path), context.cursor)
                 continue
 
-            if not view._vim.call('haslocaldir'):
+            if (not view._vim.call('haslocaldir') and
+                    not bool(view._vim.options['autochdir'])):
+                # Note: autochdir is dangerous option
                 try:
                     path = path.relative_to(cwd)
                 except ValueError:
