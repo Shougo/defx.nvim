@@ -15,6 +15,7 @@ from functools import wraps, partial
 from defx.action import ActionAttr
 from defx.action import ActionTable
 from defx.action import do_action
+from defx.clipboard import ClipboardAction
 from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
