@@ -9,6 +9,7 @@ import typing
 
 
 class ClipboardAction(Enum):
+    NONE = auto()
     MOVE = auto()
     COPY = auto()
     LINK = auto()
@@ -20,10 +21,10 @@ def default_paster(src: str, dest: str) -> None:
 
 class Clipboard():
     def __init__(self,
-                 action: ClipboardAction = ClipboardAction.COPY,
+                 action: ClipboardAction = ClipboardAction.NONE,
                  candidates:
                  typing.List[typing.Dict[str, typing.Any]] = [],
-                 source_name: str = 'file',
+                 source_name: str = '',
                  mode: str = '',
                  paster: typing.Callable[[str, str], None] = default_paster
                  ) -> None:

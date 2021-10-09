@@ -517,7 +517,8 @@ class Kind(Base):
     @action(name='paste', attr=ActionAttr.NO_TAGETS)
     def _paste(self, view: View, defx: Defx, context: Context) -> None:
         candidate = view.get_cursor_candidate(context.cursor)
-        if not candidate:
+        action = view._clipboard.action
+        if not candidate or action == ClipboardAction.NONE:
             return
 
         if candidate['is_opened_tree'] or candidate['is_root']:
@@ -525,7 +526,6 @@ class Kind(Base):
         else:
             cwd = str(Path(candidate['action__path']).parent)
 
-        action = view._clipboard.action
         dest = None
         for index, candidate in enumerate(view._clipboard.candidates):
             path = candidate['action__path']
@@ -551,9 +551,12 @@ class Kind(Base):
 
             self.paste(view, path, dest, cwd)
             view._vim.command('redraw')
+
         if action == ClipboardAction.MOVE:
-            # Clear clipboard after move
+            # Clear clipboard after action
+            view._clipboard.action = ClipboardAction.NONE
             view._clipboard.candidates = []
+
         view._vim.command('echo')
 
         view.redraw(True)

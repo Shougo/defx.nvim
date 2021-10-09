@@ -87,7 +87,7 @@ class Base:
             session = Session(
                 name=name, path=path,
                 opened_candidates=opened_candidates)
-            view.print_msg(f'session "{name}" is created')
+            view.print_msg(f'Session "{name}" is created')
 
         view._sessions[session.path] = session
 
@@ -125,6 +125,12 @@ class Base:
             f'{".".join(defx._ignored_files)} -> ',
             '.'.join(defx._ignored_files))
         defx._ignored_files = ignored_files.split(',')
+
+    @action(name='clear_clipboard', attr=ActionAttr.NO_TAGETS)
+    def _clear_clipboard(self, view: View, defx: Defx,
+                          context: Context) -> None:
+        view._clipboard.action = ClipboardAction.NONE
+        view._clipboard.candidates = []
 
     @action(name='clear_select_all',
             attr=ActionAttr.MARK | ActionAttr.NO_TAGETS)

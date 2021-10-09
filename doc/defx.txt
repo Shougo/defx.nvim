@@ -275,6 +275,9 @@ change_vim_cwd					*change_vim_cwd*
 		not local current directory.  If you don't like the behavior,
 		you need to set local current directory.
 
+clear_clipboard					*defx-action-clear_clipboard*
+		Clear current defx clipboard.
+
 clear_select_all				*defx-action-clear_select_all*
 		Clear the all candidates select.
 
