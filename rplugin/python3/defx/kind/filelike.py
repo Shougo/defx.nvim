@@ -168,6 +168,21 @@ class Kind(Base):
             # Open vertical
             view._vim.command('noautocmd rightbelow vnew')
 
+    def create_open(self, view: View, defx: Defx, context: Context,
+                    path: Path, isdir: bool, isopen: bool) -> None:
+        if isdir:
+            path.mkdir(parents=True)
+            if isopen:
+                view.cd(defx, defx._source.name, str(path), context.cursor)
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+
+            if isopen:
+                view._vim.call('defx#util#execute_path',
+                               'edit',
+                               self.get_buffer_name(str(path)))
+
     @action(name='cd')
     def _cd(self, view: View, defx: Defx, context: Context) -> None:
         """
@@ -378,7 +393,9 @@ class Kind(Base):
             error(view._vim, f'{filename} already exists')
             return
 
-        filename.mkdir(parents=True)
+        isopen = len(context.args) > 0 and context.args[0] == 'open'
+        self.create_open(view, defx, context, filename, True, isopen)
+
         view.redraw(True)
         view.search_recursive(filename, defx._index)
 
@@ -409,11 +426,8 @@ class Kind(Base):
             error(view._vim, f'{filename} already exists')
             return
 
-        if isdir:
-            filename.mkdir(parents=True)
-        else:
-            filename.parent.mkdir(parents=True, exist_ok=True)
-            filename.touch()
+        isopen = len(context.args) > 0 and context.args[0] == 'open'
+        self.create_open(view, defx, context, filename, isdir, isopen)
 
         view.redraw(True)
         view.search_recursive(filename, defx._index)
@@ -433,6 +447,8 @@ class Kind(Base):
         else:
             cwd = str(Path(candidate['action__path']).parent)
 
+        isopen = len(context.args) > 0 and context.args[0] == 'open'
+
         str_filenames = self.input(
             view, defx, cwd,
             'Please input new filenames: ', '', 'file')
@@ -441,19 +457,14 @@ class Kind(Base):
             return None
 
         for name in shlex.split(str_filenames):
-            is_dir = name[-1] == '/'
+            isdir = name[-1] == '/'
 
             filename = self.path_maker(cwd).joinpath(name)
             if filename.exists():
                 error(view._vim, f'{filename} already exists')
                 continue
 
-            if is_dir:
-                filename.mkdir(parents=True)
-            else:
-                if not filename.parent.exists():
-                    filename.parent.mkdir(parents=True)
-                filename.touch()
+            self.create_open(view, defx, context, filename, isdir, isopen)
 
         view.redraw(True)
         view.search_recursive(filename, defx._index)

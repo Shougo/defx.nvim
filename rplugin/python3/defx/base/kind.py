@@ -129,7 +129,7 @@ class Base:
 
     @action(name='clear_clipboard', attr=ActionAttr.NO_TAGETS)
     def _clear_clipboard(self, view: View, defx: Defx,
-                          context: Context) -> None:
+                         context: Context) -> None:
         view._clipboard.action = ClipboardAction.NONE
         view._clipboard.candidates = []
 
