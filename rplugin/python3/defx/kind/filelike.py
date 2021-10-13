@@ -174,25 +174,31 @@ class Kind(Base):
                     isdir: bool, isopen: bool) -> None:
         if isdir:
             path.mkdir(parents=True)
-            if isopen:
-                if command == 'open_tree':
-                    # Note: Must be redraw before open_tree
-                    view.redraw(True)
-                    view.open_tree(path, defx._index, False, 0)
-                else:
-                    view.cd(defx, defx._source.name, str(path), context.cursor)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
 
-            if isopen:
-                if command == 'drop':
-                    self._drop(view, defx, context._replace(
-                        args=[], targets=[{'action__path': path}]))
-                else:
-                    view._vim.call('defx#util#execute_path',
-                                   command,
-                                   self.get_buffer_name(str(path)))
+        if not isopen:
+            return
+
+        # Note: Must be redraw before actions
+        view.redraw(True)
+
+        if isdir:
+            if command == 'open_tree':
+                view.redraw(True)
+                view.search_recursive(path, defx._index)
+                view.open_tree(path, defx._index, False, 0)
+            else:
+                view.cd(defx, defx._source.name, str(path), context.cursor)
+        else:
+            if command == 'drop':
+                self._drop(view, defx, context._replace(
+                    args=[], targets=[{'action__path': path}]))
+            else:
+                view._vim.call('defx#util#execute_path',
+                               command,
+                               self.get_buffer_name(str(path)))
 
     @action(name='cd')
     def _cd(self, view: View, defx: Defx, context: Context) -> None:
@@ -448,8 +454,9 @@ class Kind(Base):
         command = context.args[1] if len(context.args) > 1 else 'edit'
         self.create_open(view, defx, context, filename, command, isdir, isopen)
 
-        view.redraw(True)
-        view.search_recursive(filename, defx._index)
+        if not isopen:
+            view.redraw(True)
+            view.search_recursive(filename, defx._index)
 
     @action(name='new_multiple_files', attr=ActionAttr.TREE)
     def _new_multiple_files(self, view: View, defx: Defx,

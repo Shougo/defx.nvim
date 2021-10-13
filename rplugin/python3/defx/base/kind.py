@@ -184,12 +184,15 @@ class Base:
     @action(name='multi')
     def _multi(self, view: View, defx: Defx, context: Context) -> None:
         for arg in context.args:
-            args: typing.List[str]
+            args: typing.List[typing.Union[str, typing.List[str]]]
             if isinstance(arg, list):
                 args = arg
             else:
                 args = [arg]
-            do_action(view, defx, args[0], context._replace(args=args[1:]))
+            action_args = (typing.cast(typing.List[str], args[1])
+                           if len(args) > 1 else [])
+            do_action(view, defx, str(args[0]),
+                      context._replace(args=action_args))
 
     @action(name='check_redraw', attr=ActionAttr.NO_TAGETS)
     def _nop(self, view: View, defx: Defx, context: Context) -> None:
