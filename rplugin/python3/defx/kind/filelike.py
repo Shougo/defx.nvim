@@ -179,15 +179,16 @@ class Kind(Base):
             path.touch()
 
         if not isopen:
+            view.redraw(True)
+            view.search_recursive(path, defx._index)
             return
 
         # Note: Must be redraw before actions
         view.redraw(True)
+        view.search_recursive(path, defx._index)
 
         if isdir:
             if command == 'open_tree':
-                view.redraw(True)
-                view.search_recursive(path, defx._index)
                 view.open_tree(path, defx._index, False, 0)
             else:
                 view.cd(defx, defx._source.name, str(path), context.cursor)
@@ -419,10 +420,6 @@ class Kind(Base):
         command = context.args[1] if len(context.args) > 1 else 'edit'
         self.create_open(view, defx, context, filename, command, True, isopen)
 
-        if not isopen:
-            view.redraw(True)
-            view.search_recursive(filename, defx._index)
-
     @action(name='new_file')
     def _new_file(self, view: View, defx: Defx, context: Context) -> None:
         """
@@ -453,10 +450,6 @@ class Kind(Base):
         isopen = len(context.args) > 0 and context.args[0] == 'open'
         command = context.args[1] if len(context.args) > 1 else 'edit'
         self.create_open(view, defx, context, filename, command, isdir, isopen)
-
-        if not isopen:
-            view.redraw(True)
-            view.search_recursive(filename, defx._index)
 
     @action(name='new_multiple_files', attr=ActionAttr.TREE)
     def _new_multiple_files(self, view: View, defx: Defx,
@@ -493,10 +486,6 @@ class Kind(Base):
 
             self.create_open(view, defx, context,
                              filename, command, isdir, isopen)
-
-        if not isopen:
-            view.redraw(True)
-            view.search_recursive(filename, defx._index)
 
     @action(name='open')
     def _open(self, view: View, defx: Defx, context: Context) -> None:
