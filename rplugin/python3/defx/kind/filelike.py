@@ -7,6 +7,7 @@
 
 from pathlib import Path
 from pynvim import Nvim
+from pynvim.api.common import NvimError
 import shlex
 import subprocess
 import re
@@ -169,19 +170,29 @@ class Kind(Base):
             view._vim.command('noautocmd rightbelow vnew')
 
     def create_open(self, view: View, defx: Defx, context: Context,
-                    path: Path, isdir: bool, isopen: bool) -> None:
+                    path: Path, command: str,
+                    isdir: bool, isopen: bool) -> None:
         if isdir:
             path.mkdir(parents=True)
             if isopen:
-                view.cd(defx, defx._source.name, str(path), context.cursor)
+                if command == 'open_tree':
+                    # Note: Must be redraw before open_tree
+                    view.redraw(True)
+                    view.open_tree(path, defx._index, False, 0)
+                else:
+                    view.cd(defx, defx._source.name, str(path), context.cursor)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
 
             if isopen:
-                view._vim.call('defx#util#execute_path',
-                               'edit',
-                               self.get_buffer_name(str(path)))
+                if command == 'drop':
+                    self._drop(view, defx, context._replace(
+                        args=[], targets=[{'action__path': path}]))
+                else:
+                    view._vim.call('defx#util#execute_path',
+                                   command,
+                                   self.get_buffer_name(str(path)))
 
     @action(name='cd')
     def _cd(self, view: View, defx: Defx, context: Context) -> None:
@@ -259,8 +270,13 @@ class Kind(Base):
                 view.cd(defx, defx._source.name, str(path), context.cursor)
                 continue
 
-            bufnr = view._vim.call('bufnr', f'^{path}$')
-            winids = view._vim.call('win_findbuf', bufnr)
+            # bufnr check
+            winids = []
+            try:
+                bufnr = view._vim.call('bufnr', f'^{path}$')
+                winids = view._vim.call('win_findbuf', bufnr)
+            except NvimError:
+                pass
 
             if winids:
                 view._vim.call('win_gotoid', winids[0])
@@ -367,7 +383,7 @@ class Kind(Base):
         view._clipboard.candidates = context.targets
         view._clipboard.source_name = defx._source.name
 
-    @action(name='new_directory')
+    @action(name='new_directory', attr=ActionAttr.TREE)
     def _new_directory(self, view: View, defx: Defx, context: Context) -> None:
         """
         Create a new directory.
@@ -394,10 +410,12 @@ class Kind(Base):
             return
 
         isopen = len(context.args) > 0 and context.args[0] == 'open'
-        self.create_open(view, defx, context, filename, True, isopen)
+        command = context.args[1] if len(context.args) > 1 else 'edit'
+        self.create_open(view, defx, context, filename, command, True, isopen)
 
-        view.redraw(True)
-        view.search_recursive(filename, defx._index)
+        if not isopen:
+            view.redraw(True)
+            view.search_recursive(filename, defx._index)
 
     @action(name='new_file')
     def _new_file(self, view: View, defx: Defx, context: Context) -> None:
@@ -427,12 +445,13 @@ class Kind(Base):
             return
 
         isopen = len(context.args) > 0 and context.args[0] == 'open'
-        self.create_open(view, defx, context, filename, isdir, isopen)
+        command = context.args[1] if len(context.args) > 1 else 'edit'
+        self.create_open(view, defx, context, filename, command, isdir, isopen)
 
         view.redraw(True)
         view.search_recursive(filename, defx._index)
 
-    @action(name='new_multiple_files')
+    @action(name='new_multiple_files', attr=ActionAttr.TREE)
     def _new_multiple_files(self, view: View, defx: Defx,
                             context: Context) -> None:
         """
@@ -448,6 +467,7 @@ class Kind(Base):
             cwd = str(Path(candidate['action__path']).parent)
 
         isopen = len(context.args) > 0 and context.args[0] == 'open'
+        command = context.args[1] if len(context.args) > 1 else 'edit'
 
         str_filenames = self.input(
             view, defx, cwd,
@@ -464,10 +484,12 @@ class Kind(Base):
                 error(view._vim, f'{filename} already exists')
                 continue
 
-            self.create_open(view, defx, context, filename, isdir, isopen)
+            self.create_open(view, defx, context,
+                             filename, command, isdir, isopen)
 
-        view.redraw(True)
-        view.search_recursive(filename, defx._index)
+        if not isopen:
+            view.redraw(True)
+            view.search_recursive(filename, defx._index)
 
     @action(name='open')
     def _open(self, view: View, defx: Defx, context: Context) -> None:
