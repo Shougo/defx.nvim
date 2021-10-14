@@ -189,7 +189,8 @@ class Base:
                 args = arg
             else:
                 args = [arg]
-            action_args = (typing.cast(typing.List[str], args[1])
+            action_args = ((args[1] if isinstance(args[1], list)
+                            else [args[1]])
                            if len(args) > 1 else [])
             do_action(view, defx, str(args[0]),
                       context._replace(args=action_args))
