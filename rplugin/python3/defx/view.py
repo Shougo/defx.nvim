@@ -16,7 +16,7 @@ from defx.context import Context
 from defx.defx import Defx
 from defx.session import Session
 from defx.util import Candidate
-from defx.util import error, import_plugin, safe_call, len_bytes, readable
+from defx.util import error, import_plugin, len_bytes, readable
 
 Highlights = typing.List[typing.Tuple[str, int, int]]
 
@@ -809,29 +809,21 @@ class View(object):
         ]
 
     def _load_custom_sources(self) -> typing.List[Path]:
-        rtp_list = self._vim.options['runtimepath'].split(',')
-        result: typing.List[Path] = []
-
-        for path in rtp_list:
-            source_path = Path(path).joinpath(
-                'rplugin', 'python3', 'defx', 'source')
-            if safe_call(source_path.is_dir):
-                result += source_path.glob('*.py')
-                result += source_path.glob('*/*.py')
-
-        return result
+        result = []
+        result += self._vim.call('globpath',
+                                 self._vim.options['runtimepath'],
+                                 'rplugin/python3/defx/source/*.py', 1, 1)
+        result += self._vim.call('globpath',
+                                 self._vim.options['runtimepath'],
+                                 'rplugin/python3/defx/source/*/*.py', 1, 1)
+        return [Path(x) for x in result]
 
     def _load_custom_columns(self) -> typing.List[Path]:
-        rtp_list = self._vim.options['runtimepath'].split(',')
-        result: typing.List[Path] = []
-
-        for path in rtp_list:
-            column_path = Path(path).joinpath(
-                'rplugin', 'python3', 'defx', 'column')
-            if safe_call(column_path.is_dir):
-                result += column_path.glob('*.py')
-
-        return result
+        result = []
+        result += self._vim.call('globpath',
+                                 self._vim.options['runtimepath'],
+                                 'rplugin/python3/defx/column/*.py', 1, 1)
+        return [Path(x) for x in result]
 
     def _update_defx_paths(self,
                            paths: typing.List[typing.List[str]]) -> None:
