@@ -502,6 +502,8 @@ search						      *defx-action-search*
 		Search the path.
 		Note: If the path is not absolute path, current directory
 		relative path is used instead.
+		Note: If the path is not found in the current directory, cd to
+		the path.
 
 		Action args:
 			0. search the path

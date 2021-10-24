@@ -334,7 +334,7 @@ class View(object):
 
         self.update_candidates()
         self.redraw()
-        self.search_file(path, index)
+        return self.search_file(path, index)
 
     def update_candidates(self) -> None:
         # Update opened/selected state
