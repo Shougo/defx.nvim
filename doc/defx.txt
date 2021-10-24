@@ -500,6 +500,8 @@ resize						      *defx-action-resize*
 
 search						      *defx-action-search*
 		Search the path.
+		Note: If the path is not absolute path, current directory
+		relative path is used instead.
 
 		Action args:
 			0. search the path

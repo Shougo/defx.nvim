@@ -283,8 +283,11 @@ class Base:
         if not context.args or not context.args[0]:
             return
 
-        search_path = context.args[0]
-        view.search_recursive(Path(search_path), defx._index)
+        search_path = Path(context.args[0])
+        if not search_path.is_absolute():
+            # Use relative directory instead.
+            search_path = Path(Path(defx._cwd).joinpath(context.args[0]))
+        view.search_recursive(search_path, defx._index)
 
     @action(name='toggle_columns', attr=ActionAttr.REDRAW)
     def _toggle_columns(self, view: View, defx: Defx,
