@@ -288,6 +288,19 @@ class Base:
             # Use relative directory instead.
             search_path = Path(Path(defx._cwd).joinpath(context.args[0]))
 
+        view.search_file(search_path, defx._index)
+
+    @action(name='search_recursive', attr=ActionAttr.NO_TAGETS)
+    def _search_recursive(self, view: View, defx: Defx,
+                          context: Context) -> None:
+        if not context.args or not context.args[0]:
+            return
+
+        search_path = Path(context.args[0])
+        if not search_path.is_absolute():
+            # Use relative directory instead.
+            search_path = Path(Path(defx._cwd).joinpath(context.args[0]))
+
         if not view.search_recursive(search_path, defx._index):
             # Not found in current path.
             # Change defx directory to "search_path".

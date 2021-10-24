@@ -321,7 +321,7 @@ class View(object):
         self._vim.call('cursor', [pos + 1, 1])
         return True
 
-    def search_recursive(self, path: Path, index: int) -> None:
+    def search_recursive(self, path: Path, index: int) -> bool:
         parents: typing.List[Path] = []
         tmppath: Path = path
         while (self.get_candidate_pos(tmppath, index) < 0 and

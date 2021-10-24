@@ -27,6 +27,8 @@ function! defx#start(paths, user_context) abort
 
   if context['search'] !=# ''
     call defx#call_action('search', [context['search']])
+  elseif context['search_recursive'] !=# ''
+    call defx#call_action('search_recursive', [context['search_recursive']])
   endif
 
   if !context['focus']

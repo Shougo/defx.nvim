@@ -114,6 +114,7 @@ function! defx#init#_user_options() abort
         \ 'resume': v:false,
         \ 'root_marker': '[in] ',
         \ 'search': '',
+        \ 'search_recursive': '',
         \ 'session_file': '',
         \ 'show_ignored_files': v:false,
         \ 'sort': 'filename',

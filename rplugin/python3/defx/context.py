@@ -34,6 +34,7 @@ class Context(typing.NamedTuple):
     resume: bool = False
     root_marker: str = ''
     search: str = ''
+    search_recursive: str = ''
     session_file: str = ''
     show_ignored_files: bool = False
     sort: str = ''

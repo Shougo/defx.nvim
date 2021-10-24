@@ -502,6 +502,14 @@ search						      *defx-action-search*
 		Search the path.
 		Note: If the path is not absolute path, current directory
 		relative path is used instead.
+
+		Action args:
+			0. search the path
+
+search_recursive			      *defx-action-search_recursive*
+		Search the path recursively.
+		Note: If the path is not absolute path, current directory
+		relative path is used instead.
 		Note: If the path is not found in the current directory, cd to
 		the path.
 
@@ -676,9 +684,13 @@ OPTIONS							*defx-options*
 
 							*defx-option-search*
 -search={path}
-		Search the {path}.  It expands to {path} from current
-		directory.
-		Note: It must be full path.
+		Do |defx-action-search| the {path}.
+
+		Default: ""
+
+						*defx-option-search-recursive*
+-search-recursive={path}
+		Do |defx-action-search_recursive| the {path}.
 
 		Default: ""
 
