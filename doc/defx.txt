@@ -1125,6 +1125,10 @@ A: Please use |defx-option-post-action|.
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
+2021-10-25
+* "search" option does not search recursively.  If you need to search
+  file recursively, you need to use "search_recursive" option instead.
+
 2021-07-09
 * The padding before filename is removed to fix column problems.  You need to
   add padding manually if it is really needed.
