@@ -209,6 +209,7 @@ class Kind(Base):
         source_name = defx._source.name
         is_parent = context.args and context.args[0] == '..'
         open = len(context.args) > 1 and context.args[1] == 'open'
+        save_history = len(context.args) < 2 or context.args[2] != 'nohist'
         prev_cwd = self.path_maker(defx._cwd)
 
         if open:
@@ -234,7 +235,8 @@ class Kind(Base):
                 error(view._vim, f'{path} is invalid.')
                 return
 
-        view.cd(defx, source_name, str(path), context.cursor)
+        view.cd(defx, source_name, str(path), context.cursor,
+                save_history=save_history)
         if is_parent:
             view.search_file(prev_cwd, defx._index)
 

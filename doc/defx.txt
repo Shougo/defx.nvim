@@ -256,6 +256,7 @@ cd 						*defx-action-cd*
 		Action args:
 			0. new current directory path
 			1. if it is "open", open previous current directory
+			2. if it is "nohist", don't save directory history
 
 change_filtered_files			*defx-action-change_filtered_files*
 		Change |defx-option-filtered-files| dynamically.

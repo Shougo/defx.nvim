@@ -272,7 +272,7 @@ class View(object):
         return -1
 
     def cd(self, defx: Defx, source_name: str,
-           path: str, cursor: int) -> None:
+           path: str, cursor: int, save_history: bool = True) -> None:
         history = defx._cursor_history
 
         # Save previous cursor position
@@ -280,9 +280,10 @@ class View(object):
         if candidate:
             history[defx._cwd] = candidate['action__path']
 
-        global_histories = self._vim.vars['defx#_histories']
-        global_histories.append([defx._source.name, defx._cwd])
-        self._vim.vars['defx#_histories'] = global_histories
+        if save_history:
+            global_histories = self._vim.vars['defx#_histories']
+            global_histories.append([defx._source.name, defx._cwd])
+            self._vim.vars['defx#_histories'] = global_histories
 
         if source_name != defx._source.name:
             if source_name not in self._all_sources:
