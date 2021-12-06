@@ -209,7 +209,7 @@ class Kind(Base):
         source_name = defx._source.name
         is_parent = context.args and context.args[0] == '..'
         open = len(context.args) > 1 and context.args[1] == 'open'
-        save_history = len(context.args) < 2 or context.args[2] != 'nohist'
+        save_history = len(context.args) < 3 or context.args[2] != 'nohist'
         prev_cwd = self.path_maker(defx._cwd)
 
         if open:
