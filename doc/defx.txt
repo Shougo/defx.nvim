@@ -707,6 +707,11 @@ OPTIONS							*defx-options*
 		Show ignored files by default.
 		Default: false
 
+						*defx-option-show-parent*
+-show-parent
+		Show ../ parent directory.
+		Default: false
+
 							*defx-options-sort*
 -sort={method}
 		Sort method.
@@ -784,10 +789,6 @@ OPTIONS							*defx-options*
 		"floating".
 
 		Default: "none"
-						*defx-option-show-parent*
--show-parent
-		Show ../ parent directory by default.
-		Default: false
 
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*
