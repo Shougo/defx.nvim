@@ -63,8 +63,9 @@ class Source(Base):
             if context.show_parent:
                 candidates.append({
                     'word': '../',
-                    'is_directory': True, 
-                    'action__path': path.resolve().parent})
+                    'is_directory': True,
+                    'action__path': path.resolve().parent,
+                })
         except OSError:
             pass
         return candidates

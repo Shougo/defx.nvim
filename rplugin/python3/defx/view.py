@@ -859,7 +859,7 @@ class View(object):
 
     def _update_highlights(self, columns_highlights: typing.List[
             typing.Tuple[str, int, int, int]]) -> None:
-        commands = []
+        commands: typing.List[typing.Any] = []
         if self._has_textprop:
             for proptype in self._proptypes:
                 commands.append(
