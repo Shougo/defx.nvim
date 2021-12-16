@@ -117,6 +117,7 @@ function! defx#init#_user_options() abort
         \ 'search_recursive': '',
         \ 'session_file': '',
         \ 'show_ignored_files': v:false,
+        \ 'show_parent': v:false,
         \ 'sort': 'filename',
         \ 'split': 'no',
         \ 'toggle': v:false,

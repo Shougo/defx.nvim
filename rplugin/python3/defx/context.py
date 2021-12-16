@@ -37,6 +37,7 @@ class Context(typing.NamedTuple):
     search_recursive: str = ''
     session_file: str = ''
     show_ignored_files: bool = False
+    show_parent: bool = False
     sort: str = ''
     split: str = 'no'
     targets: typing.List[typing.Dict[str, typing.Any]] = []
