@@ -60,7 +60,8 @@ class Source(Base):
                     'is_directory': safe_call(entry.is_dir, False),
                     'action__path': entry,
                 })
-            candidates.append({'word':'../','is_directory':True, 'action__path':path.resolve().parent,})
+            if context.show_parent:
+                candidates.append({'word':'../','is_directory':True, 'action__path':path.resolve().parent,})
         except OSError:
             pass
         return candidates

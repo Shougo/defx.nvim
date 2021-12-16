@@ -784,6 +784,10 @@ OPTIONS							*defx-options*
 		"floating".
 
 		Default: "none"
+						*defx-option-show-parent*
+-show-parent
+		Show ../ parent directory by default.
+		Default: false
 
 ------------------------------------------------------------------------------
 COLUMNS							*defx-columns*

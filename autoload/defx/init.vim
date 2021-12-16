@@ -127,6 +127,7 @@ function! defx#init#_user_options() abort
         \ 'winwidth': 90,
         \ 'vertical_preview': v:false,
         \ 'winborder': 'none',
+        \ 'show_parent': v:false,
         \ }
 endfunction
 function! s:internal_options() abort
