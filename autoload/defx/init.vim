@@ -117,6 +117,7 @@ function! defx#init#_user_options() abort
         \ 'search_recursive': '',
         \ 'session_file': '',
         \ 'show_ignored_files': v:false,
+        \ 'show_parent': v:false,
         \ 'sort': 'filename',
         \ 'split': 'no',
         \ 'toggle': v:false,
@@ -127,7 +128,6 @@ function! defx#init#_user_options() abort
         \ 'winwidth': 90,
         \ 'vertical_preview': v:false,
         \ 'winborder': 'none',
-        \ 'show_parent': v:false,
         \ }
 endfunction
 function! s:internal_options() abort

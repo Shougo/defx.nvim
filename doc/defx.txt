@@ -709,7 +709,7 @@ OPTIONS							*defx-options*
 
 						*defx-option-show-parent*
 -show-parent
-		Show ../ parent directory.
+		Show ../ parent directory in the buffer.
 		Default: false
 
 							*defx-options-sort*
