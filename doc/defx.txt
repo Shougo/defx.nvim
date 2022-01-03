@@ -1128,6 +1128,11 @@ Q: I don't want to jump to opened buffer after action is fired.
 
 A: Please use |defx-option-post-action|.
 
+Q: I want to switch between tabs and have the same defx pane opened.
+
+A: >
+	autocmd VimEnter,TabNew * Defx -resume -split=vertical -no-focus
+
 ==============================================================================
 COMPATIBILITY						*defx-compatibility*
 
