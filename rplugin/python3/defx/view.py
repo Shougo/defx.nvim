@@ -587,7 +587,7 @@ class View(object):
             if self._context.resume:
                 self._init_window()
                 return False
-        elif self._vim.call('exists', 'bufadd'):
+        elif self._vim.call('exists', '*bufadd'):
             bufnr = self._vim.call('bufadd', self._bufname)
             command = ('buffer' if no_split else 'sbuffer')
             self._vim.command(
