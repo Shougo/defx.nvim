@@ -1,3 +1,13 @@
+defx.nvim
+===========
+
+**Note**: Active development on denite.nvim has stopped. The only future
+changes will be bug fixes.
+
+Please see [ddu.vim](https://github.com/Shougo/ddu.vim) and
+[ddu-ui-filer](https://github.com/Shougo/ddu-ui-filer).
+
+
 ## About
 
 [![Join the chat at https://gitter.im/Shougo/defx.nvim](https://badges.gitter.im/Shougo/defx.nvim.svg)](https://gitter.im/Shougo/defx.nvim?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
