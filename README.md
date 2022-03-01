@@ -1,7 +1,7 @@
 defx.nvim
 ===========
 
-**Note**: Active development on denite.nvim has stopped. The only future
+**Note**: Active development on defx.nvim has stopped. The only future
 changes will be bug fixes.
 
 Please see [ddu.vim](https://github.com/Shougo/ddu.vim) and
