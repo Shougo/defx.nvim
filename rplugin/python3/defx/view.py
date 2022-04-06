@@ -543,7 +543,8 @@ class View(object):
             return False
 
         winnr = self._vim.call('bufwinnr', self._bufnr)
-        if winnr > 0:
+        # Note: current window may be defx buffer when `:tabnew`.
+        if winnr > 0 and winnr != self._vim.call('winnr'):
             self._vim.command(f'{winnr}wincmd w')
             if self._context.toggle:
                 self.quit()
