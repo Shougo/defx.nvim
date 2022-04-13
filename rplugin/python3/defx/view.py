@@ -29,6 +29,7 @@ class View(object):
         self._candidates: typing.List[typing.Dict[str, typing.Any]] = []
         self._clipboard = Clipboard()
         self._bufnr = -1
+        self._tabnr = -1
         self._prev_bufnr = -1
         self._winid = -1
         self._index = index
@@ -174,7 +175,6 @@ class View(object):
         if (self._context.split not in ['no', 'tab'] and
                 self._vim.call('winnr', '$') != 1):
             self._vim.command('close')
-            self._vim.call('win_gotoid', self._context.prev_winid)
         elif self._check_bufnr(self._prev_bufnr):
             self._vim.command('buffer ' + str(self._prev_bufnr))
         elif self._check_bufnr(self._context.prev_last_bufnr):
@@ -182,6 +182,8 @@ class View(object):
                               str(self._context.prev_last_bufnr))
         else:
             self._vim.command('enew')
+
+        self._vim.call('win_gotoid', self._context.prev_winid)
 
         if self._get_wininfo() and self._get_wininfo() == self._prev_wininfo:
             self._vim.command(self._winrestcmd)
@@ -448,6 +450,7 @@ class View(object):
 
     def _init_window(self) -> None:
         self._winid = self._vim.call('win_getid')
+        self._tabnr = self._vim.call('tabpagenr')
 
         window_options = self._vim.current.window.options
         if (self._context.split == 'vertical'
@@ -544,7 +547,7 @@ class View(object):
 
         winnr = self._vim.call('bufwinnr', self._bufnr)
         # Note: current window may be defx buffer when `:tabnew`.
-        if winnr > 0 and winnr != self._vim.call('winnr'):
+        if winnr > 0 and self._tabnr == self._vim.call('tabpagenr'):
             self._vim.command(f'{winnr}wincmd w')
             if self._context.toggle:
                 self.quit()
