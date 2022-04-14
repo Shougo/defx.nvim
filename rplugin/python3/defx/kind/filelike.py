@@ -117,12 +117,12 @@ class Kind(Base):
             return self.path_maker('')
 
         s_stat = src.stat()
-        s_mtime = s_stat.st_mtime
-        view.print_msg(f' src: {src} {s_stat.st_size} bytes')
+        s_mtime = s_stat.st_mtime  # type: ignore
+        view.print_msg(f' src: {src} {s_stat.st_size} bytes')  # type: ignore
         view.print_msg(f'      {time.strftime("%c", time.localtime(s_mtime))}')
         d_stat = dest.stat()
-        d_mtime = d_stat.st_mtime
-        view.print_msg(f'dest: {dest} {d_stat.st_size} bytes')
+        d_mtime = d_stat.st_mtime  # type: ignore
+        view.print_msg(f'dest: {dest} {d_stat.st_size} bytes')  # type: ignore
         view.print_msg(f'      {time.strftime("%c", time.localtime(d_mtime))}')
 
         choice: int = view._vim.call(
