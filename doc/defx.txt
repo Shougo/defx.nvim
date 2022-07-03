@@ -538,8 +538,7 @@ toggle_select					*defx-action-toggle_select*
 toggle_select_all			*defx-action-toggle_select_all*
 		Toggle the all candidates select.
 
-toggle_select_visual
-*defx-action-toggle_select_visual*
+toggle_select_visual			 *defx-action-toggle_select_visual*
 		Toggle the visual mode selected candidates select.
 
 yank_path					*defx-action-yank_path*
