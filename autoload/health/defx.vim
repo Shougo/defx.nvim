@@ -19,9 +19,17 @@ function! s:check_required_python_for_defx() abort
 endfunction
 
 function! health#defx#check() abort
-  call health#report_start('defx.nvim')
+  call s:report_start('defx.nvim')
 
   call s:check_required_python_for_defx()
+endfunction
+
+function! s:report_start(report) abort
+  if has('nvim-0.10')
+    call v:lua.vim.health.start(a:report)
+  else
+    call health#report_start(a:report)
+  endif
 endfunction
 
 function! s:report_ok(report) abort
