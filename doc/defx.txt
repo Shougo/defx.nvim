@@ -611,7 +611,7 @@ OPTIONS							*defx-options*
 		Note: To use it, you need to use neovim
 		0.4.0+(|nvim_open_win()|).
 		Note: If you need the feature in Vim8, you should use
-		'previewpopup' instead.
+		|preview-popup| instead.
 
 		Default: false
 
