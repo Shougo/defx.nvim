@@ -198,8 +198,7 @@ class View(object):
         start = time.time()
 
         [info] = self._vim.call('getbufinfo', self._bufnr)
-        prev_linenr = info['lnum']
-        prev = self.get_cursor_candidate(prev_linenr)
+        restview = self._vim.call('winsaveview')
 
         if is_force:
             self._init_candidates()
@@ -233,7 +232,8 @@ class View(object):
         # TODO: How to set cursor position for other buffer when
         #   stay in current buffer
         if self._buffer == self._vim.current.buffer:
-            self._vim.call('cursor', [prev_linenr, 0])
+            self._vim.call('winrestview', restview)
+            prev = self.get_cursor_candidate(info['lnum'])
             if prev:
                 self.search_file(prev['action__path'], prev['_defx_index'])
             if is_force:
