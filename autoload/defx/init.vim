@@ -69,9 +69,9 @@ function! defx#init#_channel() abort
       endif
     else
       call defx#util#print_error(
-          \ 'defx failed to load. '
-          \ .'Try the :UpdateRemotePlugins command and restart Neovim. '
-          \ .'See also :checkhealth.')
+            \ 'defx failed to load. '
+            \ .'Try the :UpdateRemotePlugins command and restart Neovim. '
+            \ .'See also :checkhealth and :messages output.')
     endif
 
     return v:true
